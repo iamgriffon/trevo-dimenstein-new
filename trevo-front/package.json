@@ -16,7 +16,18 @@
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
-    "vue": "^3.5.13"
+    "@tanstack/vue-table": "^8.20.5",
+    "ag-charts-vue3": "^11.1.1",
+    "axios": "^1.7.9",
+    "date-fns": "^4.1.0",
+    "gh-pages": "^6.3.0",
+    "hashids": "^2.3.0",
+    "tailwind-merge": "^3.0.2",
+    "utf-8": "^3.0.0",
+    "utf8": "^3.0.0",
+    "vue": "^3.5.13",
+    "vue-good-table-next": "^0.2.2",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
