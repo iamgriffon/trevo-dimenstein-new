@@ -6,14 +6,14 @@
       </div>
       <div class="w-full flex gap-2 px-4">
         <PanelCard text="Upload de documentos e assinatura digital">
-          <img src="../../assets/contract.png" alt="" />
+          <img src="/public/assets/contract.png" alt="" />
         </PanelCard>
 
         <PanelCard text="Gestão de instalações e pessoas">
-          <img src="../../assets/teamwork.svg" />
+          <img src="/public/assets/teamwork.svg" />
         </PanelCard>
         <PanelCard text="Níveis de acesso específicos para cada usuário">
-          <img src="../../assets/folder.svg" />
+          <img src="/public/assets/folder.svg" />
         </PanelCard>
       </div>
       <br />

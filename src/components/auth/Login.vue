@@ -200,7 +200,7 @@ function verifyCode() {
 
     <div
       v-if="step == 2"
-      class="w-1/2 flex py-4 translate-y-[25%] bg-white shadow-md rounded-3xl"
+      class="w-2/3 flex py-4 bg-white shadow-md rounded-3xl"
     >
       <form
         class="w-full px-8 py-4 flex flex-col items-center gap-4 border-r my-4 border-gray-300"

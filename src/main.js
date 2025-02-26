@@ -1,5 +1,5 @@
-import { createApp } from "vue";
 import "./style.css";
+import { createApp } from "vue";
 import App from "./App.vue";
 import router from "@/routes";
 import { library } from "@fortawesome/fontawesome-svg-core";
