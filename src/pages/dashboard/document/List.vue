@@ -1,0 +1,551 @@
+<template>
+  <Layout title="Documentos">
+    <template #header>
+      <router-link
+        v-if="permission.canCreateDocuments(currentUser)"
+        class="flex items-center gap-2 px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700"
+        :to="{ path: '/document/register/' }"
+      >
+        <FontAwesomeIcon icon="fa-solid fa-upload" />
+        <span class="hidden sm:inline">Fazer upload</span>
+      </router-link>
+    </template>
+
+    <div class="flex flex-col gap-4">
+      <Input
+        v-model="filter"
+        placeholder="Buscar..."
+        class="w-full px-3 border mb-4 rounded-md border-gray-300 max-md:w-96"
+        @update:modelValue="currentPage = 1"
+      >
+        <FontAwesomeIcon icon="fa-solid fa-search" />
+      </Input>
+
+      <template v-if="loading">
+        <figure
+          class="w-full h-full translate-y-[25%] flex items-center justify-center"
+        >
+          <img
+            src="/static/img/loading.gif"
+            class="scale-75"
+            alt="Carregando documentos..."
+          />
+        </figure>
+      </template>
+
+      <template v-else>
+        <section
+          v-if="documents.length > 0"
+          class="overflow-x-auto bg-white rounded-lg shadow"
+        >
+          <Table
+            :columns="columns"
+            :data="filteredDocuments"
+            :total-items="totalItems"
+            v-model:perPage="perPage"
+            v-model:currentPage="currentPage"
+          />
+        </section>
+
+        <div v-if="error" class="p-4 text-red-600 bg-red-100 rounded-lg">
+          <FontAwesomeIcon
+            icon="fa-solid fa-exclamation-triangle"
+            class="mr-2"
+          />
+          {{ error }}
+        </div>
+      </template>
+    </div>
+  </Layout>
+</template>
+
+<script setup>
+import { ref, computed, onMounted, watch, toRaw } from "vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { RouterLink, useRoute } from "vue-router";
+
+import axios from "axios";
+import auth from "@/services/authentication";
+import permission from "@/services/permissions";
+import Layout from "@/components/common/Layout.vue";
+import Input from "@/components/ui/Input.vue";
+import Table from "@/components/dashboard/Table.vue";
+import { format, parseISO } from "date-fns";
+import { h } from "vue";
+import { twMerge } from "tailwind-merge";
+// import "pdfjs-dist";
+import Hashids from "hashids";
+
+const filter = ref("");
+const documents = ref([]);
+const currentPage = ref(1);
+const perPage = ref(10);
+const loading = ref(false);
+const error = ref("");
+const allSelected = ref(false);
+const selectedDocs = ref([]);
+const totalItems = ref(0);
+const pdfModal = ref(null);
+const signTestModal = ref(null);
+const pdfUrl = ref("");
+const url = ref("");
+
+function toggleAllSelected() {
+  allSelected.value = !allSelected.value;
+  documents.value.forEach((doc) => {
+    doc.selected = allSelected.value;
+  });
+}
+
+const currentUser = ref(auth.currentUser());
+const route = useRoute();
+
+const tableButtonStyle =
+  "rounded-full w-10 h-10 bg-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-300 transition-colors";
+
+const columns = [
+  {
+    accessorKey: "type",
+    header: {
+      component: "input",
+      props: {
+        type: "checkbox",
+        checked: !!allSelected.value,
+        onChange: () => toggleAllSelected(),
+      },
+    },
+    cell: (info) => {
+      return h("input", {
+        type: "checkbox",
+        checked: !!allSelected.value,
+        onChange: () => {
+          info.row.original.selected = !info.row.original.selected;
+        },
+      });
+    },
+    meta: {
+      headerClass: "px-8",
+      cellClass: "px-8",
+    },
+  },
+  {
+    accessorKey: "actions",
+    header: "Ações",
+    cell: (info) => {
+      const actionButtons = [
+        {
+          type: "a",
+          icon: "fa-solid fa-eye",
+          props: {
+            class: tableButtonStyle,
+            href: info.row.original.path,
+            target: "_blank",
+            title: "Visualizar",
+          },
+        },
+        {
+          type: "button",
+          icon: "fa-solid fa-times-circle",
+          props: {
+            class: twMerge(
+              tableButtonStyle,
+              !(
+                permission.canComment(currentUser.value) &&
+                !info.row.original.signedBy.length
+              ) && "hidden"
+            ),
+            onClick: () => correctionSelected(info.row.original),
+            title: "Corrigir",
+          },
+        },
+        {
+          type: "button",
+          icon: "fa-solid fa-share-square",
+          props: {
+            class: twMerge(
+              tableButtonStyle,
+              !(
+                info.row.original.status === "Assinado" &&
+                permission.canLiberate(currentUser.value)
+              ) && "hidden"
+            ),
+            onClick: () => liberateSelected(info.row.original),
+            title: "Liberar",
+          },
+        },
+        {
+          type: "button",
+          icon: "fa-solid fa-clock",
+          props: {
+            class: twMerge(
+              tableButtonStyle,
+              !(
+                info.row.original.status == "Liberado" &&
+                info.row.original.scheduledEmail &&
+                !info.row.original.sendedEmail &&
+                permission.canSign(currentUser.value)
+              ) && "hidden"
+            ),
+            onClick: () => scheduleEmailSelected(info.row.original),
+            title: "Programar email",
+          },
+        },
+        {
+          type: "button",
+          icon: "fa-solid fa-check",
+          props: {
+            class: twMerge(
+              tableButtonStyle,
+              !(
+                info.row.original.status == "Liberado" &&
+                info.row.original.scheduledEmail &&
+                info.row.original.sendedEmail &&
+                permission.canSign(currentUser.value)
+              ) && "hidden"
+            ),
+            title: "Email enviado",
+          },
+        },
+        {
+          type: RouterLink,
+          icon: "fa-solid fa-pen-to-square",
+          props: {
+            class: twMerge(
+              tableButtonStyle,
+              !permission.canExcludeDocuments(currentUser.value) && "hidden"
+            ),
+            to: `/equipments/${
+              route.params.id || info.row.original.equipment?.[0]?.typeId || ""
+            }/${info.row.original.equipment?.[0]?._id || ""}/${
+              route.params.id
+            }/${info.row.original._id}/edit`,
+            title: "Editar",
+          },
+        },
+        {
+          type: "button",
+          icon: "fa-solid fa-trash",
+          props: {
+            class: twMerge(
+              tableButtonStyle,
+              !permission.canExcludeDocuments(currentUser.value) && "hidden"
+            ),
+            onClick: () => deleteDocument(info.row.original._id),
+            title: "Excluir",
+          },
+        },
+      ];
+      return h(
+        "div",
+        { class: "flex gap-2 items-center justify-center h-14 mx-4" },
+        actionButtons.map((btn) =>
+          h(btn.type, btn.props, [
+            h(FontAwesomeIcon, { icon: btn.icon, class: "w-4 h-4" }),
+          ])
+        )
+      );
+    },
+    meta: {
+      headerClass: "px-8",
+      cellClass: "px-8",
+    },
+  },
+  {
+    accessorKey: "conclusion",
+    header: "Conclusão",
+    meta: {
+      cellClass: "px-8 truncate text-left",
+      headerClass: "px-8 text-left",
+    },
+  },
+  {
+    accessorKey: "name",
+    header: "Nome",
+    sortable: true,
+    meta: {
+      headerClass: "px-8 text-left",
+      cellClass: "text-left px-8",
+    },
+  },
+  {
+    accessorKey: "facility",
+    header: "Instalação",
+    cell: (info) =>
+      h("p", { class: "text-left" }, info.row.original.facility[0]?.name),
+    meta: {
+      headerClass: "px-8 text-left",
+      cellClass: "px-8",
+    },
+  },
+  {
+    accessorKey: "uploadedBy",
+    header: "Upload por",
+    cell: (info) =>
+      h("p", { class: "text-left" }, info.row.original.uploadedBy[0]?.name),
+    meta: {
+      headerClass: "px-8 text-left",
+      cellClass: "px-8",
+    },
+  },
+  {
+    accessorKey: "signedBy",
+    header: "Assinado por",
+    cell: (info) =>
+      h(
+        "p",
+        {
+          class: info.row.original.signedBy[0]?.name
+            ? "text-left"
+            : "text-center",
+        },
+        info.row.original.signedBy[0]?.name || "-"
+      ),
+    meta: {
+      headerClass: "px-8 text-left",
+      cellClass: "px-8",
+    },
+  },
+  {
+    accessorKey: "liberatedBy",
+    header: "Liberado por",
+    cell: (info) => {
+      h(
+        "p",
+        {
+          class: "text-right w-full",
+          onClick: () => console.log(info.row.original),
+        },
+        "Salve"
+      );
+    },
+    meta: {
+      headerClass: "text-left",
+      cellClass: "px-8 min-w",
+    },
+  },
+  {
+    accessorKey: "uploadedAt",
+    header: "Upload",
+    sortable: true,
+    cell: (info) =>
+      info.row.original?.uploadedAt
+        ? format(parseISO(info.row.original?.uploadedAt), "dd/MM/yyyy")
+        : "-",
+    meta: {
+      headerClass: "px-8 text-left",
+      cellClass: "px-4",
+    },
+  },
+  {
+    accessorKey: "validity",
+    header: "Validade",
+    sortable: true,
+    cell: (info) =>
+      info.row.original?.validity
+        ? format(new Date(info.row.original.validity), "dd/MM/yyyy")
+        : "-",
+    meta: {
+      headerClass: "px-8 text-left",
+      cellClass: "px-8",
+    },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    meta: {
+      headerClass: "px-8",
+      cellClass: "px-8",
+    },
+    cell: (info) => {
+      const styleMap = {
+        Liberado: "bg-transparent text-black",
+        Assinado: "bg-gray-600 hover:bg-gray-700 text-white",
+        "Falta assinar": "bg-red-600 hover:bg-red-700 text-white",
+        Corrigir: "bg-yellow-600 hover:bg-yellow-700 text-white",
+      };
+      const { status } = info.row.original;
+      return h(
+        "span",
+        {
+          class: twMerge(
+            styleMap[status],
+            "transition-colors duration-300 rounded-2xl p-2 select-none cursor-default"
+          ),
+        },
+        info.row.original.status
+      );
+    },
+  },
+];
+
+const filteredDocuments = computed(() => {
+  if (filter.value.length > 0) {
+    const exp = new RegExp(filter.value.trim(), "i");
+    return documents.value
+      .filter(
+        (item) =>
+          exp.test(item.name) ||
+          exp.test(item.validity) ||
+          exp.test(item.facility[0]?.name) ||
+          exp.test(item.hash) ||
+          exp.test(item.uploadedBy[0]?.name) ||
+          exp.test(item.uploadedAt)
+      )
+      .slice(
+        (currentPage.value - 1) * perPage.value,
+        currentPage.value * perPage.value
+      );
+  }
+  return documents.value;
+});
+
+const loadDocuments = async () => {
+  loading.value = true;
+
+  try {
+    const paramMap = {
+      corrigir: "Corrigir",
+      assinar: "Falta assinar",
+      liberar: "Assinado",
+    };
+
+    const initialFilter = {
+      pageSize: perPage.value,
+      limit: perPage.value,
+      pageNum: currentPage.value,
+      status: route.params.status || "",
+    };
+
+    const response = await axios.get(
+      `${auth.apiUrl()}documents${
+        route.params.status ? `/${paramMap[route.params.status]}` : ""
+      }`,
+      {
+        headers: { Authorization: `Bearer ${auth.getToken()}` },
+        params: !route.params.status?.length
+          ? {
+              filters: JSON.stringify(initialFilter),
+            }
+          : {},
+      }
+    );
+
+    totalItems.value = response.data.paging?.total || response.data.length;
+    documents.value = response?.data?.list || response.data;
+    error.value = "";
+  } catch (err) {
+    error.value = err.response?.data?.message || "Erro ao carregar documentos";
+    documents.value = [];
+  } finally {
+    loading.value = false;
+  }
+};
+
+const liberateSelected = (row) => {
+  if (confirm("Tem certeza que deseja liberar este teste?")) {
+    row.status = "Liberado";
+    row.liberatedBy = {
+      _id: currentUser.value.id,
+      name: currentUser.value.name,
+    };
+    row.liberatedAt = new Date();
+
+    loading.value = true;
+    auth.liberateDocument(null, row, () =>
+      setTimeout(() => {
+        loading.value = false;
+        loadDocuments();
+      }, 6000)
+    );
+  }
+};
+
+const scheduleEmailSelected = (row) => {
+  if (confirm("Tem certeza que deseja programar o email deste documento?")) {
+    loading.value = true;
+    auth.scheduleEmailDocument(null, row, () =>
+      setTimeout(() => {
+        loading.value = false;
+        loadDocuments();
+      }, 1000)
+    );
+  }
+};
+
+const deleteDocument = (documentId) => {
+  if (confirm("Tem certeza que deseja excluir este documento?")) {
+    loading.value = true;
+    // auth.excludeDocument(null, documentId, () =>
+    //   setTimeout(() => {
+    //     loading.value = false;
+    //     loadDocuments();
+    //   }, 1000)
+    // );
+  }
+};
+
+const viewSelected = async (id, path) => {
+  try {
+    const response = await axios.get(`${auth.apiUrl()}document/${id}`, {
+      headers: { Authorization: `Bearer ${auth.getToken()}` },
+    });
+    pdfUrl.value = response.data;
+    url.value = path;
+    // pdfModal.value.show(); // Assuming you have a pdfModal ref
+  } catch (error) {
+    error.value = error.data;
+  }
+};
+
+const signSelected = (test) => {
+  const hashids = new Hashids(
+    "AKJSBDalsdabskJASd",
+    8,
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+  );
+  test.hash = hashids.encode(
+    Math.floor(Math.random() * 100 + 1),
+    Math.floor(Math.random() * 100 + 1),
+    Math.floor(Math.random() * 100 + 1)
+  );
+  test.mode = "last";
+  // signTestModal.value.show(); // Assuming you have a signTestModal ref
+};
+
+onMounted(() => {
+  loadDocuments();
+});
+
+watch(
+  [
+    () => route.params.status,
+    () => currentPage.value,
+    () => perPage.value
+  ],
+  () => {
+    loadDocuments();
+  }
+);
+
+watch(
+  documents,
+  (newVal) => {
+    selectedDocs.value = newVal
+      .filter((doc) => toRaw(doc).selected)
+      .map((doc) => toRaw(doc));
+  },
+  { deep: true }
+);
+
+watch(perPage, (newVal) => {
+  currentPage.value = 1;
+});
+</script>
+
+<style scoped>
+#pdfModal___BV_modal_body_ > iframe:nth-child(1) {
+  width: -moz-available;
+  height: -moz-available;
+  min-height: 90vh;
+}
+</style>

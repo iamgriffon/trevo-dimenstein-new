@@ -43,7 +43,15 @@
         <FontAwesomeIcon icon="fa-solid fa-search" />
       </Input>
       <template v-if="loading">
-        <img src="/static/img/loading.gif" />
+        <figure
+          class="w-full h-full translate-y-[25%] flex items-center justify-center"
+        >
+          <img
+            src="/static/img/loading.gif"
+            class="scale-75"
+            alt="Carregando lista..."
+          />
+        </figure>
       </template>
       <template v-else>
         <section
@@ -57,32 +65,18 @@
           />
         </section>
         <section
-          v-if="viewMode === 'list' && table"
+          v-else-if="viewMode === 'list' && table"
           class="overflow-x-auto bg-white rounded-lg shadow"
         >
-          <table class="w-full">
-            <thead>
-              <tr
-                v-for="headerGroup in table.getHeaderGroups()"
-                :key="headerGroup.id"
-              >
-                <th v-for="header in headerGroup.headers" :key="header.id">
-                  {{
-                    header.isPlaceholder ? null : header.column.columnDef.header
-                  }}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in table.getRowModel().rows" :key="row.id">
-                <td v-for="cell in row.getVisibleCells()" :key="cell.id">
-                  {{ cell.renderValue() }}
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <Table
+            :columns="columns"
+            :data="filteredFacilities"
+            :totalItems="totalItems"
+            v-model:currentPage="currentPage"
+            v-model:perPage="perPage"
+          />
         </section>
-        <footer class="flex justify-center text-2xl mt-16">
+        <footer v-if="viewMode === 'card'" class="flex justify-center text-2xl mt-16">
           <nav class="flex gap-1">
             <button
               v-if="currentPage > 1"
@@ -133,19 +127,22 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
 } from "@tanstack/vue-table";
-import { useRoute } from "vue-router";
+import { RouterLink, useRoute } from "vue-router";
 
 import axios from "axios";
 import auth from "@/services/authentication";
 import permission from "@/services/permissions";
 import Layout from "@/components/common/Layout.vue";
 import Input from "@/components/ui/Input.vue";
-import Card from "@/components/dashboard/facility/list/Card.vue";
+import Card from "@/components/dashboard/Card.vue";
+import Table from "@/components/dashboard/Table.vue";
+import { h } from "vue";
 
 const filter = ref("");
 const facilities = ref([]);
 const currentPage = ref(1);
-const perPage = ref(12);
+const perPage = ref(10);
+const totalItems = ref(0);
 const viewMode = ref("card");
 const loading = ref(false);
 
@@ -154,6 +151,40 @@ const route = useRoute();
 
 const defaultStyle =
   "p-2 rounded-xl w-12 h-12 hover:bg-gray-100 hover:text-green-500 transition-colors duration-300";
+
+const columns = [
+  {
+    accessorKey: "name",
+    header: "Nome",
+  },
+  {
+    accessorKey: "telephone",
+    header: "Telefone",
+  },
+  {
+    accessorKey: "action",
+    header: "Ações",
+    meta: {
+      cellClass: "flex w-full items-center justify-end pr-4",
+      headerClass: "text-right pr-16",
+    },
+    cell: (info) =>
+      h(
+        RouterLink,
+        {
+          to: {
+            path: `/facility/${info.row.original._id}`,
+          },
+          class:
+            "flex items-center w-full justify-center p-2 rounded-md gap-2 bg-gray-100 cursor-pointer hover:shadow-inner hover:bg-gray-200 transition-all duration-300",
+        },
+        [
+          h(FontAwesomeIcon, { icon: "fa-solid fa-info" }),
+          h("span", "informações"),
+        ]
+      ),
+  },
+];
 
 const filteredFacilities = computed(() => {
   if (filter.value.length > 2) {
@@ -198,9 +229,9 @@ const loadFacilities = async () => {
     }
 
     facilities.value = response.data.list;
-    const total = response.data.paging.total;
+    totalItems.value = response.data.paging.total;
 
-    for (let i = 2; i <= Math.ceil(total / initialFilter.limit); i++) {
+    for (let i = 2; i <= Math.ceil(totalItems?.value / initialFilter.limit); i++) {
       const pageFilter = { pageSize: 10, pageNum: i, limit: 10 };
       const resp = await axios.get(`${auth.apiUrl()}${endpoint}`, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
@@ -212,7 +243,7 @@ const loadFacilities = async () => {
       if (resp.data.list.length > 0) {
         facilities.value.push(...resp.data.list);
       }
-      if (facilities.value.length >= 12) {
+      if (facilities.value.length >= perPage.value) {
         loading.value = false;
       }
     }
@@ -232,43 +263,12 @@ const table = computed(() => {
   }
 
   return useVueTable({
-    data: filteredFacilities,
-    columns: [
-      {
-        accessorKey: "name",
-        header: "Nome",
-      },
-      {
-        accessorKey: "telephone",
-        header: "Telefone",
-      },
-      {
-        accessorKey: "action",
-        header: "Ações",
-        cell: (info) =>
-          h(
-            "router-link",
-            {
-              to: `/facility/${info.row.original._id}`,
-              class:
-                "flex items-center gap-1 px-3 py-2 text-sm text-green-600 hover:bg-gray-100",
-            },
-            () => [
-              h(FontAwesomeIcon, { icon: "fa-solid fa-info-circle" }),
-              "Informações",
-            ]
-          ),
-      },
-    ],
+    data: filteredFacilities.value,
+    columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 });
 
-watch(filter, (newVal) => {
-  if (newVal.length > 2) {
-    currentPage.value = 1;
-  }
-});
 </script>

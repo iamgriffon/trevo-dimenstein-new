@@ -10,7 +10,7 @@
         !route.fullPath.includes('info') &&
         !route.fullPath.includes('panel') >= 1
       "
-      class="mx-2 text-gray-800"
+      class="mx-2 text-gray-800 select-none"
       >/</span
     >
 
@@ -19,8 +19,8 @@
 
     </template>
 
-    <template v-if="route.fullPath.includes('documents')">
-      <FontAwesomeIcon icon="fa-solid fa-inbox" />
+    <template v-if="route.fullPath.includes('document')">
+      <FontAwesomeIcon icon="fa-solid fa-inbox" class="text-teal-800" />
     </template>
 
     <template v-if="route.fullPath.includes('user')">

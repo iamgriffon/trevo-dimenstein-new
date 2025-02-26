@@ -9,78 +9,82 @@
     leave-to-class="-translate-x-full"
   >
     <aside class="hidden md:block w-64 mt-20 border-r border-l-gray-200" v-if="!hideMenu">
-      <ul class="flex justify-center flex-col space-y-2">
+      <ul class="flex justify-center flex-col">
         <li :class="linkStyle">
-          <router-link class="w-full p-2 rounded" to="/panel"
+          <router-link class="w-full p-2" to="/panel"
             ><FontAwesomeIcon icon="fa-solid fa-home" /> Início</router-link
           >
         </li>
         <li :class="linkStyle">
-          <router-link class="w-full p-2 rounded" to="/facility"
-            ><FontAwesomeIcon icon="fa-solid fa-building" /> Instalações</router-link
+          <router-link 
+            class="w-full p-2" 
+            :class="{ 'text-green-700 bg-gray-200 border-r-4 border-r-green-500': $route.path.startsWith('/facility') }"
+            to="/facility"
           >
+            <FontAwesomeIcon icon="fa-solid fa-building" /> Instalações
+          </router-link>
         </li>
         <li :class="linkStyle">
           <router-link
-            class="w-full p-2 rounded"
+            class="w-full p-2"
             to="/facility/nuclearmedicine"
             ><FontAwesomeIcon icon="fa-solid fa-vials" /> Medicina Nuclear</router-link
           >
         </li>
         <li :class="linkStyle">
           <router-link
-            class="w-full p-2 pl-4 rounded"
+            class="w-full p-2 pl-4"
             to="/facility/radiodiagnosis"
             ><FontAwesomeIcon icon="fa-solid fa-diagnoses" /> Radiodiagnóstico</router-link
           >
         </li>
         <li v-if="permission.canSeeAllDocuments(currentUser)" :class="linkStyle">
-          <router-link class="w-full p-2 rounded" to="/document"
+          <router-link class="w-full p-2" to="/document"
             ><FontAwesomeIcon icon="fa-solid fa-inbox" /> Documentos</router-link
           >
         </li>
         <li v-if="permission.canSeeAllDocuments(currentUser)" :class="linkStyle">
           <router-link
-            class="pl-4 w-full p-2 flex items-center gap-2 rounded"
+            class="pl-4 w-full p-2 flex items-center gap-2"
             to="/document/corrigir"
             ><FontAwesomeIcon icon="fa-solid fa-times-circle" /> Corrigir</router-link
           >
         </li>
         <li v-if="permission.canSeeAllDocuments(currentUser)" :class="linkStyle">
           <router-link
-            class="pl-4 w-full p-2 flex items-center gap-2 rounded"
+            class="pl-4 w-full p-2 flex items-center gap-2"
             to="/document/assinar"
             ><FontAwesomeIcon icon="fa-solid fa-signature" /> Falta Assinar</router-link
           >
         </li>
         <li v-if="permission.canSeeAllDocuments(currentUser)" :class="linkStyle">
           <router-link
-            class="pl-4 w-full p-2 flex items-center gap-2 rounded"
+            class="pl-4 w-full p-2 flex items-center gap-2"
             to="/document/liberar"
             ><FontAwesomeIcon icon="fa-solid fa-share-square" /> Liberar</router-link
           >
         </li>
         <li :class="linkStyle">
-          <router-link class="w-full p-2 flex items-center gap-2 rounded" to="/user"
+          <router-link class="w-full p-2 flex items-center gap-2" to="/user"
             ><FontAwesomeIcon icon="fa-solid fa-users" /> Pessoas</router-link
           >
         </li>
         <li :class="linkStyle">
-          <router-link class="w-full p-2 flex items-center gap-2 rounded" to="/#"
+          <router-link class="w-full p-2 flex items-center gap-2" to="/#"
             ><FontAwesomeIcon icon="fa-solid fa-screwdriver-wrench" />
             Equipamentos</router-link
           >
         </li>
         <li :class="linkStyle">
           <router-link
-            class="w-full p-2 flex items-center gap-2 rounded"
+            class="w-full p-2 flex items-center gap-2"
             to="/equipments/epi"
             ><FontAwesomeIcon icon="fa-solid fa-shield" /> Avaliação de
             EPIs</router-link
           >
         </li>
         <li :class="linkStyle">
-          <router-link class="w-full p-2 flex items-center gap-2 rounded" to="/info"
+          <router-link class="w-full p-2 flex items-center gap-2" to="/info"
             ><FontAwesomeIcon icon="fa fa-info-circle" /> Informações</router-link
           >
         </li>

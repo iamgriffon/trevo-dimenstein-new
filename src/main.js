@@ -36,7 +36,16 @@ import {
   faInbox,
   faThLarge,
   faList,
-  faPlus
+  faPlus,
+  faInfo,
+  faUpload,
+  faExclamationTriangle,
+  faEye,
+  faPenToSquare,
+  faTrash,
+  faClock,
+  faCheck,
+  faChevronLeft
 } from "@fortawesome/free-solid-svg-icons";
 
 import VueGoodTablePlugin from "vue-good-table-next";
@@ -75,7 +84,19 @@ library.add(
   faInbox,
   faThLarge,
   faList,
-  faPlus
+  faPlus,
+  faInfo,
+  faUpload,
+  faExclamationCircle,
+  faExclamationTriangle,
+  faEye,
+  faPenToSquare,
+  faTrash,
+  faChevronLeft,
+  faChevronRight,
+  faShareSquare,
+  faCheck,
+  faClock,
 );
 
 createApp(App).use(router).use(VueGoodTablePlugin).mount("#app");
