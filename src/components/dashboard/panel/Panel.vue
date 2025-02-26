@@ -13,14 +13,6 @@
     <div class="w-full">
       <h4>O sistema Trevo possui diversas funções</h4>
     </div>
-    <div class="w-full flex flex-wrap px-0 mx-0">
-      <panel-card :image-url="'../../assets/contract.png'" :text="'Upload de documentos e assinatura digital'">
-      </panel-card>
-      <panel-card :image-url="'../../assets/teamwork.svg'" :text="'Gestão de instalações e pessoas'">
-      </panel-card>
-      <panel-card :image-url="'../../assets/folder.svg'" :text="'Níveis de acesso específicos para cada usuário'">
-      </panel-card>
-    </div>
     <br />
     <div class="w-full">
       <h4>Novidades da versão 0.9.3</h4>

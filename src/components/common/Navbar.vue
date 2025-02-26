@@ -3,7 +3,7 @@
     <nav
       class="bg-transparent fixed top-0 w-full bg-gray-700 flex justify-between h-14 z-10"
     >
-      <img src="../../assets/logo_rad.png" class="'h-full'" alt="Background" />
+      <img src="/public/assets/logo_rad.png" class="'h-full'" alt="Background" />
     </nav>
   </template>
   <template v-else>
@@ -18,7 +18,7 @@
         >
           <FontAwesomeIcon icon="fa-solid fa-bars" class="text-sm" />
         </Button>
-        <img class="h-12" src="../../assets/logo_rad_dimenstein.png" />
+        <img class="h-12" src="/public/assets/logo_rad_dimenstein.png" />
       </div>
       <div v-if="permission.canSeeAllDocuments(currentUser)" class="w-64">
         <Searchbar />

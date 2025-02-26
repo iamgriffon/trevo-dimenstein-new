@@ -43,7 +43,7 @@
         <FontAwesomeIcon icon="fa-solid fa-search" />
       </Input>
       <template v-if="loading">
-        <img src="../../../assets/loading.gif" />
+        <img src="/static/img/loading.gif" />
       </template>
       <template v-else>
         <section
