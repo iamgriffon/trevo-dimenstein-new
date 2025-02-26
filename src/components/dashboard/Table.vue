@@ -96,7 +96,7 @@
         >
           <option :value="10">10</option>
           <option :value="20">20</option>
-          <option :value="50">50</option>
+          <option v-if="totalItems >= 50" :value="50">50</option>
         </select>
       </section>
       <section class="flex gap-4 items-center text-lg font-medium">
@@ -131,14 +131,19 @@
       </section>
       <section class="text-nowrap text-center px-8 text-lg font-medium">
         Exibindo: {{ currentPage * perPage - perPage + 1 }} -
-        {{ currentPage * perPage }} de {{ totalItems }} itens
+        {{
+          totalItems >= currentPage * perPage
+            ? currentPage * perPage
+            : totalItems
+        }}
+        de {{ totalItems }} itens
       </section>
     </footer>
   </section>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import {
   useVueTable,
   getCoreRowModel,
@@ -146,7 +151,6 @@ import {
   FlexRender,
 } from "@tanstack/vue-table";
 import { twMerge } from "tailwind-merge";
-import Button from "../ui/Button.vue";
 
 const props = defineProps({
   data: {
@@ -178,7 +182,16 @@ const props = defineProps({
 
 const emit = defineEmits(["update:perPage", "update:currentPage"]);
 
-// Default cell renderer for simple text cells
+watch(
+  () => props.totalItems,
+  (total) => {
+    const lastPage = Math.ceil(total / props.perPage);
+    if (props.currentPage > lastPage && lastPage > 0) {
+      emit("update:currentPage", lastPage);
+    }
+  }
+);
+
 const defaultRenderCell = (props) => {
   return props.getValue();
 };

@@ -71,12 +71,15 @@
           <Table
             :columns="columns"
             :data="filteredFacilities"
-            :totalItems="totalItems"
+            :totalItems="facilities.length"
             v-model:currentPage="currentPage"
             v-model:perPage="perPage"
           />
         </section>
-        <footer v-if="viewMode === 'card'" class="flex justify-center text-2xl mt-16">
+        <footer
+          v-if="viewMode === 'card'"
+          class="flex justify-center text-2xl mt-16"
+        >
           <nav class="flex gap-1">
             <button
               v-if="currentPage > 1"
@@ -205,6 +208,10 @@ const filteredFacilities = computed(() => {
 
 const loadFacilities = async () => {
   loading.value = true;
+  const lastPage = Math.ceil(facilities?.value.length / perPage.value);
+  if (currentPage.value > lastPage && lastPage > 0) {
+    currentPage.value = lastPage;
+  }
   try {
     let endpoint = "facilities/";
 
@@ -231,7 +238,11 @@ const loadFacilities = async () => {
     facilities.value = response.data.list;
     totalItems.value = response.data.paging.total;
 
-    for (let i = 2; i <= Math.ceil(totalItems?.value / initialFilter.limit); i++) {
+    for (
+      let i = 2;
+      i <= Math.ceil(totalItems?.value / initialFilter.limit);
+      i++
+    ) {
       const pageFilter = { pageSize: 10, pageNum: i, limit: 10 };
       const resp = await axios.get(`${auth.apiUrl()}${endpoint}`, {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
@@ -271,4 +282,10 @@ const table = computed(() => {
   });
 });
 
+watch([perPage, currentPage], () => {
+  const maxPage = Math.ceil(facilities.value.length / perPage.value) || 1;
+  if (currentPage.value > maxPage) {
+    currentPage.value = maxPage;
+  }
+});
 </script>

@@ -41,7 +41,7 @@
           <Table
             :columns="columns"
             :data="filteredDocuments"
-            :total-items="totalItems"
+            :total-items="documents.length"
             v-model:perPage="perPage"
             v-model:currentPage="currentPage"
           />
