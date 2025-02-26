@@ -2,7 +2,7 @@
   <div
     class="w-screen h-screen flex flex-col items-center justify-center wave-bg bg-cover"
   >
-    <!-- <Navbar /> -->
+    <Navbar />
     <Login />
   </div>
 </template>

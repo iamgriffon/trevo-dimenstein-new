@@ -117,7 +117,7 @@ function verifyCode() {
   >
     <div
       v-if="step == 1"
-      class="w-full flex py-4 translate-y-[25%] bg-white shadow-md rounded-3xl"
+      class="w-full flex max-lg:flex-col py-4 bg-white shadow-md rounded-3xl"
     >
       <form
         class="w-full px-8 py-4 flex flex-col gap-4 border-r my-4 border-gray-300"
