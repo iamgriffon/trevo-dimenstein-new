@@ -6,7 +6,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import BaseDashboard from "@/pages/dashboard/Base.vue";
 import Panel from "@/pages/dashboard/Panel.vue";
 
-// import Users from '@/components/dashboard/user/List.vue'
+import Users from "@/pages/dashboard/users/List.vue";
 // import User from '@/components/dashboard/user/User.vue'
 // import EditUser from '@/components/dashboard/user/Edit.vue'
 // import EditUsersFacilities from '@/components/dashboard/user/EditUsersFacilities.vue'
@@ -35,7 +35,7 @@ import Facilities from "@/pages/dashboard/facility/List.vue";
 // import FacilityEquipmentsRegister from '@/components/dashboard/facility/equipments/Register.vue'
 // import FacilityEquipmentsEdit from '@/components/dashboard/facility/equipments/Edit.vue'
 
-// import EPIEquipmentAssessmentTestList from '@/components/dashboard/facility/equipments/epiEquipment/tests/assessment/List.vue'
+import EPIEquipmentAssessmentTestList from "@/pages/dashboard/equipments/epiList.vue";
 // import EPIEquipmentAssessmentTestRegister from '@/components/dashboard/facility/equipments/epiEquipment/tests/assessment/Register.vue'
 // import EPIEquipmentAssessmentTestEdit from '@/components/dashboard/facility/equipments/epiEquipment/tests/assessment/Edit.vue'
 
@@ -81,8 +81,8 @@ import Facilities from "@/pages/dashboard/facility/List.vue";
 import Doc from "@/pages/dashboard/document/List.vue";
 // import RegisterDoc from '@/components/dashboard/document/Register.vue'
 
-// import Information from '@/components/dashboard/information/Information.vue'
-// import TermsOfUse from '@/components/dashboard/information/TermsOfUse.vue'
+import Information from "@/pages/dashboard/Info.vue";
+import TermsOfUse from "@/pages/dashboard/Terms.vue";
 
 // import Settings from '@/components/dashboard/settings/Settings.vue'
 
@@ -131,7 +131,7 @@ const router = createRouter({
         { path: "/panel", component: Panel },
         //   ]
         // }
-        //       { path: '/user', component: Users },
+        { path: "/user", component: Users },
         //       { path: '/user/:id', component: User },
         //       { path: '/user/:id/edit',
         //         component: EditUser,
@@ -214,7 +214,7 @@ const router = createRouter({
         //       { path: '/facility/:facilityId/equipment/:equipmentId/edit', component: FacilityEquipmentsEdit },
 
         //       // this will have to change in case of creating EPI Equipment routes
-        //       { path: '/equipments/epi', component: EPIEquipmentAssessmentTestList },
+        { path: "/equipments/epi", component: EPIEquipmentAssessmentTestList },
         //       { path: '/equipments/epi/register', component: EPIEquipmentAssessmentTestRegister },
         //       { path: '/equipments/epi/:equipmentId/:testId/:id/edit', component: EPIEquipmentAssessmentTestEdit },
 
@@ -279,8 +279,8 @@ const router = createRouter({
         //         }
         //       },
         { path: "/document/:status", component: Doc },
-        //       { path: '/info', component: Information },
-        //       { path: '/terms', component: TermsOfUse }
+        { path: "/info", component: Information },
+        { path: "/terms", component: TermsOfUse },
         //     ]
         //   }
       ],

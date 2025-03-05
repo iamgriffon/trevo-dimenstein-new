@@ -1,43 +1,48 @@
 <script setup>
 import { AgCharts } from "ag-charts-vue3";
-import { ref } from "vue";
+import { ref, onMounted, computed } from "vue";
 import auth from "@/services/authentication.js";
 import axios from "axios";
-
-defineOptions({
-  name: 'Chart'
-})
-
+const amount = ref(0.10864693900000001);
 const chartOptions = ref({
-  data: [],
+  data: computed(() => [
+    { label: "Espaço restante", value: 0.5 - amount.value },
+    { label: "Espaço utilizado", value: amount.value },
+  ]),
+  title: {
+    text: "Armazenamento",
+  },
   series: [
     {
-      type: "doughnut",
-      angleKey: "value",
+      type: "donut",
       calloutLabelKey: "label",
-      innerRadiusOffset: -40,
-      fills: ["#f8f8f8", "#028090"],
+      angleKey: "value",
+      innerRadiusRatio: 0.7,
     },
   ],
 });
 
 const errors = ref({});
 
-axios
-  .get(auth.apiUrl() + "dbinfo/")
-  .then((response) => {
+
+onMounted(() => {
+  fetchStorageData();
+});
+
+const fetchStorageData = async () => {
+  try {
+    const response = await axios.get(auth.apiUrl() + "dbinfo/");
     if (response.data) {
-      chartOptions.value.data = [
-        { label: "Espaço utilizado", value: response.data },
-        { label: "Espaço restante", value: 0.5 - response.data },
-      ];
+      amount.value = response.data;
     }
-  })
-  .catch((error) => {
-    errors.value = error.data;
-  });
+  } catch (error) {
+    errors.value = error.response?.data || error.message;
+  }
+};
 </script>
 
 <template>
-  <AgCharts :options="chartOptions" />
+  <div class="w-full h-[400px]">
+    <AgCharts :options="chartOptions" />
+  </div>
 </template>
