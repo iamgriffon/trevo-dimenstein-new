@@ -45,12 +45,14 @@ import {
   faTrash,
   faClock,
   faCheck,
-  faChevronLeft
+  faChevronLeft,
+  faFilter,
+  faBook,
 } from "@fortawesome/free-solid-svg-icons";
 
 import VueGoodTablePlugin from "vue-good-table-next";
 import "vue-good-table-next/dist/vue-good-table-next.css";
-
+import PrimeVue from "primevue/config";
 library.add(
   faUser,
   faBug,
@@ -97,6 +99,12 @@ library.add(
   faShareSquare,
   faCheck,
   faClock,
+  faFilter,
+  faBook
 );
 
-createApp(App).use(router).use(VueGoodTablePlugin).mount("#app");
+createApp(App)
+  .use(router)
+  .use(PrimeVue)
+  .use(VueGoodTablePlugin)
+  .mount("#app");

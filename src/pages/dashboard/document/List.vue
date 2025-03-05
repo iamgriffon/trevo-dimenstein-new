@@ -11,6 +11,39 @@
       </router-link>
     </template>
 
+    <Modal
+      title="Adicionar comentário"
+      v-model:visible="commentModal"
+      class="w-96 bg-white"
+    >
+      <form
+        @submit.prevent="console.log(commentId)"
+        class="w-full flex flex-col gap-2"
+      >
+        <section class="flex flex-col gap-1">
+          <textarea
+            :value="comment"
+            @input="(event) => (comment = event.target.value)"
+            class="min-h-20 w-96 mt-4 border border-gray-200 focus:outline-none"
+            name="comment-textarea"
+          >
+          </textarea>
+          <label
+            for="comment-textarea"
+            class="text-right text-sm text-gray-600"
+          >
+            {{ currentUser.name }} - {{ today }}
+          </label>
+        </section>
+        <button
+          type="submit"
+          class="flex items-center justify-center gap-2 px-4 py-2 text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all duration-300"
+        >
+          Comentar e solicitar correção
+        </button>
+      </form>
+    </Modal>
+
     <div class="flex flex-col gap-4">
       <Input
         v-model="filter"
@@ -44,6 +77,8 @@
             :total-items="documents.length"
             v-model:perPage="perPage"
             v-model:currentPage="currentPage"
+            @liberateAll="liberateAll"
+            @clearSelected="toggleAllSelected(false)"
           />
         </section>
 
@@ -75,6 +110,8 @@ import { h } from "vue";
 import { twMerge } from "tailwind-merge";
 // import "pdfjs-dist";
 import Hashids from "hashids";
+import Modal from "@/components/common/Modal.vue";
+import { cn } from "@/utils/cn";
 
 const filter = ref("");
 const documents = ref([]);
@@ -82,19 +119,42 @@ const currentPage = ref(1);
 const perPage = ref(10);
 const loading = ref(false);
 const error = ref("");
-const allSelected = ref(false);
 const selectedDocs = ref([]);
 const totalItems = ref(0);
-const pdfModal = ref(null);
-const signTestModal = ref(null);
+const today = ref(format(new Date(), "dd/MM/yyyy"));
 const pdfUrl = ref("");
 const url = ref("");
+const comment = ref("");
+const commentModal = ref(false);
+const commentId = ref("");
 
-function toggleAllSelected() {
-  allSelected.value = !allSelected.value;
-  documents.value.forEach((doc) => {
-    doc.selected = allSelected.value;
-  });
+const selectIconType = ref("fa-check");
+const selectIconClass = ref("bg-green-500 hover:bg-green-700");
+
+function toggleAllSelected(newValue) {
+  const isSomeSelected = filteredDocuments.value?.some(
+    (item) => !!item.selected
+  );
+  let newValues = [];
+
+  const shouldSelectAll =
+    typeof newValue === "undefined"
+      ? !isSomeSelected
+      : !!newValue;
+
+  selectIconType.value = isSomeSelected ? 'fa-check' : 'fa-times-circle';
+  selectIconClass.value = isSomeSelected ? 'bg-green-500 hover:bg-green-700' : 'bg-red-500 hover:bg-red-700'
+
+  newValues = documents.value?.map((item) => ({
+    ...item,
+    selected: shouldSelectAll,
+  }));
+  documents.value = newValues;
+}
+
+function onOpenRequestModal(id) {
+  commentId.value = id;
+  commentModal.value = true;
 }
 
 const currentUser = ref(auth.currentUser());
@@ -103,29 +163,55 @@ const route = useRoute();
 const tableButtonStyle =
   "rounded-full w-10 h-10 bg-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-300 transition-colors";
 
+const filteredDocuments = computed(() => {
+  const exp = new RegExp(filter.value.trim(), "i");
+  return documents.value
+    .filter(
+      (item) =>
+        exp.test(item.name) ||
+        exp.test(item.validity) ||
+        exp.test(item.facility[0]?.name) ||
+        exp.test(item.hash) ||
+        exp.test(item.uploadedBy[0]?.name) ||
+        exp.test(item.uploadedAt)
+    )
+    .slice(
+      (currentPage.value - 1) * perPage.value,
+      currentPage.value * perPage.value
+    );
+});
+
 const columns = [
   {
     accessorKey: "type",
     header: {
-      component: "input",
-      props: {
-        type: "checkbox",
-        checked: !!allSelected.value,
-        onChange: () => toggleAllSelected(),
-      },
+      component: () =>
+        h(
+          "button",
+          {
+            class: cn(
+              "w-10 h-10 rounded-md text-xs transition-all duration-300 cursor-pointer text-white",
+              selectIconClass.value
+            ),
+            onClick: () => toggleAllSelected(),
+          },
+          h(FontAwesomeIcon, {
+            icon: cn("fa-solid", selectIconType.value),
+          })
+        ),
     },
     cell: (info) => {
       return h("input", {
         type: "checkbox",
-        checked: !!allSelected.value,
+        checked: info.row.original.selected,
         onChange: () => {
           info.row.original.selected = !info.row.original.selected;
         },
       });
     },
     meta: {
-      headerClass: "px-8",
-      cellClass: "px-8",
+      headerClass: "p-4 h-36 w-36",
+      cellClass: "px-8 w-36",
     },
   },
   {
@@ -154,7 +240,9 @@ const columns = [
                 !info.row.original.signedBy.length
               ) && "hidden"
             ),
-            onClick: () => correctionSelected(info.row.original),
+            onClick: () => {
+              onOpenRequestModal(info.row.original._id);
+            },
             title: "Corrigir",
           },
         },
@@ -214,11 +302,11 @@ const columns = [
               tableButtonStyle,
               !permission.canExcludeDocuments(currentUser.value) && "hidden"
             ),
-            to: `/equipments/${
+            to: `equipments${
               route.params.id || info.row.original.equipment?.[0]?.typeId || ""
             }/${info.row.original.equipment?.[0]?._id || ""}/${
-              route.params.id
-            }/${info.row.original._id}/edit`,
+              info.row.original._id
+            }/edit`,
             title: "Editar",
           },
         },
@@ -239,9 +327,19 @@ const columns = [
         "div",
         { class: "flex gap-2 items-center justify-center h-14 mx-4" },
         actionButtons.map((btn) =>
-          h(btn.type, btn.props, [
-            h(FontAwesomeIcon, { icon: btn.icon, class: "w-4 h-4" }),
-          ])
+          btn.type === RouterLink
+            ? h(
+                btn.type,
+                { ...btn.props },
+                {
+                  default: () => [
+                    h(FontAwesomeIcon, { icon: btn.icon, class: "w-4 h-4" }),
+                  ],
+                }
+              )
+            : h(btn.type, btn.props, [
+                h(FontAwesomeIcon, { icon: btn.icon, class: "w-4 h-4" }),
+              ])
         )
       );
     },
@@ -378,27 +476,6 @@ const columns = [
   },
 ];
 
-const filteredDocuments = computed(() => {
-  if (filter.value.length > 0) {
-    const exp = new RegExp(filter.value.trim(), "i");
-    return documents.value
-      .filter(
-        (item) =>
-          exp.test(item.name) ||
-          exp.test(item.validity) ||
-          exp.test(item.facility[0]?.name) ||
-          exp.test(item.hash) ||
-          exp.test(item.uploadedBy[0]?.name) ||
-          exp.test(item.uploadedAt)
-      )
-      .slice(
-        (currentPage.value - 1) * perPage.value,
-        currentPage.value * perPage.value
-      );
-  }
-  return documents.value;
-});
-
 const loadDocuments = async () => {
   loading.value = true;
 
@@ -474,15 +551,29 @@ const scheduleEmailSelected = (row) => {
 
 const deleteDocument = (documentId) => {
   if (confirm("Tem certeza que deseja excluir este documento?")) {
-    loading.value = true;
-    // auth.excludeDocument(null, documentId, () =>
-    //   setTimeout(() => {
-    //     loading.value = false;
-    //     loadDocuments();
-    //   }, 1000)
-    // );
+    auth.excludeDocument(null, documentId, () =>
+      setTimeout(() => {
+        loading.value = false;
+        loadDocuments();
+      }, 1000)
+    );
   }
 };
+
+async function liberateAll() {
+  loading.value = true;
+  try {
+    await Promise.all(
+      filteredDocuments.value
+        .filter((doc) => !!doc.selected)
+        .map((val) => auth.liberateDocument(null, val._id))
+    );
+  } catch {
+  } finally {
+    toggleAllSelected(false);
+    loadDocuments();
+  }
+}
 
 const viewSelected = async (id, path) => {
   try {
@@ -517,15 +608,24 @@ onMounted(() => {
 });
 
 watch(
-  [
-    () => route.params.status,
-    () => currentPage.value,
-    () => perPage.value
-  ],
+  [() => route.params.status, () => currentPage.value, () => perPage.value],
   () => {
     loadDocuments();
   }
 );
+
+// watch(
+//   [() => filteredDocuments.value],
+//   (newVal) => {
+//     if (Array.isArray(newVal)) {
+//       const isAllSelected =
+//         !!filteredDocuments.value.length &&
+//         filteredDocuments.value.every((item) => !!item.selected);
+//       allSelected.value = isAllSelected;
+//     }
+//   },
+//   { deep: true }
+// );
 
 watch(
   documents,

@@ -10,13 +10,12 @@
         !route.fullPath.includes('info') &&
         !route.fullPath.includes('panel') >= 1
       "
-      class="mx-2 text-gray-800 select-none"
+      class="mx-2 text-teal-800 select-none"
       >/</span
     >
 
     <template v-if="route.fullPath.includes('facility')">
-      <FontAwesomeIcon icon="fa-solid fa-building" />
-
+      <FontAwesomeIcon icon="fa-solid fa-building" class="text-teal-800" />
     </template>
 
     <template v-if="route.fullPath.includes('document')">
@@ -24,7 +23,13 @@
     </template>
 
     <template v-if="route.fullPath.includes('user')">
-      <FontAwesomeIcon icon="fa-solid fa-users" />
+      <FontAwesomeIcon icon="fa-solid fa-users" class="text-teal-800" />
+    </template>
+    <template v-if="route.fullPath.includes('equipment')">
+      <FontAwesomeIcon icon="fa-solid fa-shield" class="text-teal-800" />
+    </template>
+    <template v-if="route.fullPath.includes('terms')">
+      <FontAwesomeIcon icon="fa-solid fa-book" class="text-teal-800" />
     </template>
   </section>
 </template>

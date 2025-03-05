@@ -6,18 +6,18 @@
       </div>
       <div class="w-full flex gap-2 px-4">
         <PanelCard text="Upload de documentos e assinatura digital">
-          <img src="/public/assets/contract.png" alt="" />
+          <img src="/src/assets/contract.png" alt="" />
         </PanelCard>
 
         <PanelCard text="Gestão de instalações e pessoas">
-          <img src="/public/assets/teamwork.svg" />
+          <img src="/src/assets/teamwork.svg" />
         </PanelCard>
         <PanelCard text="Níveis de acesso específicos para cada usuário">
-          <img src="/public/assets/folder.svg" />
+          <img src="/src/assets/folder.svg" />
         </PanelCard>
       </div>
       <br />
-      <div class="bg-white border border-gray-200 rounded-lg p-4 w-full hover:[box-shadow:0_10px_40px_0_rgba(62,57,107,.07),0_2px_9px_0_rgba(62,57,107,.06)] shadow-gray-600">
+      <div class="bg-white border border-gray-200 rounded-lg p-4 w-full hover:shadow-theme shadow-gray-600">
         <h4 class='text-2xl font-bold'>Novidades da versão 1.0.0 -  {{ format(new Date(), 'dd/MM/yyyy') }}</h4>
  
       <div class="w-full flex flex-wrap text-lg px-0 mx-0">
@@ -39,11 +39,9 @@
       </h2>
       <br />
       
-        <div
-          v-if="permission.canSeeStorage(currentUser)"
-        >
-          <chart></chart>
-        </div>
+      <div v-if="permission.canSeeStorage(currentUser)">
+        <Chart />
+      </div>
 
       <br />
     </Layout>

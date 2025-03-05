@@ -1,8 +1,103 @@
 <template>
+  <Modal
+    :title="' '"
+    v-model:visible="liberateModal"
+    :class="'justify-between p-8'"
+  >
+    <div class="flex flex-col gap-4 justify-start">
+      <h1 class="text-left font-medium text-lg">
+        Você está prestes a liberar os seguintes documentos:
+      </h1>
+      <div class="w-full border-b border-gray-400"></div>
+      <ul class="list-disc">
+        <li v-for="item in selected" class="list-item">
+          {{ item?.name }}
+        </li>
+      </ul>
+      <div class="w-full border-b border-gray-400"></div>
+      <div class="flex gap-4 items-center">
+        <button
+          class="flex w-fit items-center gap-2 px-4 py-2 text-white rounded-lg bg-green-600 hover:bg-green-700 transition-all duration-300"
+          @click="emit('liberateAll')"
+        >
+          Confirmar
+        </button>
+        <button
+          class="flex w-fit items-center gap-2 px-4 py-2 text-white rounded-lg bg-red-600 hover:bg-red-700 transition-all duration-300"
+          @click="visible = false"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </Modal>
+  <Modal
+    :title="' '"
+    v-model:visible="signModal"
+    :class="'justify-between p-8'"
+  >
+    <div class="flex flex-col gap-4 justify-start">
+      <h1 class="text-left font-medium text-lg">
+        Você está prestes a assinar os seguintes documentos:
+      </h1>
+      <div class="w-full border-b border-gray-400"></div>
+      <ul class="list-disc">
+        <li v-for="item in selected" class="list-item">
+          {{ item?.name }}
+        </li>
+      </ul>
+      <div class="w-full border-b border-gray-400"></div>
+      <div class="flex gap-4 items-center">
+        <button
+          class="flex w-fit items-center gap-2 px-4 py-2 text-white rounded-lg bg-green-600 hover:bg-green-700 transition-all duration-300"
+          @click="emit('liberateAll')"
+        >
+          Confirmar
+        </button>
+        <button
+          class="flex w-fit items-center gap-2 px-4 py-2 text-white rounded-lg bg-red-600 hover:bg-red-700 transition-all duration-300"
+          @click="visible = false"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </Modal>
   <section
     v-if="table && !!data.length && !!columns.length"
     class="overflow-x-auto bg-white rounded-lg shadow"
   >
+    <section
+      v-if="!!selected.length"
+      class="rounded-md w-full bg-gray-100 h-2 flex items-center p-6 gap-4"
+    >
+      <p>
+        Você tem <strong>{{ selected.length }} itens</strong> selecionados!
+      </p>
+      <Button
+        @click="openModal('liberate')"
+        :className="'max-w-fit h-10 rounded-full text-green-600 flex gap-2 bg-white hover:bg-green-600 hover:text-white transition-all duration-300'"
+        v-if="permission.canLiberate(currentUser)"
+      >
+        Liberar
+        <FontAwesomeIcon icon="fa-solid fa-share-square" />
+      </Button>
+      <Button
+        @click="openModal('sign')"
+        :className="'max-w-fit h-10 rounded-full text-green-600 flex gap-2 bg-white hover:bg-green-600 hover:text-white transition-all duration-300'"
+        v-if="permission.canLiberate(currentUser)"
+      >
+        Assinar
+        <FontAwesomeIcon icon="fa-solid fa-pen-to-square" />
+      </Button>
+      <Button
+        @click="emit('clearSelected')"
+        :className="'max-w-fit h-10 rounded-full text-red-600 flex gap-2 bg-white hover:bg-red-600 hover:text-white transition-all duration-300'"
+      >
+        Limpar
+        <FontAwesomeIcon icon="fa-solid fa-times-circle" />
+      </Button>
+    </section>
     <table :class="twMerge('w-full text-center', props.class)">
       <thead>
         <tr
@@ -13,7 +108,7 @@
           <th
             v-for="header in headerGroup.headers"
             :key="header.id"
-            :class="[header.column.columnDef.meta?.headerClass, 'h-10 mx-4']"
+            :class="cn(header.column.columnDef.meta?.headerClass, 'h-10 mx-4')"
           >
             <component
               v-if="typeof header.column.columnDef.header === 'object'"
@@ -49,9 +144,9 @@
             v-for="cell in row.getVisibleCells()"
             :key="cell.id"
             :class="[
-              twMerge(
+              cn(
                 cell.column.columnDef.meta?.cellClass,
-                'h-12 w-auto truncate border-y border-gray-200 border-solid py-2'
+                'h-12 truncate border-y border-gray-200 border-solid'
               ),
             ]"
           >
@@ -80,9 +175,17 @@
           </td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr class="bg-gray-200 h-10 w-full">
+          <td
+            v-for="headerGroup in table.getHeaderGroups()[0].headers"
+            :key="headerGroup.id"
+          ></td>
+        </tr>
+      </tfoot>
     </table>
     <footer
-      class="flex items-center w-full h-10 z-10 bg-white fixed bottom-0 gap-16 px-10 border-gray-500 border"
+      class="flex items-center w-full h-10 z-10 bg-white fixed bottom-0 gap-16 px-10 border-gray-500 border select-none"
     >
       <section>
         <label> Linhas por página: </label>
@@ -151,6 +254,38 @@ import {
   FlexRender,
 } from "@tanstack/vue-table";
 import { twMerge } from "tailwind-merge";
+import { ref } from "vue";
+import Button from "../ui/Button.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import Modal from "../common/Modal.vue";
+import auth from "@/services/authentication";
+import permission from "@/services/permissions";
+import { cn } from "@/utils/cn";
+
+const visible = ref(false);
+const type = ref("liberate");
+
+const liberateModal = computed({
+  get: () => visible.value && type.value === "liberate",
+  set: (value) => {
+    if (!value) {
+      visible.value = false;
+    }
+  },
+});
+const signModal = computed({
+  get: () => visible.value && type.value === "sign",
+  set: (value) => {
+    if (!value) {
+      visible.value = false;
+    }
+  },
+});
+
+function openModal(modalType) {
+  visible.value = true;
+  type.value = modalType;
+}
 
 const props = defineProps({
   data: {
@@ -178,9 +313,28 @@ const props = defineProps({
     type: Number,
     required: true,
   },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(["update:perPage", "update:currentPage"]);
+const currentUser = auth.currentUser();
+
+const emit = defineEmits([
+  "update:perPage",
+  "update:currentPage",
+  "update:loading",
+  "clearSelected",
+  "liberateAll",
+]);
+
+const selected = computed(() => {
+  if (props.data.length) {
+    return props.data.filter((unit) => !!unit.selected);
+  }
+  return [];
+});
 
 watch(
   () => props.totalItems,
@@ -209,6 +363,7 @@ const table = computed(() => {
     return {
       data: [],
       columns: [],
+      class: "",
       getCoreRowModel: null,
       getFilteredRowModel: null,
       getPaginationRowModel: null,

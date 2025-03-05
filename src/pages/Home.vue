@@ -11,7 +11,7 @@
           Sistema Trevo Radimenstein - {{ new Date().getFullYear() }}
         </h1>
         <img
-          src="/public/assets/logo_trevo.svg"
+          src="/src/assets/logo_trevo.svg"
           class="w-24 h-24"
           alt="Logo Trevo"
         />
@@ -35,7 +35,7 @@ defineOptions({
 <style scoped>
 .wave-bg {
   position: absolute;
-  background-image: url("/public/assets/background-wave-effect.png");
+  background-image: url("/src/assets/background-wave-effect.png");
   background-color: black;
   background-repeat: no-repeat;
   background-position: center bottom;
