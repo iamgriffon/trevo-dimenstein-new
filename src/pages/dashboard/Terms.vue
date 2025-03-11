@@ -4,7 +4,9 @@ import Layout from "@/components/common/Layout.vue";
 
 <template>
   <Layout title="Termos de Uso">
-    <section class="w-full h-3/5 flex flex-col gap-4 px-8 overflow-text p-5 border border-gray-300 rounded-lg max-h-[70vh] overflow-scroll">
+    <section
+      class="w-full h-3/5 flex flex-col gap-4 px-8 overflow-text p-5 border border-gray-300 rounded-lg max-h-[70vh] overflow-scroll"
+    >
       <section>
         <h3 class="text-lg font-medium">Sumário</h3>
         <ol class="list-decimal">
@@ -37,20 +39,24 @@ import Layout from "@/components/common/Layout.vue";
       <section>
         <h3 class="text-lg font-medium">Histórico de Alterações</h3>
         <table>
-          <tr>
-            <th>Revisao</th>
-            <th>Referências</th>
-            <th>Responsavel</th>
-            <th>Data de Execuçao</th>
-            <th>Resumo da Alteração</th>
-          </tr>
-          <tr>
-            <td></td>
-            <td>Politica de Segurança da Informação</td>
-            <td>Gabriel Nascimento</td>
-            <td>01/10/2023</td>
-            <td>Primeira Versão</td>
-          </tr>
+          <thead>
+            <tr>
+              <th>Revisao</th>
+              <th>Referências</th>
+              <th>Responsavel</th>
+              <th>Data de Execuçao</th>
+              <th>Resumo da Alteração</th>
+            </tr> 
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td>Politica de Segurança da Informação</td>
+              <td>Gabriel Nascimento</td>
+              <td>01/10/2023</td>
+              <td>Primeira Versão</td>
+            </tr>
+          </tbody>
         </table>
       </section>
       <section id="lista-de-siglas-e-abreviaturas">
@@ -214,7 +220,9 @@ import Layout from "@/components/common/Layout.vue";
           empregatício é regido pela CLT - Consolidação das Leis do Trabalho.
         </p>
 
-        <h4 class="text-lg font-medium">1.7 Prestador de Serviço ou Terceiro</h4>
+        <h4 class="text-lg font-medium">
+          1.7 Prestador de Serviço ou Terceiro
+        </h4>
         <p>
           Parte contratada pela RAD DIMENSTEIN que tem acesso às instalações,
           recursos e informações necessárias para o cumprimento de suas
@@ -252,7 +260,9 @@ import Layout from "@/components/common/Layout.vue";
           ser orientada explicitamente por este Código, resguardados os direitos
           e penalidades conforme legislação vigente.
         </p>
-        <h3 class="text-lg font-medium">2.2 Termo de Ciência, Responsabilidade e Confidencialidade</h3>
+        <h3 class="text-lg font-medium">
+          2.2 Termo de Ciência, Responsabilidade e Confidencialidade
+        </h3>
         <p>
           Instrumento de concordância que trata das obrigações relativas à
           confidencialidade das informações, uso de equipamentos e compromisso
@@ -267,7 +277,9 @@ import Layout from "@/components/common/Layout.vue";
           É o instrumento a ser assinado individualmente por cada usuário,
           atestando e acatando este Código.
         </p>
-        <h3 class="text-lg font-medium">2.3 Do uso de Equipamentos e Aplicativos da RAD DIMENSTEIN</h3>
+        <h3 class="text-lg font-medium">
+          2.3 Do uso de Equipamentos e Aplicativos da RAD DIMENSTEIN
+        </h3>
         <p>
           Equipamentos e aplicativos são fornecidos pela RAD DIMENSTEIN para que
           seus usuários os utilizem no desempenho de suas atividades
@@ -275,7 +287,9 @@ import Layout from "@/components/common/Layout.vue";
           aceitado, desde que sejam respeitados os limites da razoabilidade.
         </p>
 
-        <h3 class="text-lg font-medium">2.4 Circulação de Informação na RAD DIMENSTEIN</h3>
+        <h3 class="text-lg font-medium">
+          2.4 Circulação de Informação na RAD DIMENSTEIN
+        </h3>
         <p>
           A informação deve circular livremente dentro do ambiente da RAD
           DIMENSTEIN, desde que sejam observadas as regras específicas para cada
@@ -283,7 +297,9 @@ import Layout from "@/components/common/Layout.vue";
           nesse PSI.
         </p>
 
-        <h3 class="text-lg font-medium">2.5 Materiais de Terceiros Protegidos por Direito autoral</h3>
+        <h3 class="text-lg font-medium">
+          2.5 Materiais de Terceiros Protegidos por Direito autoral
+        </h3>
         <p>
           Os computadores e sistemas da RAD DIMENSTEIN não podem ser utilizados
           para baixar, copiar, modificar, enviar, encaminhar ou receber
@@ -303,7 +319,9 @@ import Layout from "@/components/common/Layout.vue";
           setor Administrativo da RAD DIMENSTEIN.
         </p>
 
-        <h3 class="text-lg font-medium">2.6 Manipulação de Material Impróprio ou Proibido</h3>
+        <h3 class="text-lg font-medium">
+          2.6 Manipulação de Material Impróprio ou Proibido
+        </h3>
         <p>
           É proibida a utilização dos recursos da RAD DIMENSTEIN para
           distribuição, arquivamento, publicação, veiculação ou execução de
@@ -327,7 +345,9 @@ import Layout from "@/components/common/Layout.vue";
           dispensa ser devidamente justificada.
         </p>
 
-        <h3 class="text-lg font-medium">2.8 Responsabilidade Pelo Cumprimento da PSI</h3>
+        <h3 class="text-lg font-medium">
+          2.8 Responsabilidade Pelo Cumprimento da PSI
+        </h3>
         <p>
           Todos os usuários são responsáveis pelo cumprimento das disposições da
           Política de Segurança da Informação da RAD DIMENSTEIN, materializada
@@ -343,7 +363,9 @@ import Layout from "@/components/common/Layout.vue";
           meses após a entrada em vigor deste Código.
         </p>
 
-        <h3 class="text-lg font-medium">2.10 Cláusula de Confidencialidade em Contratos de Trabalho</h3>
+        <h3 class="text-lg font-medium">
+          2.10 Cláusula de Confidencialidade em Contratos de Trabalho
+        </h3>
         <p>
           É obrigatória a presença de cláusula de confidencialidade em todos os
           contratos de trabalho para que possa ser concedido o acesso do usuário
@@ -351,7 +373,9 @@ import Layout from "@/components/common/Layout.vue";
         </p>
       </section>
       <section>
-        <h3 class="text-lg font-medium">3 DISPONIBILIZAÇÃO E RESPONSABILIDADE SOBRE EQUIPAMENTOS</h3>
+        <h3 class="text-lg font-medium">
+          3 DISPONIBILIZAÇÃO E RESPONSABILIDADE SOBRE EQUIPAMENTOS
+        </h3>
         <p>
           Todos os equipamentos da RAD DIMENSTEIN são de uso exclusivo para o
           alcance dos objetivos da organização e disponibilizados de acordo com
@@ -359,7 +383,9 @@ import Layout from "@/components/common/Layout.vue";
           atribuições.
         </p>
 
-        <h4 class="text-lg font-medium">3.1 Responsabilidade Sobre Equipamentos Recebidos</h4>
+        <h4 class="text-lg font-medium">
+          3.1 Responsabilidade Sobre Equipamentos Recebidos
+        </h4>
         <p>
           Os usuários são responsáveis pela segurança dos equipamentos recebidos
           e devem ser responsabilizados caso haja caracterização de mau uso.
@@ -370,7 +396,9 @@ import Layout from "@/components/common/Layout.vue";
           ambiente da RAD DIMENSTEIN.
         </p>
 
-        <h5 class="text-lg font-medium">A) Perda de Equipamento de Propriedade da RAD DIMENSTEIN.</h5>
+        <h5 class="text-lg font-medium">
+          A) Perda de Equipamento de Propriedade da RAD DIMENSTEIN.
+        </h5>
         <p>
           Quando um equipamento de propriedade da RAD DIMENSTEIN for subtraído
           ou perdido, o usuário deve comunicar imediatamente o fato ao setor
@@ -425,7 +453,9 @@ import Layout from "@/components/common/Layout.vue";
         </p>
       </section>
       <section>
-        <h3 class="text-lg font-medium">4 ADESÃO E UTILIZAÇÃO DE APLICATIVOS EXTERNOS</h3>
+        <h3 class="text-lg font-medium">
+          4 ADESÃO E UTILIZAÇÃO DE APLICATIVOS EXTERNOS
+        </h3>
         <p>
           Todos os aplicativos externos utilizados pelos usuários para
           consecução de suas atividades são de responsabilidade da RAD
@@ -439,7 +469,9 @@ import Layout from "@/components/common/Layout.vue";
           prévia da Administração.
         </p>
 
-        <h4 class="text-lg font-medium">4.2 Adesões aos Aplicativos Externos</h4>
+        <h4 class="text-lg font-medium">
+          4.2 Adesões aos Aplicativos Externos
+        </h4>
         <p>
           Todas as adesões aos aplicativos externos devem ser feitas em nome da
           RAD DIMENSTEIN, não sendo permitida a utilização de nomes de pessoas
@@ -465,7 +497,9 @@ import Layout from "@/components/common/Layout.vue";
           de aquisição ou adesão a aplicativos externos.
         </p>
 
-        <h4 class="text-lg font-medium">4.3 Senhas de Acesso aos Aplicativos Externos</h4>
+        <h4 class="text-lg font-medium">
+          4.3 Senhas de Acesso aos Aplicativos Externos
+        </h4>
         <p>
           Todas as senhas de acesso devem ser informadas ao setor
           Administrativo, que se responsabiliza pelo armazenamento em local
@@ -473,7 +507,9 @@ import Layout from "@/components/common/Layout.vue";
         </p>
       </section>
       <section>
-        <h3 class="text-lg font-medium">5 SEGURANÇA E MONITORAMENTO DA INFORMAÇÃO</h3>
+        <h3 class="text-lg font-medium">
+          5 SEGURANÇA E MONITORAMENTO DA INFORMAÇÃO
+        </h3>
         <p>
           Visando garantir a segurança das suas informações, a RAD DIMENSTEIN
           pode estabelecer procedimentos de inspeção e monitoração de seus
@@ -499,7 +535,9 @@ import Layout from "@/components/common/Layout.vue";
           setor Administrativo.
         </p>
 
-        <h4 class="text-lg font-medium">5.2 Formas de Monitoramento de Sistemas e Equipamentos</h4>
+        <h4 class="text-lg font-medium">
+          5.2 Formas de Monitoramento de Sistemas e Equipamentos
+        </h4>
         <p>
           A RAD DIMENSTEIN, através do setor Administrativo, poderá exercer o
           monitoramento de seus sistemas e equipamentos sem necessitar de prévio
@@ -509,7 +547,9 @@ import Layout from "@/components/common/Layout.vue";
           Os procedimentos para garantir a segurança da informação, podem
           incluir ações de diferentes tipos.
         </p>
-        <h5 class="text-lg font-medium">- Instalação de Dispositivos ou Sistemas de Monitoramentos</h5>
+        <h5 class="text-lg font-medium">
+          - Instalação de Dispositivos ou Sistemas de Monitoramentos
+        </h5>
         <p>
           A RAD DIMENSTEIN poderá instalar dispositivos ou sistemas de
           monitoramentos em quaisquer equipamentos, sistemas, serviços ou
@@ -539,7 +579,9 @@ import Layout from "@/components/common/Layout.vue";
         </p>
       </section>
       <section>
-        <h3 class="text-lg font-medium">7 ACESSO AOS SISTEMAS E EQUIPAMENTOS</h3>
+        <h3 class="text-lg font-medium">
+          7 ACESSO AOS SISTEMAS E EQUIPAMENTOS
+        </h3>
         <p>
           Todos os acessos dos usuários aos sistemas utilizados pela RAD
           DIMENSTEIN devem estar atrelados a perfis específicos condizentes com
@@ -559,7 +601,9 @@ import Layout from "@/components/common/Layout.vue";
           acesso mediante aprovação prévia do gestor superior.
         </p>
 
-        <h4 class="text-lg font-medium">7.2 Criação e Cancelamento de Perfis</h4>
+        <h4 class="text-lg font-medium">
+          7.2 Criação e Cancelamento de Perfis
+        </h4>
         <p>
           O Coordenador Administrativo é responsável pela aprovação para criação
           e cancelamento de perfis.
@@ -592,14 +636,18 @@ import Layout from "@/components/common/Layout.vue";
         </p>
       </section>
       <section>
-        <h3 class="text-lg font-medium">8 RESPONSABILIDADE SOBRE EQUIPAMENTOS PESSOAIS</h3>
+        <h3 class="text-lg font-medium">
+          8 RESPONSABILIDADE SOBRE EQUIPAMENTOS PESSOAIS
+        </h3>
         <p>
           Os equipamentos pessoais trazidos e/ ou mantidos nas dependências da
           RAD DIMENSTEIN são de responsabilidade exclusiva do proprietário ou
           usuário.
         </p>
 
-        <h4 class="text-lg font-medium">8.1 Perda ou Furto de Equipamentos Pessoais</h4>
+        <h4 class="text-lg font-medium">
+          8.1 Perda ou Furto de Equipamentos Pessoais
+        </h4>
         <p>
           Eventuais perdas ou furtos de equipamentos pessoais são de
           responsabilidade exclusiva dos usuários, não cabendo à RAD DIMENSTEIN
@@ -629,7 +677,9 @@ import Layout from "@/components/common/Layout.vue";
         </p>
       </section>
       <section>
-        <h3 class="text-lg font-medium">9 IDENTIFICAÇÃO DE PESSOAS E ACESSO ÀS INFORMAÇÕES</h3>
+        <h3 class="text-lg font-medium">
+          9 IDENTIFICAÇÃO DE PESSOAS E ACESSO ÀS INFORMAÇÕES
+        </h3>
         <p>
           Todos os dispositivos de reconhecimento de pessoas utilizados na RAD
           DIMENSTEIN, como o número de registro do empregado, das identificações
@@ -650,7 +700,9 @@ import Layout from "@/components/common/Layout.vue";
           DIMENSTEIN.
         </p>
 
-        <h4 class="text-lg font-medium">9.2 Acesso físico no ambiente corporativo</h4>
+        <h4 class="text-lg font-medium">
+          9.2 Acesso físico no ambiente corporativo
+        </h4>
         <p>
           A entrada e saída de funcionários são controlados pela portaria, que
           deve apresentar um documento com identificação legal e registro da sua
@@ -675,14 +727,18 @@ import Layout from "@/components/common/Layout.vue";
           junto à portaria e aos processos rescisórios.
         </p>
 
-        <h4 class="text-lg font-medium">9.4 Desligamento de Prestador de Serviço</h4>
+        <h4 class="text-lg font-medium">
+          9.4 Desligamento de Prestador de Serviço
+        </h4>
         <p>
           Nos casos de desligamento de prestador de serviço, o gestor da área
           tomadora do serviço deverá comunicar o fato imediatamente à equipe
           Administrativa.
         </p>
 
-        <h4 class="text-lg font-medium">9.5 Bloqueio de Acesso do Usuário nos Casos de Desligamento</h4>
+        <h4 class="text-lg font-medium">
+          9.5 Bloqueio de Acesso do Usuário nos Casos de Desligamento
+        </h4>
         <p>
           Quando algum usuário se desligar da RAD DIMENSTEIN, a equipe
           Administrativa deverá bloquear imediatamente o acesso aos sistemas e
@@ -705,7 +761,9 @@ import Layout from "@/components/common/Layout.vue";
           ao manuseio, arquivamento e eventual descarte.
         </p>
 
-        <h4 class="text-lg font-medium">10.1 Informação em Documentos Físicos e Eletrônicos</h4>
+        <h4 class="text-lg font-medium">
+          10.1 Informação em Documentos Físicos e Eletrônicos
+        </h4>
         <p>
           A RAD DIMENSTEIN trabalha com documentos físicos e eletrônicos,
           criados internamente ou recebidos de terceiros. Todos os documentos
@@ -713,7 +771,9 @@ import Layout from "@/components/common/Layout.vue";
           protegidos, pois podem conter informações corporativas críticas.
         </p>
 
-        <h4 class="text-lg font-medium">10.2 Processo de Classificação da Informação</h4>
+        <h4 class="text-lg font-medium">
+          10.2 Processo de Classificação da Informação
+        </h4>
         <p>
           O Diretor-Presidente e o Coordenador Administrativo da RAD DIMENSTEIN
           são responsáveis pela classificação dos tipos de documento, podendo
@@ -760,7 +820,9 @@ import Layout from "@/components/common/Layout.vue";
           disponíveis na RAD DIMENSTEIN.
         </p>
 
-        <h4 class="text-lg font-medium">11.1 Proteção Contra Aplicativos Mal-Intencionados</h4>
+        <h4 class="text-lg font-medium">
+          11.1 Proteção Contra Aplicativos Mal-Intencionados
+        </h4>
         <p>
           A proteção contra aplicativos mal-intencionados deve ser realizada por
           meio de ações conjuntas dos profissionais de TI, sistemas de proteção,
@@ -783,14 +845,18 @@ import Layout from "@/components/common/Layout.vue";
           mesmo.
         </p>
 
-        <h4 class="text-lg font-medium">11.4 Aplicativos Ilegais ou não homologados</h4>
+        <h4 class="text-lg font-medium">
+          11.4 Aplicativos Ilegais ou não homologados
+        </h4>
         <p>
           Não são permitidas instalações de aplicativos ilegais ou não
           homologados pelo Coordenador Administrativo nos equipamentos da RAD
           DIMENSTEIN.
         </p>
 
-        <h4 class="text-lg font-medium">11.5 Lista dos Aplicativos homologados</h4>
+        <h4 class="text-lg font-medium">
+          11.5 Lista dos Aplicativos homologados
+        </h4>
         <p>
           O Coordenador Administrativo deve elaborar lista com todos os
           aplicativos homologados e disponibilizá-la através dos instrumentos de
@@ -853,13 +919,17 @@ import Layout from "@/components/common/Layout.vue";
           responsabilizado legalmente.
         </p>
 
-        <h4 class="text-lg font-medium">13.1 Comunicação de Incidentes de Segurança da Informação</h4>
+        <h4 class="text-lg font-medium">
+          13.1 Comunicação de Incidentes de Segurança da Informação
+        </h4>
         <p>
           Ao perceber uma possível brecha, incidente ou violação da PSI, o
           usuário deverá comunicar o fato ao Coordenador Administrativo.
         </p>
 
-        <h4 class="text-lg font-medium">13.2 Documentação de Incidentes de Segurança da Informação</h4>
+        <h4 class="text-lg font-medium">
+          13.2 Documentação de Incidentes de Segurança da Informação
+        </h4>
         <p>
           A equipe Administrativa deve documentar todas as ocorrências de
           brechas ou incidentes de segurança e colher todas as evidências
@@ -868,7 +938,9 @@ import Layout from "@/components/common/Layout.vue";
         </p>
       </section>
       <section>
-        <h3 class="text-lg font-medium">14 MEDIDAS DISCIPLINARES POR VIOLAÇÃO DA PSI</h3>
+        <h3 class="text-lg font-medium">
+          14 MEDIDAS DISCIPLINARES POR VIOLAÇÃO DA PSI
+        </h3>
         <p>
           Os usuários que cometerem excessos ao utilizar os recursos
           disponibilizados pela RAD DIMENSTEIN podem ter seus privilégios
@@ -883,7 +955,9 @@ import Layout from "@/components/common/Layout.vue";
           de medidas disciplinares ao usuário que assim proceder.
         </p>
 
-        <h4 class="text-lg font-medium">14.2 Notificação da Violação da PSI à Administração.</h4>
+        <h4 class="text-lg font-medium">
+          14.2 Notificação da Violação da PSI à Administração.
+        </h4>
         <p>
           Quando houver alguma violação deste PSI, o supervisor de cada setor
           deve notificar o fato ao Coordenador Administrativo.
@@ -900,7 +974,9 @@ import Layout from "@/components/common/Layout.vue";
           legislação em vigor.
         </p>
 
-        <h4 class="text-lg font-medium">14.4 Níveis de Gravidade de Eventual Violação da PSI</h4>
+        <h4 class="text-lg font-medium">
+          14.4 Níveis de Gravidade de Eventual Violação da PSI
+        </h4>
         <p>
           De acordo com a gravidade da infração eventualmente cometida, os
           impactos e eventuais prejuízos causados por ela, a RAD DIMENSTEIN
@@ -945,7 +1021,9 @@ import Layout from "@/components/common/Layout.vue";
           incidentes e/ ou violações da PSI ao responsável pela contratação.
         </p>
 
-        <h4 class="text-lg font-medium">15.1 Violações Cometidas por Prestadores de Serviço</h4>
+        <h4 class="text-lg font-medium">
+          15.1 Violações Cometidas por Prestadores de Serviço
+        </h4>
         <p>
           Caso o usuário em questão seja um prestador de serviço, a RAD
           DIMENSTEIN poderá aplicar sanções cabíveis e proporcionais conforme
@@ -977,13 +1055,17 @@ import Layout from "@/components/common/Layout.vue";
           acesso do usuário aos ativos de informação disponibilizados pela
           Fundação.
         </p>
-        <h5 class="text-lg font-medium">- Cláusula de Conhecimento e Cumprimento da PSI</h5>
+        <h5 class="text-lg font-medium">
+          - Cláusula de Conhecimento e Cumprimento da PSI
+        </h5>
         <p>
           Todos os contratos assinados com prestadores de serviços que atuem
           dentro do ambiente da RAD DIMENSTEIN, devem conter cláusula que
           especifique o compromisso em seguir as regras deste Código.
         </p>
-        <h5 class="text-lg font-medium">- Confidencialidade Após Término da Prestação do Serviço</h5>
+        <h5 class="text-lg font-medium">
+          - Confidencialidade Após Término da Prestação do Serviço
+        </h5>
         <p>
           O direito autoral e a confidencialidade das informações da RAD
           DIMENSTEIN ou dos seus parceiros devem ser preservados em todos os
@@ -1013,7 +1095,9 @@ import Layout from "@/components/common/Layout.vue";
           das tarefas estabelecidas no contrato.
         </p>
 
-        <h4 class="text-lg font-medium">15.6 Encerramento das Atividades de Prestadores de Serviços</h4>
+        <h4 class="text-lg font-medium">
+          15.6 Encerramento das Atividades de Prestadores de Serviços
+        </h4>
         <p>
           O encerramento das atividades dos prestadores de serviços deve ser
           comunicado imediatamente ao setor Administrativo.
@@ -1102,7 +1186,9 @@ import Layout from "@/components/common/Layout.vue";
         </p>
         <p>Comunicar às suas equipes as atualizações deste Código.</p>
 
-        <h4 class="text-lg font-medium">16.3 Responsabilidades Específicas da equipe Administrativa</h4>
+        <h4 class="text-lg font-medium">
+          16.3 Responsabilidades Específicas da equipe Administrativa
+        </h4>
         <p>
           Pela característica de seus privilégios, manter sigilo sobre as
           informações e dados da RAD DIMENSTEIN e dos usuários, restringindo-se
@@ -1296,7 +1382,9 @@ import Layout from "@/components/common/Layout.vue";
         </p>
       </section>
       <section>
-        <h3 class="text-lg font-medium">18. CONTROLES E REGISTROS DA QUALIDADE</h3>
+        <h3 class="text-lg font-medium">
+          18. CONTROLES E REGISTROS DA QUALIDADE
+        </h3>
         <p>
           Os controles e registros da Qualidade que evidenciam a correta
           aplicação da PSI estão relacionados a seguir:

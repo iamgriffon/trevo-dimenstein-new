@@ -144,7 +144,7 @@
             v-for="cell in row.getVisibleCells()"
             :key="cell.id"
             :class="[
-              cn(
+              twMerge(
                 cell.column.columnDef.meta?.cellClass,
                 'h-12 truncate border-y border-gray-200 border-solid'
               ),
@@ -185,7 +185,12 @@
       </tfoot>
     </table>
     <footer
-      class="flex items-center w-full h-10 z-10 bg-white fixed bottom-0 gap-16 px-10 border-gray-500 border select-none"
+      :class="
+        twMerge(
+          'flex items-center w-full h-10 z-10 bg-white fixed bottom-0 gap-16 px-10 border-gray-500 border select-none',
+          props.footerClass
+        )
+      "
     >
       <section>
         <label> Linhas por página: </label>
@@ -316,6 +321,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  footerClass: {
+    type: [String, Array, Object],
+    default: "",
   },
 });
 

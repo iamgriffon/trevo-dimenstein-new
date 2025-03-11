@@ -1,15 +1,12 @@
 <template>
   <section class="flex items-center">
     <FontAwesomeIcon
-      v-if="!route.fullPath.includes('info')"
+      v-if="route.fullPath !== '/info'"
       icon="fa-solid fa-home"
       class="text-teal-800"
     />
     <span
-      v-if="
-        !route.fullPath.includes('info') &&
-        !route.fullPath.includes('panel') >= 1
-      "
+      v-if="route.fullPath !== '/info' && route.fullPath !== '/panel'"
       class="mx-2 text-teal-800 select-none"
       >/</span
     >

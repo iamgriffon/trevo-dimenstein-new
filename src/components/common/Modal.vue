@@ -15,6 +15,8 @@
           padding: '16px',
           width: 'fit-content',
           maxWidth: '100%',
+          height: 'fit-content',
+          ...props.style
         }"
         @update:visible="$emit('update:visible')"
         :contentClass="cn(props.class)"
@@ -50,6 +52,10 @@ const props = defineProps({
   class: {
     type: String,
     default: "",
+  },
+  style: {
+    type: Object,
+    default: {},
   },
 });
 

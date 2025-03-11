@@ -19,8 +19,8 @@ const props = defineProps({
 });
 
 const style = cn(
-  props?.class ? "" : "h-14 w-14",
-  "flex items-center justify-center font-bold text-sm py-2 bg-green-500 hover:bg-green-700 transform-all duration-300 cursor-pointer text-white rounded-full text-center truncate"
+  props?.class ? "" : "h-12 w-12",
+  "flex items-center justify-center font-bold text-lg letter-spacing-wider py-2 bg-green-500 hover:bg-green-700 transform-all duration-300 cursor-pointer text-white rounded-full text-center truncate"
 );
 
 const initials = ref("");
