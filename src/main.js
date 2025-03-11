@@ -48,6 +48,19 @@ import {
   faChevronLeft,
   faFilter,
   faBook,
+  faArchive,
+  faDownload,
+  faPrint,
+  faIdCard,
+  faMapMarker,
+  faPhone,
+  faEnvelope,
+  faTrashAlt,
+  faCheckCircle,
+  faComment,
+  faCheckSquare,
+  faArrowLeft,
+  faPencil,
 } from "@fortawesome/free-solid-svg-icons";
 
 import VueGoodTablePlugin from "vue-good-table-next";
@@ -100,11 +113,20 @@ library.add(
   faCheck,
   faClock,
   faFilter,
-  faBook
+  faBook,
+  faArchive,
+  faPrint,
+  faDownload,
+  faIdCard,
+  faMapMarker,
+  faPhone,
+  faEnvelope,
+  faTrashAlt,
+  faCheckCircle,
+  faComment,
+  faCheckSquare,
+  faArrowLeft,
+  faPencil
 );
 
-createApp(App)
-  .use(router)
-  .use(PrimeVue)
-  .use(VueGoodTablePlugin)
-  .mount("#app");
+createApp(App).use(router).use(PrimeVue).use(VueGoodTablePlugin).mount("#app");

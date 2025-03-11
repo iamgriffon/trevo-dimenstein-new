@@ -3,7 +3,7 @@
     <RouterLink :to="href" class="w-fit">
       <div
         :class="
-          cn('bg-white border-l-4 border-y border-r p-6 py-8 text-3xl leading-[1.2] mb-2 font-medium hover:shadow-theme', className)
+          cn('bg-white border-l-4 border-y border-r p-6 py-8 text-3xl leading-[1.2] mb-2 font-medium hover:shadow-theme transition-all duration-300', className)
         "
       >
         <h1>{{ title }}</h1>

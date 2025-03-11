@@ -15,11 +15,11 @@ import PasswordRecovery from "@/components/user/PasswordRecovery.vue";
 // import RegisterUser from '@/components/dashboard/user/Register.vue'
 
 import Facilities from "@/pages/dashboard/facility/List.vue";
-// import Facility from '@/components/dashboard/facility/Facility.vue'
-// import FacilityInfo from '@/components/dashboard/facility/Info.vue'
+import Facility from "@/pages/dashboard/facility/Facility.vue";
+import FacilityInfo from "@/pages/dashboard/facility/Info.vue";
 // import FacilityDocuments from '@/components/dashboard/facility/Document.vue'
-// import RegisterFacility from '@/components/dashboard/facility/Register.vue'
-// import EditFacility from '@/components/dashboard/facility/Edit.vue'
+import RegisterFacility from "@/pages/dashboard/facility/Register.vue";
+import EditFacility from "@/pages/dashboard/facility/Edit.vue";
 
 // import FacilityRoutines from '@/components/dashboard/facility/routines/List.vue'
 // import FacilityRoutinesRadioactiveMaterialMovement from '@/components/dashboard/facility/routines/radioactiveMaterialMovement/List.vue'
@@ -183,30 +183,42 @@ const router = createRouter({
         { path: "/facility/nuclearmedicine", component: Facilities },
         { path: "/facility/radiodiagnosis", component: Facilities },
 
-        //       { path: '/facilities/register',
-        //         component: RegisterFacility,
-        //         beforeEnter: (to, from, next) => {
-        //           if (auth.currentUser().type === 'administrador' || auth.currentUser().type === 'rad laudos' || auth.currentUser().type === 'rad fisico' || auth.currentUser().type === 'rad admin') {
-        //             next()
-        //           } else {
-        //             alert('Você não possui autorização para criar instalações.')
-        //             next({ path: '/facility/', component: Facilities })
-        //           }
-        //         }
-        //       },
-        //       { path: '/facility/:id/edit',
-        //         component: EditFacility,
-        //         beforeEnter: (to, from, next) => {
-        //           if (auth.currentUser().type === 'administrador' || auth.currentUser().type === 'rad laudos' || auth.currentUser().type === 'rad fisico' || auth.currentUser().type === 'rad admin') {
-        //             next()
-        //           } else {
-        //             alert('Você não possui permissão para editar para instalações.')
-        //             next({ path: '/facility/', component: Facilities })
-        //           }
-        //         }
-        //       },
-        //       { path: '/facility/:id', component: Facility },
-        //       { path: '/facility/:id/info', component: FacilityInfo },
+        {
+          path: "/facilities/register",
+          component: RegisterFacility,
+          beforeEnter: (to, from, next) => {
+            if (
+              auth.currentUser().type === "administrador" ||
+              auth.currentUser().type === "rad laudos" ||
+              auth.currentUser().type === "rad fisico" ||
+              auth.currentUser().type === "rad admin"
+            ) {
+              next();
+            } else {
+              alert("Você não possui autorização para criar instalações.");
+              next({ path: "/facility/", component: Facilities });
+            }
+          },
+        },
+        {
+          path: "/facility/:id/edit",
+          component: EditFacility,
+          beforeEnter: (to, from, next) => {
+            if (
+              auth.currentUser().type === "administrador" ||
+              auth.currentUser().type === "rad laudos" ||
+              auth.currentUser().type === "rad fisico" ||
+              auth.currentUser().type === "rad admin"
+            ) {
+              next();
+            } else {
+              alert("Você não possui permissão para editar para instalações.");
+              next({ path: "/facility/", component: Facilities });
+            }
+          },
+        },
+        { path: "/facility/:id", component: Facility },
+        { path: "/facility/:id/info", component: FacilityInfo },
         //       { path: '/facility/:id/documents', component: FacilityDocuments },
         //       { path: '/facility/:id/equipments', component: FacilityEquipments },
         //       { path: '/facility/:id/equipments/:typeId', component: FacilityEquipmentsByType },
