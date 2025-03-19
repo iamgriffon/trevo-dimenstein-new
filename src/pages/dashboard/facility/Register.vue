@@ -30,7 +30,7 @@
 
       <!-- Group Selection -->
       <div class="bg-white p-6 rounded-lg shadow">
-        <div class="form-group">
+          <div class="form-group">
           <h4 class="font-medium text-lg mb-2">Grupo:</h4>
           <select
             v-model="facility.group"
@@ -60,7 +60,7 @@
             class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
             @change="onLogoFileChange"
           />
-        </div>
+          </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -74,7 +74,7 @@
             @change="onBackgroundFileChange"
           />
         </div>
-      </div>
+          </div>
 
       <!-- Facility Information -->
       <div class="bg-white p-6 rounded-lg shadow">
@@ -154,8 +154,8 @@
             placeholder="Endereço"
             class="w-full"
           />
-        </div>
-      </div>
+                </div>
+              </div>
 
       <!-- Personnel Section -->
       <div class="bg-white p-6 rounded-lg shadow">
@@ -188,7 +188,7 @@
           >
             Selecionar pessoa
           </Button>
-        </div>
+            </div>
 
         <!-- Technical Responsible -->
         <div class="mb-4">
@@ -211,7 +211,7 @@
           >
             Selecionar pessoa
           </Button>
-        </div>
+            </div>
 
         <!-- Selected People List -->
         <div v-if="facility.users.length > 0" class="mt-6">
@@ -227,8 +227,8 @@
               class="max-h-[500px] overflow-y-auto"
             />
           </div>
-        </div>
-      </div>
+                </div>
+          </div>
 
       <!-- Submit Button -->
       <Button
@@ -237,7 +237,7 @@
       >
         Criar nova instalação
       </Button>
-    </div>
+            </div>
 
     <!-- Modals -->
     <Modal
@@ -258,7 +258,7 @@
               <FontAwesomeIcon icon="fa-solid fa-search" />
             </Input>
           </div>
-        </div>
+            </div>
 
         <div v-if="!filteredUsers.length" class="text-center p-6">
           <h4 class="text-gray-500">
@@ -280,7 +280,7 @@
           :footerClass="'left-0'"
           :class="'max-h-[45vh] overflow-y-auto'"
         />
-      </div>
+          </div>
     </Modal>
 
     <Modal
@@ -325,7 +325,6 @@
 
 <script setup>
 import { ref, computed, onMounted, h } from "vue";
-import { useRouter } from "vue-router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
 import auth from "@/services/authentication";
@@ -335,8 +334,7 @@ import Button from "@/components/ui/Button.vue";
 import Table from "@/components/dashboard/Table.vue";
 import Modal from "@/components/common/Modal.vue";
 import DataLetters from "@/components/common/DataLetters.vue";
-
-const router = useRouter();
+import { createActionButtonsCell } from "@/utils/tableCells";
 
 // Modal visibility states
 const showTitularModal = ref(false);
@@ -366,7 +364,7 @@ const facility = ref({
   cnpj: "",
   telephone: "",
   contactName: "",
-  users: [],
+      users: [],
   address: {
     street: "",
   },
@@ -440,33 +438,37 @@ const userColumns = [
       cellClass: "flex items-center justify-end pr-4",
       headerClass: "text-right pr-4",
     },
-    cell: (info) =>
-      h(
-        "button",
+    cell: (info) => {
+      const actionButtons = [
         {
-          class:
-            "p-2 px-3 bg-green-600 hover:bg-green-700 text-white rounded-md",
-          onClick: () => {
-            addToSelectedUsers(info.row.original._id);
+          type: "button",
+          icon: "fa-solid fa-plus",
+          props: {
+            class: "p-2 px-3 bg-green-600 hover:bg-green-700 text-white rounded-md",
+            onClick: () => {
+              addToSelectedUsers(info.row.original._id);
 
-            // Check which modal is open and assign the proper role
-            if (showTitularModal.value) {
-              selectResponsability(
-                info.row.original._id,
-                "Titular da instalação"
-              );
-              showTitularModal.value = false;
-            } else if (showTechnicalResponsibleModal.value) {
-              selectResponsability(
-                info.row.original._id,
-                "Responsável técnico"
-              );
-              showTechnicalResponsibleModal.value = false;
-            }
+              // Check which modal is open and assign the proper role
+              if (showTitularModal.value) {
+                selectResponsability(
+                  info.row.original._id,
+                  "Titular da instalação"
+                );
+                showTitularModal.value = false;
+              } else if (showTechnicalResponsibleModal.value) {
+                selectResponsability(
+                  info.row.original._id,
+                  "Responsável técnico"
+                );
+                showTechnicalResponsibleModal.value = false;
+              }
+            },
           },
-        },
-        [h(FontAwesomeIcon, { icon: "fa-solid fa-plus" })]
-      ),
+          title: "Adicionar",
+        }
+      ];
+      return createActionButtonsCell(info, actionButtons, "flex items-center justify-end");
+    },
   },
 ];
 
@@ -655,7 +657,7 @@ const onLogoFileChange = (e) => {
 const createLogo = (file) => {
   const reader = new FileReader();
 
-  reader.onload = (e) => {
+      reader.onload = (e) => {
     const image = new Image();
     image.onload = function () {
       const canvas = document.createElement("canvas");
@@ -663,13 +665,13 @@ const createLogo = (file) => {
       let width = image.width;
       let height = image.height;
 
-      if (width > height) {
-        if (width > maxSize) {
+          if (width > height) {
+            if (width > maxSize) {
           height *= maxSize / width;
           width = maxSize;
-        }
-      } else {
-        if (height > maxSize) {
+            }
+          } else {
+            if (height > maxSize) {
           width *= maxSize / height;
           height = maxSize;
         }
@@ -697,7 +699,7 @@ const onBackgroundFileChange = (e) => {
 const createBackground = (file) => {
   const reader = new FileReader();
 
-  reader.onload = (e) => {
+      reader.onload = (e) => {
     const image = new Image();
     image.onload = function () {
       const canvas = document.createElement("canvas");
@@ -705,13 +707,13 @@ const createBackground = (file) => {
       let width = image.width;
       let height = image.height;
 
-      if (width > height) {
-        if (width > maxSize) {
+          if (width > height) {
+            if (width > maxSize) {
           height *= maxSize / width;
           width = maxSize;
-        }
-      } else {
-        if (height > maxSize) {
+            }
+          } else {
+            if (height > maxSize) {
           width *= maxSize / height;
           height = maxSize;
         }

@@ -6,7 +6,9 @@
     </section>
   </header>
   <section class='flex flex-col gap-6'>
-    <Breadcrumb />
+    <Breadcrumb>
+      <slot name="breadcrumb"></slot>
+    </Breadcrumb>
     <slot></slot>
   </section>
 </template>

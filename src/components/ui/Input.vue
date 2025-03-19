@@ -6,8 +6,12 @@
     <input
       :type="type"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="(e) => {
+        if (props.readonly) return;
+        $emit('update:modelValue', e.target.value)
+      }"
       :placeholder="placeholder"
+      :readonly="readonly"
       :class="[
         cn(
           'h-10 w-full rounded-xl px-3 focus:outline-none',
@@ -31,5 +35,6 @@ const props = defineProps({
     default: "text",
   },
   error: Boolean,
+  readonly: Boolean,
 });
 </script>

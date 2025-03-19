@@ -112,6 +112,15 @@ import { twMerge } from "tailwind-merge";
 import Hashids from "hashids";
 import Modal from "@/components/common/Modal.vue";
 import { cn } from "@/utils/cn";
+import {
+  createTextCell,
+  createDateCell,
+  createRelationCell,
+  createStatusCell,
+  createCheckboxCell,
+  createActionButtonsCell,
+  filterDocuments,
+} from "@/utils/tableCells";
 
 const filter = ref("");
 const documents = ref([]);
@@ -138,12 +147,12 @@ function toggleAllSelected(newValue) {
   let newValues = [];
 
   const shouldSelectAll =
-    typeof newValue === "undefined"
-      ? !isSomeSelected
-      : !!newValue;
+    typeof newValue === "undefined" ? !isSomeSelected : !!newValue;
 
-  selectIconType.value = isSomeSelected ? 'fa-check' : 'fa-times-circle';
-  selectIconClass.value = isSomeSelected ? 'bg-green-500 hover:bg-green-700' : 'bg-red-500 hover:bg-red-700'
+  selectIconType.value = isSomeSelected ? "fa-check" : "fa-times-circle";
+  selectIconClass.value = isSomeSelected
+    ? "bg-green-500 hover:bg-green-700"
+    : "bg-red-500 hover:bg-red-700";
 
   newValues = documents.value?.map((item) => ({
     ...item,
@@ -164,21 +173,12 @@ const tableButtonStyle =
   "rounded-full w-10 h-10 bg-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-300 transition-colors";
 
 const filteredDocuments = computed(() => {
-  const exp = new RegExp(filter.value.trim(), "i");
-  return documents.value
-    .filter(
-      (item) =>
-        exp.test(item.name) ||
-        exp.test(item.validity) ||
-        exp.test(item.facility[0]?.name) ||
-        exp.test(item.hash) ||
-        exp.test(item.uploadedBy[0]?.name) ||
-        exp.test(item.uploadedAt)
-    )
-    .slice(
-      (currentPage.value - 1) * perPage.value,
-      currentPage.value * perPage.value
-    );
+  return filterDocuments(
+    documents.value,
+    filter.value,
+    currentPage.value,
+    perPage.value
+  );
 });
 
 const columns = [
@@ -200,18 +200,10 @@ const columns = [
           })
         ),
     },
-    cell: (info) => {
-      return h("input", {
-        type: "checkbox",
-        checked: info.row.original.selected,
-        onChange: () => {
-          info.row.original.selected = !info.row.original.selected;
-        },
-      });
-    },
+    cell: (info) => createCheckboxCell(info),
     meta: {
-      headerClass: "p-4 h-36 w-36",
-      cellClass: "px-8 w-36",
+      headerClass: "px-8",
+      cellClass: "px-8",
     },
   },
   {
@@ -323,25 +315,7 @@ const columns = [
           },
         },
       ];
-      return h(
-        "div",
-        { class: "flex gap-2 items-center justify-center h-14 mx-4" },
-        actionButtons.map((btn) =>
-          btn.type === RouterLink
-            ? h(
-                btn.type,
-                { ...btn.props },
-                {
-                  default: () => [
-                    h(FontAwesomeIcon, { icon: btn.icon, class: "w-4 h-4" }),
-                  ],
-                }
-              )
-            : h(btn.type, btn.props, [
-                h(FontAwesomeIcon, { icon: btn.icon, class: "w-4 h-4" }),
-              ])
-        )
-      );
+      return createActionButtonsCell(info, actionButtons);
     },
     meta: {
       headerClass: "px-8",
@@ -359,10 +333,10 @@ const columns = [
   {
     accessorKey: "name",
     header: "Nome",
-    sortable: true,
+    cell: (info) => createTextCell(info, "text-left"),
     meta: {
       headerClass: "px-8 text-left",
-      cellClass: "text-left px-8",
+      cellClass: "px-8",
     },
   },
   {
@@ -389,15 +363,7 @@ const columns = [
     accessorKey: "signedBy",
     header: "Assinado por",
     cell: (info) =>
-      h(
-        "p",
-        {
-          class: info.row.original.signedBy[0]?.name
-            ? "text-left"
-            : "text-center",
-        },
-        info.row.original.signedBy[0]?.name || "-"
-      ),
+      h("p", { class: "text-left" }, info.row.original.uploadedBy[0]?.name),
     meta: {
       headerClass: "px-8 text-left",
       cellClass: "px-8",
@@ -406,29 +372,22 @@ const columns = [
   {
     accessorKey: "liberatedBy",
     header: "Liberado por",
-    cell: (info) => {
-      h(
-        "p",
-        {
-          class: "text-right w-full",
-          onClick: () => console.log(info.row.original),
-        },
-        "Salve"
-      );
-    },
+    cell: (info) =>
+      createRelationCell(
+        info?.row?.original?.liberatedBy,
+        "name",
+        "text-left"
+      ),
     meta: {
-      headerClass: "text-left",
-      cellClass: "px-8 min-w",
+      headerClass: "px-8 text-left",
+      cellClass: "px-8",
     },
   },
   {
     accessorKey: "uploadedAt",
     header: "Upload",
     sortable: true,
-    cell: (info) =>
-      info.row.original?.uploadedAt
-        ? format(parseISO(info.row.original?.uploadedAt), "dd/MM/yyyy")
-        : "-",
+    cell: (info) => createDateCell(info, "text-left"),
     meta: {
       headerClass: "px-8 text-left",
       cellClass: "px-4",
@@ -438,10 +397,7 @@ const columns = [
     accessorKey: "validity",
     header: "Validade",
     sortable: true,
-    cell: (info) =>
-      info.row.original?.validity
-        ? format(new Date(info.row.original.validity), "dd/MM/yyyy")
-        : "-",
+    cell: (info) => createDateCell(info, "text-left"),
     meta: {
       headerClass: "px-8 text-left",
       cellClass: "px-8",
@@ -454,25 +410,7 @@ const columns = [
       headerClass: "px-8",
       cellClass: "px-8",
     },
-    cell: (info) => {
-      const styleMap = {
-        Liberado: "bg-transparent text-black",
-        Assinado: "bg-gray-600 hover:bg-gray-700 text-white",
-        "Falta assinar": "bg-red-600 hover:bg-red-700 text-white",
-        Corrigir: "bg-yellow-600 hover:bg-yellow-700 text-white",
-      };
-      const { status } = info.row.original;
-      return h(
-        "span",
-        {
-          class: twMerge(
-            styleMap[status],
-            "transition-colors duration-300 rounded-2xl p-2 select-none cursor-default"
-          ),
-        },
-        info.row.original.status
-      );
-    },
+    cell: (info) => createStatusCell(info),
   },
 ];
 
@@ -582,7 +520,6 @@ const viewSelected = async (id, path) => {
     });
     pdfUrl.value = response.data;
     url.value = path;
-    // pdfModal.value.show(); // Assuming you have a pdfModal ref
   } catch (error) {
     error.value = error.data;
   }
@@ -600,7 +537,6 @@ const signSelected = (test) => {
     Math.floor(Math.random() * 100 + 1)
   );
   test.mode = "last";
-  // signTestModal.value.show(); // Assuming you have a signTestModal ref
 };
 
 onMounted(() => {
@@ -613,19 +549,6 @@ watch(
     loadDocuments();
   }
 );
-
-// watch(
-//   [() => filteredDocuments.value],
-//   (newVal) => {
-//     if (Array.isArray(newVal)) {
-//       const isAllSelected =
-//         !!filteredDocuments.value.length &&
-//         filteredDocuments.value.every((item) => !!item.selected);
-//       allSelected.value = isAllSelected;
-//     }
-//   },
-//   { deep: true }
-// );
 
 watch(
   documents,

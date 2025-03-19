@@ -42,6 +42,7 @@
           <router-link
             v-if="permission.canSeeSettingsMenu(currentUser)"
             to="/settings"
+            active-class=""
           >
             <Button
               :class="'min-w-8 h-10 rounded-full text-white bg-gray-700 hover:text-gray-700 hover:bg-gray-400/80 border-none'"

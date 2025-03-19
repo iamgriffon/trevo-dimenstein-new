@@ -1,213 +1,312 @@
 <template>
-  <div class="main">
-    <div class="center">
-      <div>
-        <b-modal id="modal-center" centered no-close-on-backdrop no-close-on-esc hide-header hide-header-close hide-footer>
-          <p class="col-12 mx-auto inline-block" style="width: fit-content">Fazendo upload do documento...</p>
-          <img class="img img-fluid" src="/static/img/loading.gif">
-        </b-modal>
-      </div>
-      <div class="col-12" enctype="multipart/form-data">
-        <h2>Enviar documento</h2>
-        <div class="col py-0">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb my-0 px-0">
-              <li class="breadcrumb-item" aria-current="page"><router-link :to="'/panel'"><i class="fa fa-home" aria-hidden="true"></i></router-link></li>
-              <li class="breadcrumb-item" aria-current="page"><router-link :to="'/document'"><i class="fa fa-inbox" aria-hidden="true"></i></router-link></li>
-              <li class="breadcrumb-item active" aria-current="page">novo</li>
-            </ol>
-          </nav>
+  <Layout title="Enviar documento">
+    <template #header>
+      <button
+        class="bg-green-600 hover:bg-green-700 transition-colors duration-300 text-white px-4 py-2 rounded-md"
+      >
+        <RouterLink to="/document">
+          <FontAwesomeIcon icon="fa-solid fa-arrow-left" class="mr-2" /> Voltar
+        </RouterLink>
+      </button>
+    </template>
+
+    <div class="flex flex-col gap-6 w-full mb-10">
+      <!-- Document Information -->
+      <div class="bg-white p-6 rounded-lg shadow">
+        <div
+          v-if="error"
+          class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+        >
+          <FontAwesomeIcon icon="fa-solid fa-exclamation-circle" class="mr-2" />
+          {{ error }}
         </div>
-        <div class="hyper-card mb-3">
-        <div class="alert alert-danger" v-if="error">
-          <i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{ error }}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              <FontAwesomeIcon icon="fa-regular fa-file" class="mr-2" /> Nome
+            </label>
+            <Input v-model="doc.name" placeholder="Nome" class="w-full" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              <FontAwesomeIcon icon="fa-regular fa-calendar-alt" class="mr-2" /> Validade
+              <span class="text-sm text-gray-500 ml-1">opcional</span>
+            </label>
+            <Input type="date" v-model="doc.validity" class="w-full" />
+          </div>
         </div>
-        <div class="row">
-          <div class="form-group col-12 col-md">
-            <label class="col-form-label" for="formName"><i class="far fa-file" aria-hidden="true"></i> Nome</label>
-            <input type="text" class="form-control" placeholder="Nome" v-model="doc.name">
-          </div>
-          <div class="form-group col-12 col-md">
-            <label class="col-form-label" for="formName"><i class="far fa-calendar-alt" aria-hidden="true"></i> Validade</label>
-            <small class="text-muted">opcional</small>
-            <input type="date" class="form-control" placeholder="" v-model="doc.validity">
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col">
-            <label class="col-form-label" for="formName"><i class="fa fa-archive" aria-hidden="true"></i> Arquivo</label>
-            <small class="text-muted">arquivo deve estar no formato .pdf</small>
-            <input type="file" class="form-control-file" placeholder="" @change="onFileChange" accept="application/pdf">
-          </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            <FontAwesomeIcon icon="fa-solid fa-file-archive" class="mr-2" /> Arquivo
+            <span class="text-sm text-gray-500 ml-1">arquivo deve estar no formato .pdf</span>
+          </label>
+          <input
+            type="file"
+            class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100"
+            @change="onFileChange"
+            accept="application/pdf"
+          />
         </div>
       </div>
 
-      <div class="hyper-card mb-3">
-        <div class="input-group col">
-          <input class="form-check-input" type="checkbox" :checked="doc.hash !== ''" @click="generateCode()">
-          <label class="form-check-label" for="defaultCheck1">
-            <i class="fa fa-qrcode" aria-hidden="true"></i> Adicionar assinatura e código
-            <small v-if="doc.hash" class="text-muted">{{ 'código: ' + doc.hash}}</small>
+      <!-- QR Code Options -->
+      <div class="bg-white p-6 rounded-lg shadow">
+        <div class="flex items-center mb-4">
+          <input
+            type="checkbox"
+            :checked="doc.hash !== ''"
+            @click="generateCode()"
+            class="w-4 h-4 text-green-600 bg-gray-100 rounded border-gray-300 focus:ring-green-500"
+          />
+          <label class="ml-2 text-sm font-medium text-gray-700">
+            <FontAwesomeIcon icon="fa-solid fa-qrcode" class="mr-2" /> Adicionar assinatura e código
+            <span v-if="doc.hash" class="text-sm text-gray-500 ml-1">{{ 'id: ' + doc.hash }}</span>
           </label>
         </div>
-        <br v-if="doc.hash">
-        <div v-if="doc.hash" class="row mx-auto justify-content-center">
-          <div class="col-12 col-md-4 mb-2"><button @click="doc.mode = 'first'" class="btn btn-block btn-outline-metalic-seaweed" :class="{'active' : doc.mode == 'first'}">primeira página</button></div>
-          <div class="col-12 col-md-4 mb-2"><button @click="doc.mode = 'all'" class="btn btn-block btn-outline-metalic-seaweed" :class="{'active' : doc.mode == 'all'}">todas as páginas</button></div>
-          <div class="col-12 col-md-4"><button @click="doc.mode = 'last'" :class="{'active' : doc.mode == 'last'}" class="btn btn-block btn-outline-metalic-seaweed">última página</button></div>
+
+        <div v-if="doc.hash" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Button
+            @click="doc.mode = 'first'"
+            :className="
+              doc.mode === 'first'
+                ? 'bg-green-600 text-white'
+                : 'border border-green-600 text-green-600 hover:bg-green-50'
+            "
+          >
+            primeira página
+          </Button>
+          <Button
+            @click="doc.mode = 'all'"
+            :className="
+              doc.mode === 'all'
+                ? 'bg-green-600 text-white'
+                : 'border border-green-600 text-green-600 hover:bg-green-50'
+            "
+          >
+            todas as páginas
+          </Button>
+          <Button
+            @click="doc.mode = 'last'"
+            :className="
+              doc.mode === 'last'
+                ? 'bg-green-600 text-white'
+                : 'border border-green-600 text-green-600 hover:bg-green-50'
+            "
+          >
+            última página
+          </Button>
         </div>
       </div>
 
-      <div class="mb-3">
-        <br>
-        <h4><i class="far fa-building"></i> Instalação</h4>
-        <h5>Selecione a instalação deste arquivo</h5>
-        <div class="row px-0">
-          <template>
-            <div v-for="facility in facilities" class="col-sm-12 col-md-4 my-3">
-              <div class="hyper-card card p-0 facility-hyper-card" :class="{ 'facility-hyper-card-selected' : doc.facility == facility}">
-                <div class="background-img" :style="'background-image: url(' + facility.backgroundImg + ')'"></div>
-                <div class="col-6 mx-auto logo-circle">
-                  <img class="logo-img rounded-circle img-fluid center" :src="facility.logoImg"></img>
-                </div>
-                <div class="text-center up-25 pr-3 pl-3">
-                  <h5 class="card-title text-center">{{ facility.name }}</h5>
-                  <button v-if="doc.facility !== facility" class="btn btn-light" @click="selectFacility(facility)"><i class="fa fa-check" aria-hidden="true"></i> selecionar</button>
-                  <button v-else class="btn btn-light" @click="removeFacility"><i class="fa fa-times" aria-hidden="true"></i> remover</button>
-                </div>
-              </div>
+      <!-- Facility Selection -->
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-xl font-medium mb-2">
+          <FontAwesomeIcon icon="fa-regular fa-building" class="mr-2" /> Instalação
+        </h3>
+        <p class="mb-4 text-gray-600">Selecione a instalação deste arquivo</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div
+            v-for="facility in facilities"
+            :key="facility._id"
+            class="bg-white rounded-lg shadow overflow-hidden transition-all duration-300"
+            :class="{ 'ring-2 ring-green-600': doc.facility._id === facility._id }"
+          >
+            <div
+              class="w-full h-36 bg-cover bg-center opacity-60"
+              :style="{ backgroundImage: `url(${facility.backgroundImg})` }"
+            ></div>
+            <div class="relative -mt-16 flex justify-center">
+              <img
+                :src="facility.logoImg"
+                class="w-24 h-24 rounded-full border-4 border-white shadow-md bg-white"
+                alt="Logo da instalação"
+              />
             </div>
-          </template>
+            <div class="p-4 text-center">
+              <h4 class="font-medium text-lg mb-3">{{ facility.name }}</h4>
+              <Button
+                v-if="doc.facility._id !== facility._id"
+                @click="selectFacility(facility)"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-800"
+              >
+                <FontAwesomeIcon icon="fa-solid fa-check" class="mr-2" /> selecionar
+              </Button>
+              <Button
+                v-else
+                @click="removeFacility"
+                className="bg-gray-100 hover:bg-gray-200 text-gray-800"
+              >
+                <FontAwesomeIcon icon="fa-solid fa-times" class="mr-2" /> remover
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <button class="btn btn-success btn-block" @click="register()">Enviar documento</button>
-      <br>
-      <br>
+      <!-- Submit Button -->
+      <Button
+        className="py-3 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-colors"
+        @click="register"
+      >
+        Enviar documento
+      </Button>
     </div>
 
-  </div>
-
-  </div>
+    <!-- Loading Modal -->
+    <Modal :visible="loading" title="Upload em andamento" @update:visible="loading = false">
+      <div class="flex flex-col items-center justify-center py-4">
+        <p class="mb-4 text-center">Fazendo upload do documento...</p>
+        <img src="/static/img/loading.gif" alt="Loading" class="max-w-xs" />
+      </div>
+    </Modal>
+  </Layout>
 </template>
 
-<script>
-import moment from 'moment-timezone'
-import auth from '../../authentication/authentication'
-import axios from 'axios'
-import Hashids from 'hashids'
+<script setup>
+import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
+import moment from 'moment-timezone';
+import axios from 'axios';
+import Hashids from 'hashids';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import auth from '@/services/authentication';
+import Layout from '@/components/common/Layout.vue';
+import Input from '@/components/ui/Input.vue';
+import Button from '@/components/ui/Button.vue';
+import Modal from '@/components/common/Modal.vue';
 
-export default {
-  data () {
-    return {
-      loading: false,
-      filter: '',
-      currentUser: {},
-      facilities: [],
-      doc: {
-        facility: {},
-        hash: '',
-        mode: ''
-      },
-      users: [],
-      columns: [
-        {
-          label: ''
-        },
-        {
-          label: 'Nome',
-          field: 'name'
-        },
-        {
-          label: 'Tipo de Usuário',
-          field: 'type'
-        }
-      ],
-      error: ''
-    }
-  },
+const router = useRouter();
+const loading = ref(false);
+const filter = ref('');
+const currentUser = ref(auth.currentUser());
+const facilities = ref([]);
+const error = ref('');
 
-  watch: {
-    loading () {
-      if (this.loading) {
-        this.$root.$emit('bv::show::modal', 'modal-center')
-      }
-    }
-  },
+// Document data
+const doc = ref({
+  facility: {},
+  hash: '',
+  mode: '',
+  name: '',
+  data: null,
+  validity: null
+});
 
-  created () {
-    axios.get(auth.apiUrl() + 'facilities/', {headers: {Authorization: 'Bearer ' + auth.getToken()}})
-    .then(response => {
-      if (response.data.length === 0) {
-        this.errors = 'Nenhum resultado encontrado'
-        this.facilities = ''
-      } else {
-        for (var i = 0; i < response.data.length; i++) {
-          this.facilities.push({_id: response.data[i]._id, name: response.data[i].name, backgroundImg: response.data[i].backgroundImg, logoImg: response.data[i].logoImg})
-        }
-      }
-    })
-    .catch(error => {
-      this.errors = error.data
-      this.facilities = ''
-    })
-
-    this.currentUser = auth.currentUser()
-  },
-  methods: {
-    register () {
-      var credentials = {
-        name: this.doc.name,
-        data: moment(this.doc.data).format(),
-        mode: this.doc.mode,
-        uploadedAt: new Date(),
-        uploadedBy: {_id: this.currentUser.id, name: this.currentUser.name},
-        hash: this.doc.hash,
-        facility: {_id: this.doc.facility._id, name: this.doc.facility.name}
-      }
-      if (this.doc.validity) {
-        credentials.validity = moment(this.doc.validity)
-      }
-      this.loading = true
-      auth.registerDocument(this, credentials, '/document')
-    },
-
-    selectFacility (facility) {
-      this.doc.facility = facility
-    },
-
-    removeFacility () {
-      this.doc.facility = {}
-    },
-
-    generateCode () {
-      if (this.doc.hash === '') {
-        var hashids = new Hashids('AKJSBDalsdabskJASd', 8, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
-        this.doc.hash = hashids.encode(Math.floor((Math.random() * 100) + 1), Math.floor((Math.random() * 100) + 1), Math.floor((Math.random() * 100) + 1))
-        this.doc.mode = 'last'
-      } else {
-        this.doc.hash = ''
-      }
-    },
-
-    onFileChange (e) {
-      var files = e.target.files || e.dataTransfer.files
-      if (!files.length) {
-        return
-      }
-      this.createFile(files[0])
-    },
-    createFile (file) {
-      var reader = new FileReader()
-      var vm = this
-
-      reader.onload = (e) => {
-        vm.doc.data = e.target.result
-      }
-      reader.readAsDataURL(file)
-    }
+// Watch for loading state to display modal
+watch(loading, (newVal) => {
+  if (newVal) {
+    // Modal is handled by the Modal component in the template
   }
-}
+});
+
+// Methods
+const register = () => {
+  if (!doc.value.name) {
+    error.value = 'O campo nome é obrigatório';
+    return;
+  }
+
+  if (!doc.value.data) {
+    error.value = 'É necessário fazer upload de um arquivo';
+    return;
+  }
+
+  if (!doc.value.facility._id) {
+    error.value = 'Selecione uma instalação';
+    return;
+  }
+
+  const credentials = {
+    name: doc.value.name,
+    data: doc.value.data,
+    mode: doc.value.mode,
+    uploadedAt: new Date(),
+    uploadedBy: { _id: currentUser.value.id, name: currentUser.value.name },
+    hash: doc.value.hash,
+    facility: { _id: doc.value.facility._id, name: doc.value.facility.name }
+  };
+
+  if (doc.value.validity) {
+    credentials.validity = moment(doc.value.validity);
+  }
+
+  loading.value = true;
+  auth.registerDocument(null, credentials, '/document')
+    .catch(err => {
+      loading.value = false;
+      error.value = err.response?.data || 'Erro ao enviar documento';
+    });
+};
+
+const selectFacility = (facility) => {
+  doc.value.facility = facility;
+};
+
+const removeFacility = () => {
+  doc.value.facility = {};
+};
+
+const generateCode = () => {
+  if (doc.value.hash === '') {
+    const hashids = new Hashids('AKJSBDalsdabskJASd', 8, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890');
+    doc.value.hash = hashids.encode(
+      Math.floor((Math.random() * 100) + 1),
+      Math.floor((Math.random() * 100) + 1),
+      Math.floor((Math.random() * 100) + 1)
+    );
+    doc.value.mode = 'last';
+  } else {
+    doc.value.hash = '';
+  }
+};
+
+const onFileChange = (e) => {
+  const files = e.target.files || e.dataTransfer.files;
+  if (!files.length) return;
+  createFile(files[0]);
+};
+
+const createFile = (file) => {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    doc.value.data = e.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+// Load facilities on component mount
+const loadFacilities = async () => {
+  try {
+    const response = await axios.get(`${auth.apiUrl()}facilities/`, {
+      headers: { Authorization: `Bearer ${auth.getToken()}` },
+      params: {
+        pageSize: 10,
+        pageNum: 1,
+        limit: 10
+      }
+    });
+
+    if (response.data.length === 0) {
+      error.value = 'Nenhuma instalação encontrada';
+      return;
+    }
+
+    facilities.value = response.data.map(facility => ({
+      _id: facility._id,
+      name: facility.name,
+      backgroundImg: facility.backgroundImg,
+      logoImg: facility.logoImg
+    }));
+  } catch (err) {
+    error.value = err.response?.data || 'Erro ao carregar instalações';
+  }
+};
+
+// Initialize data
+loadFacilities();
 </script>
 
 <style scoped>

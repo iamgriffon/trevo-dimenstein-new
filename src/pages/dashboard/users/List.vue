@@ -34,7 +34,7 @@
       </router-link>
     </template>
 
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-4 w-full">
       <Input
         v-model="filter"
         placeholder="Buscar..."
@@ -123,7 +123,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { RouterLink } from "vue-router";
+import { useRouter } from "vue-router";
 import axios from "axios";
 import auth from "@/services/authentication";
 import permission from "@/services/permissions";
@@ -146,6 +146,7 @@ const currentPage = ref(1);
 const perPage = ref(10);
 const viewMode = ref("card");
 const loading = ref(false);
+const router = useRouter();
 
 const currentUser = ref(auth.currentUser());
 
@@ -164,10 +165,10 @@ const columns = [
       h(
         DataLetters,
         {
-          to: {
-            path: `/user/${info.row.original._id}`,
-          },
           fullName: info.row.original.name || "Teste",
+          onClick: () => {
+            router.push(`/user/${info.row.original._id}`);
+          },
         },
         [
           h(FontAwesomeIcon, { icon: "fa-solid fa-info" }),

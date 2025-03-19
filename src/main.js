@@ -61,11 +61,19 @@ import {
   faCheckSquare,
   faArrowLeft,
   faPencil,
+  faIdBadge,
+  faSave,
+  faMapMarked,
+  faSquare,
+  faHashtag,
+  faTag,
+  faImage,
 } from "@fortawesome/free-solid-svg-icons";
 
 import VueGoodTablePlugin from "vue-good-table-next";
 import "vue-good-table-next/dist/vue-good-table-next.css";
 import PrimeVue from "primevue/config";
+
 library.add(
   faUser,
   faBug,
@@ -126,7 +134,15 @@ library.add(
   faComment,
   faCheckSquare,
   faArrowLeft,
-  faPencil
+  faPencil,
+  faIdBadge,
+  faSave,
+  faCubes,
+  faMapMarked,
+  faSquare,
+  faHashtag,
+  faTag,
+  faImage
 );
 
 createApp(App).use(router).use(PrimeVue).use(VueGoodTablePlugin).mount("#app");

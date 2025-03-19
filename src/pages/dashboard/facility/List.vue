@@ -139,7 +139,10 @@ import Layout from "@/components/common/Layout.vue";
 import Input from "@/components/ui/Input.vue";
 import Card from "@/components/dashboard/Card.vue";
 import Table from "@/components/dashboard/Table.vue";
-import { h } from "vue";
+import { 
+  createTextCell, 
+  createActionButtonsCell, 
+} from "@/utils/tableCells";
 
 const filter = ref("");
 const facilities = ref([]);
@@ -159,33 +162,45 @@ const columns = [
   {
     accessorKey: "name",
     header: "Nome",
+    cell: (info) => createTextCell(info, "text-left"),
+    meta: {
+      headerClass: "text-left",
+      cellClass: "text-left",
+    },
   },
   {
     accessorKey: "telephone",
     header: "Telefone",
+    cell: (info) => createTextCell(info, "text-left"),
+    meta: {
+      headerClass: "text-left",
+      cellClass: "text-left",
+    },
   },
   {
     accessorKey: "action",
     header: "Ações",
     meta: {
-      cellClass: "flex w-full items-center justify-end pr-4",
-      headerClass: "text-right pr-16",
+      cellClass: "flex w-full items-center justify-center pr-4",
+      headerClass: "text-center",
     },
-    cell: (info) =>
-      h(
-        RouterLink,
+    cell: (info) => {
+      const actionButtons = [
         {
-          to: {
-            path: `/facility/${info.row.original._id}`,
+          type: RouterLink,
+          icon: "fa-solid fa-info",
+          props: {
+            to: {
+              path: `/facility/${info.row.original._id}`,
+            },
+            class: "flex items-center w-full justify-center p-2 rounded-md gap-2 bg-gray-100 cursor-pointer hover:shadow-inner hover:bg-gray-200 transition-all duration-300",
+            title: "Informações",
           },
-          class:
-            "flex items-center w-full justify-center p-2 rounded-md gap-2 bg-gray-100 cursor-pointer hover:shadow-inner hover:bg-gray-200 transition-all duration-300",
-        },
-        [
-          h(FontAwesomeIcon, { icon: "fa-solid fa-info" }),
-          h("span", "informações"),
-        ]
-      ),
+          text: "Informações",
+        }
+      ];
+      return createActionButtonsCell(info, actionButtons, "flex items-center justify-end");
+    },
   },
 ];
 
@@ -200,6 +215,7 @@ const filteredFacilities = computed(() => {
         currentPage.value * perPage.value
       );
   }
+  
   return facilities.value.slice(
     (currentPage.value - 1) * perPage.value,
     currentPage.value * perPage.value

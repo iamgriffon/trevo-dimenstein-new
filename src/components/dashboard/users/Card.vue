@@ -1,5 +1,5 @@
 <template>
-  <router-link :to="`/users/${user._id}`">
+  <router-link :to="`/user/${user._id}`">
     <div
       class="flex flex-col items-center justify-center p-6 gap-4 relative h-56 w-64 max-md:w-screen overflow-hidden bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow"
     >

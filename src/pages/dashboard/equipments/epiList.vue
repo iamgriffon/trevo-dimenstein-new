@@ -107,6 +107,12 @@ import Layout from "@/components/common/Layout.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Table from "@/components/dashboard/Table.vue";
 import { cn } from "@/utils/cn";
+import { 
+  createStatusCell, 
+  createCheckboxCell, 
+  createActionButtonsCell,
+  filterDocuments
+} from "@/utils/tableCells";
 
 const filter = ref("");
 const advancedFilter = ref("");
@@ -192,15 +198,7 @@ const columns = [
           })
         ),
     },
-    cell: (info) => {
-      return h("input", {
-        type: "checkbox",
-        checked: !!info.row.original.selected,
-        onChange: () => {
-          info.row.original.selected = !info.row.original.selected;
-        },
-      });
-    },
+    cell: (info) => createCheckboxCell(info),
     meta: {
       headerClass: "px-8",
       cellClass: "px-8",
@@ -234,15 +232,7 @@ const columns = [
           },
         },
       ];
-      return h(
-        "div",
-        { class: "flex gap-2 items-center justify-center h-14 mx-4" },
-        actionButtons.map((btn) =>
-          h(btn.type, btn.props, [
-            h(FontAwesomeIcon, { icon: btn.icon, class: "w-4 h-4" }),
-          ])
-        )
-      );
+      return createActionButtonsCell(info, actionButtons);
     },
     meta: {
       headerClass: "px-8",
@@ -319,52 +309,12 @@ const columns = [
       headerClass: "px-8",
       cellClass: "px-8",
     },
-    cell: (info) => {
-      const styleMap = {
-        Liberado: "bg-transparent text-black",
-        Assinado: "bg-gray-600 hover:bg-gray-700 text-white",
-        "Falta assinar": "bg-red-600 hover:bg-red-700 text-white",
-        Corrigir: "bg-yellow-600 hover:bg-yellow-700 text-white",
-      };
-      const { status } = info.row.original;
-      return h(
-        "span",
-        {
-          class: cn(
-            styleMap[status],
-            "transition-colors duration-300 rounded-2xl p-2 select-none cursor-default"
-          ),
-        },
-        info.row.original.status
-      );
-    },
+    cell: (info) => createStatusCell(info),
   },
 ];
 
 const filteredDocuments = computed(() => {
-  if (filter.value.length > 0) {
-    currentPage.value = 1;
-    const exp = new RegExp(filter.value.trim(), "i");
-    return documents.value
-      .filter(
-        (item) =>
-          exp.test(item.name) ||
-          exp.test(item.validity) ||
-          exp.test(item.facility[0].name) ||
-          exp.test(item.hash) ||
-          exp.test(item.uploadedBy[0].name) ||
-          exp.test(item.uploadedAt)
-      )
-      .slice(
-        (currentPage.value - 1) * perPage.value,
-        currentPage.value * perPage.value
-      );
-  } else {
-    return documents.value.slice(
-      (currentPage.value - 1) * perPage.value,
-      currentPage.value * perPage.value
-    );
-  }
+  return filterDocuments(documents.value, filter.value, currentPage.value, perPage.value);
 });
 
 const clearAllDocuments = () => {

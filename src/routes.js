@@ -7,17 +7,17 @@ import BaseDashboard from "@/pages/dashboard/Base.vue";
 import Panel from "@/pages/dashboard/Panel.vue";
 
 import Users from "@/pages/dashboard/users/List.vue";
-// import User from '@/components/dashboard/user/User.vue'
-// import EditUser from '@/components/dashboard/user/Edit.vue'
-// import EditUsersFacilities from '@/components/dashboard/user/EditUsersFacilities.vue'
-// import ChangePassword from '@/components/dashboard/user/ChangePassword.vue'
+import User from "@/pages/dashboard/users/User.vue";
+import EditUser from "@/pages/dashboard/users/Edit.vue";
+import EditUsersFacilities from "@/pages/dashboard/users/EditUsersFacilities.vue";
+import ChangePassword from "@/pages/dashboard/users/ChangePassword.vue";
 import PasswordRecovery from "@/components/user/PasswordRecovery.vue";
-// import RegisterUser from '@/components/dashboard/user/Register.vue'
+import RegisterUser from "@/pages/dashboard/users/Register.vue";
 
 import Facilities from "@/pages/dashboard/facility/List.vue";
 import Facility from "@/pages/dashboard/facility/Facility.vue";
 import FacilityInfo from "@/pages/dashboard/facility/Info.vue";
-// import FacilityDocuments from '@/components/dashboard/facility/Document.vue'
+import FacilityDocuments from "@/pages/dashboard/facility/Document.vue";
 import RegisterFacility from "@/pages/dashboard/facility/Register.vue";
 import EditFacility from "@/pages/dashboard/facility/Edit.vue";
 
@@ -30,10 +30,10 @@ import EditFacility from "@/pages/dashboard/facility/Edit.vue";
 // import FacilityRoutinesLiquidWasteManagement from '@/components/dashboard/facility/routines/liquidWasteManagement/List.vue'
 // import FacilityRoutinesLiquidWasteManagementRegister from '@/components/dashboard/facility/routines/liquidWasteManagement/Register.vue'
 
-// import FacilityEquipments from '@/components/dashboard/facility/equipments/List.vue'
-// import FacilityEquipmentsByType from '@/components/dashboard/facility/equipments/ListByType.vue'
-// import FacilityEquipmentsRegister from '@/components/dashboard/facility/equipments/Register.vue'
-// import FacilityEquipmentsEdit from '@/components/dashboard/facility/equipments/Edit.vue'
+import FacilityEquipments from "@/pages/dashboard/facility/equipments/List.vue";
+import FacilityEquipmentsByType from "@/pages/dashboard/facility/equipments/ListByType.vue";
+import FacilityEquipmentsRegister from "@/pages/dashboard/facility/equipments/Register.vue";
+import FacilityEquipmentsEdit from "@/pages/dashboard/facility/equipments/Edit.vue";
 
 import EPIEquipmentAssessmentTestList from "@/pages/dashboard/equipments/epiList.vue";
 // import EPIEquipmentAssessmentTestRegister from '@/components/dashboard/facility/equipments/epiEquipment/tests/assessment/Register.vue'
@@ -72,22 +72,23 @@ import EPIEquipmentAssessmentTestList from "@/pages/dashboard/equipments/epiList
 // import GamaCamaraAngulationRegister from '@/components/dashboard/facility/equipments/gamaCamara/tests/angulation/Register.vue'
 // import GamaCamaraAngulation from '@/components/dashboard/facility/equipments/gamaCamara/tests/angulation/Angulation.vue'
 
-// import Equipment from '@/components/dashboard/facility/equipments/Equipment.vue'
+import Equipment from '@/pages/dashboard/facility/equipments/Equipment.vue'
 // import Test from '@/components/dashboard/facility/equipments/tests/Test.vue'
 // import TestRegister from '@/components/dashboard/facility/equipments/tests/Register.vue'
 // import TestRegisterOld from '@/components/dashboard/facility/equipments/tests/Register_old.vue'
 // import TestEdit from '@/components/dashboard/facility/equipments/tests/Edit.vue'
 
 import Doc from "@/pages/dashboard/document/List.vue";
-// import RegisterDoc from '@/components/dashboard/document/Register.vue'
+import RegisterDoc from "@/pages/dashboard/document/Register.vue";
 
 import Information from "@/pages/dashboard/Info.vue";
 import TermsOfUse from "@/pages/dashboard/Terms.vue";
 
-// import Settings from '@/components/dashboard/settings/Settings.vue'
+import Settings from '@/pages/dashboard/Settings.vue'
 
 import auth from "@/services/authentication";
 import Home from "./pages/Home.vue";
+import PasswordRecover from "@/pages/passwordRecover.vue";
 
 export const hideMenu = false;
 
@@ -113,7 +114,7 @@ const router = createRouter({
     {
       path: "/passwordrecover",
       name: "PasswordRecover",
-      component: PasswordRecovery,
+      component: PasswordRecover,
     },
     {
       path: "/dashboard",
@@ -127,58 +128,84 @@ const router = createRouter({
         }
       },
       children: [
-        // { path: '/settings', component: Settings },
+        { path: '/settings', component: Settings },
         { path: "/panel", component: Panel },
         //   ]
         // }
-        { path: "/user", component: Users },
-        //       { path: '/user/:id', component: User },
-        //       { path: '/user/:id/edit',
-        //         component: EditUser,
-        //         beforeEnter: (to, from, next) => {
-        //           var currentUser = auth.currentUser()
+        { path: "/users", component: Users },
+        { path: "/user/:id", component: User },
+        {
+          path: "/user/:id/edit",
+          component: EditUser,
+          beforeEnter: (to, from, next) => {
+            var currentUser = auth.currentUser();
 
-        //           if (auth.currentUser().type === 'administrador' || auth.currentUser().type === 'rad laudos' || auth.currentUser().type === 'rad fisico' || auth.currentUser().type === 'rad admin' || currentUser.id === to.params.id) {
-        //             next()
-        //           } else {
-        //             alert('Você não possui autorização para editar este usuário.')
-        //             next({ path: '/user/', component: User })
-        //           }
-        //         }
-        //       },
-        //       { path: '/user/:id/facilities',
-        //         component: EditUsersFacilities,
-        //         beforeEnter: (to, from, next) => {
-        //           if (auth.currentUser().type === 'administrador' || auth.currentUser().type === 'rad laudos' || auth.currentUser().type === 'rad fisico' || auth.currentUser().type === 'rad admin') {
-        //             next()
-        //           } else {
-        //             alert('Você não possui autorização para editar este usuário.')
-        //             next({ path: '/user/', component: User })
-        //           }
-        //         }
-        //       },
-        //       { path: '/user/:id/edit/password',
-        //         component: ChangePassword,
-        //         beforeEnter: (to, from, next) => {
-        //           if (auth.currentUser().type === 'administrador' || auth.currentUser().type === 'rad laudos' || auth.currentUser().type === 'rad fisico' || auth.currentUser().type === 'rad admin' || auth.currentUser().id === to.params.id) {
-        //             next()
-        //           } else {
-        //             alert('Você não possui autorização para editar este usuário.')
-        //             next({ path: '/user/', component: User })
-        //           }
-        //         }
-        //       },
-        //       { path: '/users/register',
-        //         component: RegisterUser,
-        //         beforeEnter: (to, from, next) => {
-        //           if (auth.currentUser().type === 'administrador' || auth.currentUser().type === 'rad laudos' || auth.currentUser().type === 'rad fisico' || auth.currentUser().type === 'rad admin') {
-        //             next()
-        //           } else {
-        //             alert('Você não possui autorização para criar usuários.')
-        //             next({ path: '/user/', component: User })
-        //           }
-        //         }
-        //       },
+            if (
+              auth.currentUser().type === "administrador" ||
+              auth.currentUser().type === "rad laudos" ||
+              auth.currentUser().type === "rad fisico" ||
+              auth.currentUser().type === "rad admin" ||
+              currentUser.id === to.params.id
+            ) {
+              next();
+            } else {
+              alert("Você não possui autorização para editar este usuário.");
+              next({ path: "/user/", component: User });
+            }
+          },
+        },
+        {
+          path: "/user/:id/facilities",
+          component: EditUsersFacilities,
+          beforeEnter: (to, from, next) => {
+            if (
+              auth.currentUser().type === "administrador" ||
+              auth.currentUser().type === "rad laudos" ||
+              auth.currentUser().type === "rad fisico" ||
+              auth.currentUser().type === "rad admin"
+            ) {
+              next();
+            } else {
+              alert("Você não possui autorização para editar este usuário.");
+              next({ path: "/user/", component: User });
+            }
+          },
+        },
+        {
+          path: "/user/:id/edit/password",
+          component: ChangePassword,
+          beforeEnter: (to, from, next) => {
+            if (
+              auth.currentUser().type === "administrador" ||
+              auth.currentUser().type === "rad laudos" ||
+              auth.currentUser().type === "rad fisico" ||
+              auth.currentUser().type === "rad admin" ||
+              auth.currentUser().id === to.params.id
+            ) {
+              next();
+            } else {
+              alert("Você não possui autorização para editar este usuário.");
+              next({ path: "/user/", component: User });
+            }
+          },
+        },
+        {
+          path: "/users/register",
+          component: RegisterUser,
+          beforeEnter: (to, from, next) => {
+            if (
+              auth.currentUser().type === "administrador" ||
+              auth.currentUser().type === "rad laudos" ||
+              auth.currentUser().type === "rad fisico" ||
+              auth.currentUser().type === "rad admin"
+            ) {
+              next();
+            } else {
+              alert("Você não possui autorização para criar usuários.");
+              next({ path: "/user/", component: User });
+            }
+          },
+        },
         { path: "/facility", component: Facilities },
         { path: "/facility/nuclearmedicine", component: Facilities },
         { path: "/facility/radiodiagnosis", component: Facilities },
@@ -219,11 +246,17 @@ const router = createRouter({
         },
         { path: "/facility/:id", component: Facility },
         { path: "/facility/:id/info", component: FacilityInfo },
-        //       { path: '/facility/:id/documents', component: FacilityDocuments },
-        //       { path: '/facility/:id/equipments', component: FacilityEquipments },
-        //       { path: '/facility/:id/equipments/:typeId', component: FacilityEquipmentsByType },
-        //       { path: '/facility/:id/equipment/register', component: FacilityEquipmentsRegister },
-        //       { path: '/facility/:facilityId/equipment/:equipmentId/edit', component: FacilityEquipmentsEdit },
+        { path: "/facility/:id/documents", component: FacilityDocuments },
+        { path: "/facility/:id/equipments", component: FacilityEquipments },
+        { path: '/facility/:id/equipments/:typeId', component: FacilityEquipmentsByType },
+        {
+          path: "/facility/:id/equipment/register",
+          component: FacilityEquipmentsRegister,
+        },
+        {
+          path: "/facility/:facilityId/equipment/:equipmentId/edit",
+          component: FacilityEquipmentsEdit,
+        },
 
         //       // this will have to change in case of creating EPI Equipment routes
         { path: "/equipments/epi", component: EPIEquipmentAssessmentTestList },
@@ -264,7 +297,7 @@ const router = createRouter({
         //       { path: '/equipments/gamaCamara/:id/angulation/register', component: GamaCamaraAngulationRegister },
         //       { path: '/equipments/gamaCamara/:equipmentId/angulation/:testId', component: GamaCamaraAngulation },
 
-        //       { path: '/equipments/:typeId/:id', component: Equipment },
+              { path: '/equipments/:typeId/:id', component: Equipment },
         //       { path: '/equipments/:typeId/:equipmentId/:id', component: Test },
         //       { path: '/equipments/:typeId/:equipmentId/:id/register', component: TestRegister },
         //       { path: '/equipments/:typeId/:equipmentId/:id/register-old', component: TestRegisterOld },
@@ -279,17 +312,23 @@ const router = createRouter({
         //       { path: '/facility/:id/routines/liquidwastemanagement/register/', component: FacilityRoutinesLiquidWasteManagementRegister },
         //       { path: '/facility/:id/routines/liquidwastemanagement/:year', component: FacilityRoutinesLiquidWasteManagement },
         { path: "/document", component: Doc },
-        //       { path: '/document/register',
-        //         component: RegisterDoc,
-        //         beforeEnter: (to, from, next) => {
-        //           if (auth.currentUser().type === 'administrador' || auth.currentUser().type === 'rad laudos' || auth.currentUser().type === 'rad fisico' || auth.currentUser().type === 'rad admin') {
-        //             next()
-        //           } else {
-        //             alert('Você não possui autorização para criar documentos.')
-        //             next({ path: '/document/', component: Doc })
-        //           }
-        //         }
-        //       },
+        {
+          path: "/document/register",
+          component: RegisterDoc,
+          beforeEnter: (to, from, next) => {
+            if (
+              auth.currentUser().type === "administrador" ||
+              auth.currentUser().type === "rad laudos" ||
+              auth.currentUser().type === "rad fisico" ||
+              auth.currentUser().type === "rad admin"
+            ) {
+              next();
+            } else {
+              alert("Você não possui autorização para criar documentos.");
+              next({ path: "/document/", component: Doc });
+            }
+          },
+        },
         { path: "/document/:status", component: Doc },
         { path: "/info", component: Information },
         { path: "/terms", component: TermsOfUse },

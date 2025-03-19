@@ -1282,7 +1282,7 @@ export default {
       );
   },
 
-  changePassword(context, user, redirect) {
+  changePassword(user, redirect) {
     axios
       .post(CHANGE_PASSWORD_URL, user, {
         headers: { Authorization: "Bearer " + this.getToken() },

@@ -85,7 +85,13 @@
           >
         </li>
         <li :class="linkStyle">
-          <router-link class="w-full p-2 flex items-center gap-2" to="/user"
+          <router-link
+            class="w-full p-2 flex items-center gap-2"
+            :class="{
+              'text-green-700 bg-gray-200 border-r-4 border-r-green-500':
+                $route.path.includes('user'),
+            }"
+            to="/users"
             ><FontAwesomeIcon icon="fa-solid fa-users" /> Pessoas</router-link
           >
         </li>
