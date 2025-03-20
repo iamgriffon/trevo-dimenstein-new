@@ -1,11 +1,5 @@
 <template>
-  <Layout
-    :title="
-      isNewEquipment
-        ? 'Adicionar Novo Equipamento'
-        : `Equipamento: ${equipment?.type} - ${equipment?.serialNumber}`
-    "
-  >
+  <Layout :title="pageTitle || 'Equipamento'">
     <template #header>
       <div class="flex gap-2">
         <router-link
@@ -128,23 +122,6 @@
               :class-name="readOnlyClass"
             />
           </div>
-
-          <!-- Purchase Date -->
-          <div>
-            <label
-              for="purchaseDate"
-              class="block text-sm font-medium text-gray-700 mb-1"
-              >Data de Compra</label
-            >
-            <Input
-              id="purchaseDate"
-              v-model="equipment.purchaseDate"
-              type="date"
-              :readonly="!isEditing"
-              :class-name="readOnlyClass"
-            />
-          </div>
-
           <!-- Warranty End -->
           <div>
             <label
@@ -233,6 +210,12 @@ const readOnlyClass = cn(
   !!isEditing.value ? "cursor-text" : "cursor-default"
 );
 
+const pageTitle = computed(() => {
+  return isNewEquipment.value
+    ? "Adicionar Novo Equipamento"
+    : `Equipamento: ${equipment.value.type} - ${equipment.value.serialNumber}`;
+});
+
 const fetchEquipment = async () => {
   if (isNewEquipment.value) {
     loading.value = false;
@@ -240,7 +223,6 @@ const fetchEquipment = async () => {
   }
 
   try {
-    // Replace with actual API call
     const { data } = await api.get(`/equipment/${route.params.id}`);
     if (data) {
       equipment.value = data;

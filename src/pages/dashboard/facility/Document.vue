@@ -575,22 +575,3 @@ watch(filter, () => {
   tableKey.value++;
 });
 </script>
-
-<style scoped>
-.good-table {
-  width: 100%;
-  overflow-x: hidden;
-}
-
-div.main {
-  z-index: 0;
-  padding-top: 82px;
-  padding-left: 28px;
-}
-
-.round-button {
-  width: 14px;
-  height: 24px;
-  line-height: 24px;
-}
-</style>

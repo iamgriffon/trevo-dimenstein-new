@@ -31,16 +31,14 @@
 
     <div class="bg-white rounded-lg shadow p-6">
       <div class="mb-4 flex justify-between items-center">
-        <div class="relative w-64">
+        <div class="relative w-72">
           <Input
             v-model="searchTerm"
             type="text"
             placeholder="Buscar equipamento..."
-            class="pl-10"
           >
             <FontAwesomeIcon
               icon="fa-solid fa-search"
-              class="text-gray-400 absolute left-3 top-3"
             />
           </Input>
         </div>
@@ -100,7 +98,7 @@
 
 <script setup>
 import { ref, computed, onMounted, watch, onUnmounted } from "vue";
-import { useRouter, useRoute, RouterLink } from "vue-router";
+import { useRoute, RouterLink } from "vue-router";
 import Layout from "@/components/common/Layout.vue";
 import Table from "@/components/dashboard/Table.vue";
 import Input from "@/components/ui/Input.vue";
@@ -108,41 +106,25 @@ import Modal from "@/components/common/Modal.vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { createTextCell, createActionButtonsCell } from "@/utils/tableCells";
 import { api } from "@/services/api";
-import { toRaw } from "vue";
 
-const router = useRouter();
 const route = useRoute();
 
 // State variables
 const equipments = ref([]);
 const loading = ref(true);
 const searchTerm = ref("");
-const statusFilter = ref("");
 const facility = ref({});
 const currentPage = ref(1);
 const perPage = ref(10);
 const showDeleteModal = ref(false);
 const equipmentToDelete = ref(null);
 const typesOfEquipments = ref([]);
-// Get the equipment type from route params
 const equipmentType = computed(() => route.params.type || "");
 
 // Derived values
-const typeTitle = computed(() => {
-  const types = {
-    mechanical: "Mecânicos",
-    electrical: "Elétricos",
-    filtration: "Filtração",
-    hvac: "HVAC",
-    monitoring: "Monitoramento",
-  };
-  return types[equipmentType?.value.toLowerCase()] || equipmentType?.value;
-});
 
 const filteredEquipments = computed(() => {
   let filtered = [...equipments.value];
-
-  // Apply search term filter
   if (searchTerm.value) {
     const term = searchTerm.value.toLowerCase();
     filtered = filtered.filter(
@@ -152,23 +134,8 @@ const filteredEquipments = computed(() => {
         item.serialNumber.toLowerCase().includes(term)
     );
   }
-
-  // Apply status filter
-  if (statusFilter.value) {
-    filtered = filtered.filter((item) => item.status === statusFilter.value);
-  }
-
   return filtered;
 });
-
-const startIndex = computed(() => (currentPage.value - 1) * perPage.value);
-const endIndex = computed(() =>
-  Math.min(startIndex.value + perPage.value, filteredEquipments.value.length)
-);
-const totalPages = computed(() =>
-  Math.ceil(filteredEquipments.value.length / perPage.value)
-);
-const isLastPage = computed(() => currentPage.value >= totalPages.value);
 
 const tableColumns = [
   {
@@ -238,15 +205,10 @@ const fetchEquipments = async () => {
   loading.value = true;
 
   try {
-    // In a real app, you would fetch data from an API based on the type
-    // For now, we'll simulate with mock data
     const response = await api.get(
       `facility/${route.params.id}/equipments/${equipmentType?.value}`
     );
     equipments.value = response.data;
-    console.log(response.data);
-
-    // Mock data for testing
   } catch (error) {
     console.error("Error fetching equipments:", error);
   } finally {
@@ -257,8 +219,6 @@ const fetchEquipments = async () => {
 const fetchTypesOfEquipments = async () => {
   const { data } = await api.get(`/typeOfEquipment`);
   typesOfEquipments.value = data;
-
-  console.log(data);
 };
 
 const fetchFacility = async () => {
@@ -270,27 +230,8 @@ const listOfTypesOfEquipments = computed(() => {
   const res = filteredEquipments.value.filter(
     (equipment) => equipment.typeId === route.params.typeId
   );
-  console.log({ res: toRaw(res) });
   return res;
 });
-
-const getStatusClass = (status) => {
-  const classes = "px-2 py-1 text-xs rounded-full";
-
-  if (status === "active") {
-    return `${classes} bg-green-100 text-green-800`;
-  }
-
-  if (status === "inactive") {
-    return `${classes} bg-red-100 text-red-800`;
-  }
-
-  if (status === "maintenance") {
-    return `${classes} bg-yellow-100 text-yellow-800`;
-  }
-
-  return `${classes} bg-gray-100 text-gray-800`;
-};
 
 const confirmDelete = (equipment) => {
   equipmentToDelete.value = equipment;
@@ -328,43 +269,3 @@ onMounted(() => {
 
 onUnmounted(() => {});
 </script>
-
-<style scoped>
-.good-table {
-  width: 100%;
-  overflow-x: hidden;
-}
-
-.background-img {
-  opacity: 0.6;
-  z-index: 0;
-  min-height: 150px;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  background: center no-repeat;
-  background-size: cover;
-}
-
-.logo-img {
-  z-index: 1;
-  position: relative;
-  background: center no-repeat;
-  -webkit-box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.1);
-  box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.1);
-}
-
-.logo-circle {
-  z-index: 1;
-  top: -45px;
-}
-
-.up-25 {
-  position: relative;
-  top: -30px;
-}
-
-a.btn {
-  min-width: 40px;
-}
-</style>

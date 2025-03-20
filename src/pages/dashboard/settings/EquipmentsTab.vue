@@ -23,7 +23,7 @@
       </div>
 
       <Table
-        v-if="listOfTypesOfEquipment.length > 0"
+        v-if="!!listOfTypesOfEquipment.length"
         :columns="columnsFormatted"
         :data="filteredListOfTypesOfEquipment"
         :totalItems="listOfTypesOfEquipment.length"

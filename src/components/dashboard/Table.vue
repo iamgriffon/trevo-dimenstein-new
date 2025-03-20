@@ -193,7 +193,7 @@
       "
     >
       <section>
-        <label> Linhas por página: </label>
+        <label class="text-nowrap"> Linhas por página: </label>
         <select
           :value="perPage"
           @change="

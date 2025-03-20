@@ -26,11 +26,11 @@
             v-model="searchTerm"
             type="text"
             placeholder="Buscar equipamento..."
-            class="pl-10 w-full"
+            class="w-full px-3 border mb-4 rounded-md border-gray-300 max-md:w-96"
           >
             <FontAwesomeIcon
               icon="fa-solid fa-search"
-              class="text-gray-400 absolute left-3 top-3"
+              class="text-gray-400"
             />
           </Input>
         </div>
@@ -97,7 +97,6 @@ const fetchEquipments = async () => {
 const loadFacility = async () => {
   try {
     const { data } = await api.get(`facility/${route.params.id}`);
-    console.log(data);
 
     if (data) {
       facility.value = data.name;

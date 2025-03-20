@@ -68,11 +68,22 @@ import {
   faHashtag,
   faTag,
   faImage,
+  faProjectDiagram,
+  faCalendar,
+  faAsterisk,
+  faDotCircle,
+  faCalendarAlt,
+  faEyeSlash,
+  faFilePdf,
+  faTimes
 } from "@fortawesome/free-solid-svg-icons";
 
 import VueGoodTablePlugin from "vue-good-table-next";
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 import "vue-good-table-next/dist/vue-good-table-next.css";
 import PrimeVue from "primevue/config";
+import { faReact } from "@fortawesome/free-brands-svg-icons";
 
 library.add(
   faUser,
@@ -142,7 +153,22 @@ library.add(
   faSquare,
   faHashtag,
   faTag,
-  faImage
+  faImage,
+  faProjectDiagram,
+  faCalendar,
+  faReact,
+  faAsterisk,
+  faDotCircle,
+  faCalendarAlt,
+  faEyeSlash,
+  faEye,
+  faFilePdf,
+  faTimes
 );
 
-createApp(App).use(router).use(PrimeVue).use(VueGoodTablePlugin).mount("#app");
+createApp(App)
+  .use(router)
+  .use(PrimeVue)
+  .use(VueGoodTablePlugin)
+  .use(VueDatePicker)
+  .mount("#app");

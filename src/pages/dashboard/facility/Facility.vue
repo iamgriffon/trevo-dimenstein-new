@@ -64,17 +64,6 @@
           :perPage="10"
         />
       </div>
-
-      <template v-if="permission.canCreateDocuments(currentUser)">
-        <div class="bg-white rounded-lg p-4 mt-4">
-          <h2 class="text-xl font-medium mb-4">Enviar Documentos</h2>
-          <DocumentUploader
-            :show="showUploadModal"
-            :facility="facility._id"
-            @close="showUploadModal = false"
-          />
-        </div>
-      </template>
     </div>
   </Layout>
 </template>
@@ -88,7 +77,6 @@ import auth from "@/services/authentication";
 import permission from "@/services/permissions";
 import Layout from "@/components/common/Layout.vue";
 import Table from "@/components/dashboard/Table.vue";
-import DocumentUploader from "@/components/common/DocumentUploader.vue";
 import { toRaw } from "vue";
 import CardLink from "@/components/common/CardLink.vue";
 
@@ -100,7 +88,6 @@ const facility = ref({
   _id: "",
 });
 const loading = ref(true);
-const showUploadModal = ref(false);
 const currentUser = auth.currentUser();
 const typesOfTest = ref([]);
 const equipments = ref([]);

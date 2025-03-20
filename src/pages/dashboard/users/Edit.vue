@@ -59,11 +59,3 @@ onMounted(async () => {
   currentUser.value = auth.currentUser();
 });
 </script>
-
-<style scoped>
-div.main {
-  z-index: 0;
-  padding-top: 82px;
-  padding-left: 28px;
-}
-</style>

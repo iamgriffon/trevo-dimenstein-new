@@ -1,8 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-// import Home from '@/components/Home.vue'
-// import LoginPage from '@/components/LoginPage.vue'
-
 import BaseDashboard from "@/pages/dashboard/Base.vue";
 import Panel from "@/pages/dashboard/Panel.vue";
 
@@ -21,14 +18,14 @@ import FacilityDocuments from "@/pages/dashboard/facility/Document.vue";
 import RegisterFacility from "@/pages/dashboard/facility/Register.vue";
 import EditFacility from "@/pages/dashboard/facility/Edit.vue";
 
-// import FacilityRoutines from '@/components/dashboard/facility/routines/List.vue'
-// import FacilityRoutinesRadioactiveMaterialMovement from '@/components/dashboard/facility/routines/radioactiveMaterialMovement/List.vue'
-// import FacilityRoutinesRadioactiveMaterialMovementRegister from '@/components/dashboard/facility/routines/radioactiveMaterialMovement/Register.vue'
-// import FacilityRoutinesRadioactiveMaterialMovementEdit from '@/components/dashboard/facility/routines/radioactiveMaterialMovement/Edit.vue'
-// import FacilityRoutinesSolidWasteManagement from '@/components/dashboard/facility/routines/solidWasteManagement/List.vue'
-// import FacilityRoutinesSolidWasteManagementRegister from '@/components/dashboard/facility/routines/solidWasteManagement/Register.vue'
-// import FacilityRoutinesLiquidWasteManagement from '@/components/dashboard/facility/routines/liquidWasteManagement/List.vue'
-// import FacilityRoutinesLiquidWasteManagementRegister from '@/components/dashboard/facility/routines/liquidWasteManagement/Register.vue'
+import FacilityRoutines from '@/pages/dashboard/facility/routines/List.vue'
+import FacilityRoutinesRadioactiveMaterialMovement from '@/pages/dashboard/facility/routines/radioactiveMaterialMovement/List.vue'
+import FacilityRoutinesRadioactiveMaterialMovementRegister from '@/pages/dashboard/facility/routines/radioactiveMaterialMovement/Register.vue'
+import FacilityRoutinesRadioactiveMaterialMovementEdit from '@/pages/dashboard/facility/routines/radioactiveMaterialMovement/Edit.vue'
+import FacilityRoutinesSolidWasteManagement from '@/pages/dashboard/facility/routines/solidWasteManagement/List.vue'
+import FacilityRoutinesSolidWasteManagementRegister from '@/pages/dashboard/facility/routines/solidWasteManagement/Register.vue'
+import FacilityRoutinesLiquidWasteManagement from '@/pages/dashboard/facility/routines/liquidWasteManagement/List.vue'
+import FacilityRoutinesLiquidWasteManagementRegister from '@/pages/dashboard/facility/routines/liquidWasteManagement/Register.vue'
 
 import FacilityEquipments from "@/pages/dashboard/facility/equipments/List.vue";
 import FacilityEquipmentsByType from "@/pages/dashboard/facility/equipments/ListByType.vue";
@@ -130,8 +127,6 @@ const router = createRouter({
       children: [
         { path: '/settings', component: Settings },
         { path: "/panel", component: Panel },
-        //   ]
-        // }
         { path: "/users", component: Users },
         { path: "/user/:id", component: User },
         {
@@ -253,12 +248,8 @@ const router = createRouter({
           path: "/facility/:id/equipment/register",
           component: FacilityEquipmentsRegister,
         },
-        {
-          path: "/facility/:facilityId/equipment/:equipmentId/edit",
-          component: FacilityEquipmentsEdit,
-        },
-
-        //       // this will have to change in case of creating EPI Equipment routes
+        // Equipamentos
+        { path: '/equipments/:typeId/:id', component: Equipment },
         { path: "/equipments/epi", component: EPIEquipmentAssessmentTestList },
         //       { path: '/equipments/epi/register', component: EPIEquipmentAssessmentTestRegister },
         //       { path: '/equipments/epi/:equipmentId/:testId/:id/edit', component: EPIEquipmentAssessmentTestEdit },
@@ -297,20 +288,20 @@ const router = createRouter({
         //       { path: '/equipments/gamaCamara/:id/angulation/register', component: GamaCamaraAngulationRegister },
         //       { path: '/equipments/gamaCamara/:equipmentId/angulation/:testId', component: GamaCamaraAngulation },
 
-              { path: '/equipments/:typeId/:id', component: Equipment },
+       
         //       { path: '/equipments/:typeId/:equipmentId/:id', component: Test },
         //       { path: '/equipments/:typeId/:equipmentId/:id/register', component: TestRegister },
         //       { path: '/equipments/:typeId/:equipmentId/:id/register-old', component: TestRegisterOld },
         //       { path: '/equipments/:typeId/:equipmentId/:testId/:id/edit', component: TestEdit },
 
-        //       { path: '/facility/:id/routines', component: FacilityRoutines },
-        //       { path: '/facility/:id/routines/radioactivematerialmov', component: FacilityRoutinesRadioactiveMaterialMovement },
-        //       { path: '/facility/:id/routines/radioactivematerialmov/register', component: FacilityRoutinesRadioactiveMaterialMovementRegister },
-        //       { path: '/facility/:facilityId/routines/radioactivematerialmov/:radioactiveMaterialMovementId/edit', component: FacilityRoutinesRadioactiveMaterialMovementEdit },
-        //       { path: '/facility/:id/routines/solidwastemanagement/:year', component: FacilityRoutinesSolidWasteManagement },
-        //       { path: '/facility/:id/routines/solidwastemanagement/register/:tagnumber', component: FacilityRoutinesSolidWasteManagementRegister },
-        //       { path: '/facility/:id/routines/liquidwastemanagement/register/', component: FacilityRoutinesLiquidWasteManagementRegister },
-        //       { path: '/facility/:id/routines/liquidwastemanagement/:year', component: FacilityRoutinesLiquidWasteManagement },
+              { path: '/facility/:id/routines', component: FacilityRoutines },
+              { path: '/facility/:id/routines/radioactivematerialmov', component: FacilityRoutinesRadioactiveMaterialMovement },
+              { path: '/facility/:id/routines/radioactivematerialmov/register', component: FacilityRoutinesRadioactiveMaterialMovementRegister },
+              { path: '/facility/:facilityId/routines/radioactivematerialmov/:radioactiveMaterialMovementId/edit', component: FacilityRoutinesRadioactiveMaterialMovementEdit },
+              { path: '/facility/:id/routines/solidwastemanagement/:year', component: FacilityRoutinesSolidWasteManagement },
+              { path: '/facility/:id/routines/solidwastemanagement/register/:tagnumber', component: FacilityRoutinesSolidWasteManagementRegister },
+              { path: '/facility/:id/routines/liquidwastemanagement/register/', component: FacilityRoutinesLiquidWasteManagementRegister },
+              { path: '/facility/:id/routines/liquidwastemanagement/:year', component: FacilityRoutinesLiquidWasteManagement },
         { path: "/document", component: Doc },
         {
           path: "/document/register",
@@ -332,8 +323,6 @@ const router = createRouter({
         { path: "/document/:status", component: Doc },
         { path: "/info", component: Information },
         { path: "/terms", component: TermsOfUse },
-        //     ]
-        //   }
       ],
     },
   ],

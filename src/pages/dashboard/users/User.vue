@@ -333,7 +333,7 @@ const downloadANLicense = () => {
 
 const exclude = async () => {
   try {
-    await auth.exclude(user.value, "/users");
+    auth.exclude(user.value, "/users");
     router.push("/users");
   } catch (error) {
     console.error("Error deleting user:", error);
@@ -370,39 +370,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<style scoped>
-div.main {
-  z-index: 0;
-  padding-top: 82px;
-  padding-left: 28px;
-}
-.background-img {
-  opacity: 0.6;
-  z-index: 0;
-  min-height: 150px;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-  background: center no-repeat;
-  background-size: cover;
-}
-
-.logo-img {
-  z-index: 1;
-  position: relative;
-  background: center no-repeat;
-  -webkit-box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.1);
-  box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.1);
-}
-
-.logo-circle {
-  z-index: 1;
-  top: -45px;
-}
-
-.up-25 {
-  position: relative;
-  top: -30px;
-}
-</style>

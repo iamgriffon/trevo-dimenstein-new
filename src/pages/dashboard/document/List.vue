@@ -48,10 +48,9 @@
       <Input
         v-model="filter"
         placeholder="Buscar..."
-        class="w-full px-3 border mb-4 rounded-md border-gray-300 max-md:w-96"
         @update:modelValue="currentPage = 1"
       >
-        <FontAwesomeIcon icon="fa-solid fa-search" />
+        <FontAwesomeIcon icon="fa-solid fa-search" class="mr-2" />
       </Input>
 
       <template v-if="loading">

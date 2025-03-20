@@ -1,745 +1,580 @@
 <template>
-  <div class="main">
-    <div class="center">
-      <div class="col-12" enctype="multipart/form-data">
-        <h2>Criar nova instalação</h2>
-        <div class="col p-0">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb m-0">
-              <li class="breadcrumb-item" aria-current="page"><router-link :to="'/panel'"><i class="fa fa-home" aria-hidden="true"></i></router-link></li>
-              <li class="breadcrumb-item" aria-current="page"><router-link :to="'/facility'"><i class="far fa-building" aria-hidden="true"></i></router-link></li>
-              <li class="breadcrumb-item active" aria-current="page">adicionar instalação</li>
-            </ol>
-          </nav>
+  <Layout title="Adicionar Nova Pessoa">
+    <template #breadcrumb>
+      <p class="flex pl-2 gap-2 text-teal-800">
+        <span>/</span>
+        <span class="font-medium">Adicionar pessoa</span>
+      </p>
+    </template>
+
+    <div class="flex flex-col gap-6 w-full">
+      <section class="bg-white p-6 rounded-lg shadow">
+        <div
+          v-if="error"
+          class="bg-red-100 border border-red-400 text-red-700 p-4 rounded mb-4"
+        >
+          <FontAwesomeIcon icon="fa-solid fa-exclamation-circle" /> {{ errors }}
         </div>
-        <div class="hyper-card mb-3">
-          <div class="form-group">
-            <h4><span class="red">*</span>Departamento:</h4>
-            <v-select v-model='facility.department' :options="[{ name: 'both', label: 'Ambos'}, { name: 'nuclearmedicine', label: 'Medicina Nuclear'}, { name: 'radiodiagnosis', label: 'Radiodiagnóstico'}]"></v-select>
-          </div>
-        </div>
-        <div class="hyper-card mb-3">
-          <div class="form-group">
-            <h4>Grupo:</h4>
-            <v-select v-model='facility.group' :options="groupOptions"></v-select>
-          </div>
-        </div>
-        <div class="hyper-card mb-3">
-          <div class="form-group">
-            <label class="col-form-label" for="formName"><i class="far fa-image" aria-hidden="true"></i> Logo</label>
-            <small class="text-muted">escolha uma imagem quadrada</small>
-            <input type="file" class="form-control-file" placeholder="" @change="onLogoFileChange">
-          </div>
-          <div class="form-group">
-            <label class="col-form-label" for="formName"><i class="far fa-image" aria-hidden="true"></i> Imagem de Fundo</label>
-            <small class="text-muted">escolha uma imagem quadrada</small>
-            <input type="file" class="form-control-file" placeholder="" @change="onBackgroundFileChange">
-          </div>
-        </div>
-        <div class="hyper-card mb-3">
-          <div class="alert alert-danger" v-if="error">
-            <i class="fa fa-exclamation-circle" aria-hidden="true"></i> {{ errors }}
-          </div>
-          <div class="row">
-            <div class="form-group col-12 col-md">
-              <label class="col-form-label" for="formName"><i class="far fa-building" aria-hidden="true"></i> Nome<span class="red">*</span></label>
-              <input type="text" class="form-control" placeholder="Nome" v-model="facility.name">
-            </div>
-            <div class="form-group col-12 col-md">
-              <label class="col-form-label" for="formName"><i class="far fa-building" aria-hidden="true"></i> Razão Social<span class="red">*</span></label>
-              <input type="text" class="form-control" placeholder="Razão Social" v-model="facility.companyName">
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-12 col-md">
-              <label class="col-form-label" for="formName"><i class="fa fa-list-alt" aria-hidden="true"></i> CNPJ</label>
-              <input type="text" class="form-control" placeholder="00.000.000/0000-00" v-model="facility.cnpj">
-            </div>
-            <div class="form-group col-6 col-md">
-              <label class="col-form-label" for="formName"><i class="fa fa-phone" aria-hidden="true"></i> Telefone</label>
-              <input type="text" class="form-control" placeholder="Telefone" v-model="facility.telephone">
-            </div>
-            <div class="form-group col-6 col-md">
-              <label class="col-form-label" for="formName"><i class="fa fa-user" aria-hidden="true"></i> Contato</label>
-              <input type="text" class="form-control" placeholder="Contato" v-model="facility.contactName">
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-12">
-              <label class="col-form-label" for="formName"><i class="fa fa-map-marker" aria-hidden="true"></i> Endereço<span class="red">*</span></label>
-              <small class="text-muted">formato: Logradouro, número - Bairro - Cidade - UF CEP</small>
-              <input type="text" class="form-control" placeholder="Endereço" v-model="facility.address.street">
-            </div>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="userName">
+            <FontAwesomeIcon icon="fa-solid fa-user" /> Nome Completo<span
+              class="text-red-500"
+              >*</span
+            >
+          </label>
+          <input
+            type="text"
+            id="userName"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            :class="{ 'border-red-500': errors.includes('name') }"
+            placeholder="Nome Completo"
+            v-model="user.name"
+            v-validate="{ required: true, regex: /^(.*\s+.*)+$/ }"
+            name="name"
+            required
+          />
+          <div v-if="errors.includes('name')" class="text-red-500 text-sm mt-1">
+            Este é um campo obrigatório. Adicione nome e sobrenome.
           </div>
         </div>
 
-        <div class="mb-3">
-          <br>
-          <br>
-          <h4><i class="fa fa-users"></i> Pessoas</h4>
-          <br class="d-none d-md-block">
-          <br>
-          <h5>Selecione as pessoas responsáveis por essa instalação <small class="text-muted"> opcional</small></h5>
-          <div class="col-12">
-            <div class="form-group">
-              <label class="col-form-label">Titular da Instalação: </label>
-              <b-btn v-if="facilityTitular" class="btn-success" href="#" v-b-tooltip.hover title="Para alterar o usuário, remova-o da lista de pessoas selecionadas abaixo"><i class="fa fa-user"></i> {{ facilityTitular }}</b-btn>
-              <b-btn v-else class="btn-outline-success" v-b-modal="'chooseTitular'">Selecionar pessoa</b-btn>
-            </div>
-
-            <b-modal id="chooseTitular" ref="chooseTitular" size="lg" title="Selecionar titular da instalação" cancel-title="Cancelar" cancel-variant="success-outline" ok-variant="success">
-              <div class="col-12 px-0">
-                <div class="input-group input-with-addon">
-                  <span class="input-addon"><span class="fa fa-search"></span></span>
-                  <input type="text" class="form-control form-with-addon" id="search-input-form" v-model="filter" @input="filter = $event.target.value" placeholder="buscar..." aria-describedby="search-input">
-                </div>
-                <br>
-              </div>
-              <div class="col-12" v-if="!filteredUsers.length">
-                <br>
-                <div class="hyper-card text-center">
-                  <h4 class="m-0"><i class="fa fa-square-o" aria-hidden="true"></i></h4>
-                </div>
-              </div>
-              <vue-good-table v-else :columns="columns" :rows="filteredUsers"
-                :responsive="false"
-                :paginate="true"
-                :sort-options="{enabled: true, initialSortBy: {field: 'name', type: 'asc'}}"
-                :pagination-options="paginationOptions"
-                styleClass="table hyper-table col-12 px-0">
-                <template slot="table-row" slot-scope="props">
-                  <span v-if="props.column.field == 'action'">
-                    <button class="btn btn-success" @click="addToSelectedUsers(props.row._id), selectResponsability(props.row._id, 'Titular da instalação')"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                  </span>
-                  <span v-else>
-                    {{props.formattedRow[props.column.field]}}
-                  </span>
-                </template>
-              </vue-good-table>
-            </b-modal>
-          </div>
-
-          <div class="col-12">
-            <div class="form-group">
-              <label class="col-form-label">Responsável técnico: </label>
-              <b-btn v-if="tecnicalReponsible" class="btn-success" href="#" v-b-tooltip.hover title="Para alterar o usuário, remova-o da lista de pessoas selecionadas abaixo"><i class="fa fa-user"></i> {{ tecnicalReponsible }}</b-btn>
-              <b-btn v-else class="btn-outline-success" v-b-modal="'chooseTecnicalReponsible'">Selecionar pessoa</b-btn>
-            </div>
-
-            <b-modal id="chooseTecnicalReponsible" ref="chooseTecnicalReponsible" size="lg" title="Selecionar responsável técnico" cancel-title="Cancelar" cancel-variant="success-outline" ok-variant="success">
-              <div class="col-12 px-0">
-                <div class="input-group input-with-addon">
-                  <span class="input-addon"><span class="fa fa-search"></span></span>
-                  <input type="text" class="form-control form-with-addon" id="search-input-form" v-model="filter" @input="filter = $event.target.value" placeholder="buscar..." aria-describedby="search-input">
-                </div>
-                <br>
-              </div>
-              <div class="col-12" v-if="!filteredUsers.length">
-                <br>
-                <div class="hyper-card text-center">
-                  <h4 class="m-0"><i class="fa fa-square-o" aria-hidden="true"></i></h4>
-                </div>
-              </div>
-              <vue-good-table v-else :columns="columns" :rows="filteredUsers"
-                :paginate="true"
-                :sort-options="{enabled: true, initialSortBy: {field: 'name', type: 'asc'}}"
-                :pagination-options="paginationOptions"
-                :responsive="false" styleClass="table hyper-table col-12 px-0">
-                <template slot="table-row" slot-scope="props">
-                  <span v-if="props.column.field == 'action'">
-                    <button class="btn btn-success" @click="addToSelectedUsers(props.row._id), selectResponsability(props.row._id, 'Responsável técnico')"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                  </span>
-                  <span v-else>
-                    {{props.formattedRow[props.column.field]}}
-                  </span>
-                </template>
-              </vue-good-table>
-            </b-modal>
-          </div>
-
-          <div class="col-12">
-            <div class="form-group">
-              <label class="col-form-label">Substituto do responsável técnico: </label>
-              <b-btn v-if="tecnicalReponsibleSubs" class="btn-success" href="#" v-b-tooltip.hover title="Para alterar o usuário, remova-o da lista de pessoas selecionadas abaixo"><i class="fa fa-user"></i> {{ tecnicalReponsibleSubs }}</b-btn>
-              <b-btn v-else class="btn-outline-success" v-b-modal="'chooseTecnicalReponsibleSubs'">Selecionar pessoa</b-btn>
-            </div>
-
-            <b-modal id="chooseTecnicalReponsibleSubs" ref="chooseTecnicalReponsibleSubs" size="lg" title="Selecionar substituto do responsável técnico" cancel-title="Cancelar" cancel-variant="success-outline" ok-variant="success">
-              <div class="col-12 px-0">
-                <div class="input-group input-with-addon">
-                  <span class="input-addon"><span class="fa fa-search"></span></span>
-                  <input type="text" class="form-control form-with-addon" id="search-input-form" v-model="filter" @input="filter = $event.target.value" placeholder="buscar..." aria-describedby="search-input">
-                  <br>
-                </div>
-              </div>
-              <div class="col-12" v-if="!filteredUsers.length">
-                <br>
-                <div class="hyper-card text-center">
-                  <h4 class="m-0"><i class="fa fa-square-o" aria-hidden="true"></i></h4>
-                </div>
-              </div>
-              <vue-good-table v-else :columns="columns" :rows="filteredUsers"
-                :paginate="true"
-                :sort-options="{enabled: true, initialSortBy: {field: 'name', type: 'asc'}}"
-                :pagination-options="paginationOptions"
-                :responsive="false" styleClass="table hyper-table col-12 px-0">
-                <template slot="table-row" slot-scope="props">
-                  <span v-if="props.column.field == 'action'">
-                    <button class="btn btn-success" @click="addToSelectedUsers(props.row._id), selectResponsability(props.row._id, 'Substituto do responsável técnico')"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                  </span>
-                  <span v-else>
-                    {{props.formattedRow[props.column.field]}}
-                  </span>
-                </template>
-              </vue-good-table>
-            </b-modal>
-          </div>
-
-          <div class="col-12">
-            <div class="form-group">
-              <label class="col-form-label">Supervisor de radioproteção: </label>
-              <b-btn v-if="radioprotectionSupervisor" class="btn-success" href="#" v-b-tooltip.hover title="Para alterar o usuário, remova-o da lista de pessoas selecionadas abaixo"><i class="fa fa-user"></i> {{ radioprotectionSupervisor }}</b-btn>
-              <b-btn v-else class="btn-outline-success" v-b-modal="'chooseRadioprotectionSupervisor'">Selecionar pessoa</b-btn>
-            </div>
-
-            <b-modal id="chooseRadioprotectionSupervisor" ref="chooseRadioprotectionSupervisor" size="lg" title="Selecionar supervisor de radioproteção" cancel-title="Cancelar" cancel-variant="success-outline" ok-variant="success">
-              <div class="col-12 px-0">
-                <div class="input-group input-with-addon">
-                  <span class="input-addon"><span class="fa fa-search"></span></span>
-                  <input type="text" class="form-control form-with-addon" id="search-input-form" v-model="filter" @input="filter = $event.target.value" placeholder="buscar..." aria-describedby="search-input">
-                </div>
-                <br>
-              </div>
-              <div class="col-12" v-if="!filteredUsers.length">
-                <br>
-                <div class="hyper-card text-center">
-                  <h4 class="m-0"><i class="fa fa-square-o" aria-hidden="true"></i></h4>
-                </div>
-              </div>
-              <vue-good-table v-else :columns="columns" :rows="filteredUsers"
-                :paginate="true"
-                :sort-options="{enabled: true, initialSortBy: {field: 'name', type: 'asc'}}"
-                :pagination-options="paginationOptions"
-                :responsive="false" styleClass="table hyper-table col-12 px-0">
-                <template slot="table-row" slot-scope="props">
-                  <span v-if="props.column.field == 'action'">
-                    <button class="btn btn-success" @click="addToSelectedUsers(props.row._id), selectResponsability(props.row._id, 'Supervisor de radioproteção')"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                  </span>
-                  <span v-else>
-                    {{props.formattedRow[props.column.field]}}
-                  </span>
-                </template>
-              </vue-good-table>
-            </b-modal>
-          </div>
-
-          <div class="col-12">
-            <div class="form-group">
-              <label class="col-form-label">Substituto do supervisor de radioproteção: </label>
-              <b-btn v-if="radioprotectionSupervisorSub" class="btn-success" href="#" v-b-tooltip.hover title="Para alterar o usuário, remova-o da lista de pessoas selecionadas abaixo"><i class="fa fa-user"></i> {{ radioprotectionSupervisorSub }}</b-btn>
-              <b-btn v-else class="btn-outline-success" v-b-modal="'chooseRadioprotectionSupervisorSubs'">Selecionar pessoa</b-btn>
-            </div>
-
-            <b-modal id="chooseRadioprotectionSupervisorSubs" ref="chooseRadioprotectionSupervisorSubs" size="lg" title="Selecionar substituto do supervisor de radioproteção" cancel-title="Cancelar" cancel-variant="success-outline" ok-variant="success">
-              <div class="col-12 px-0">
-                <div class="input-group input-with-addon">
-                  <span class="input-addon"><span class="fa fa-search"></span></span>
-                  <input type="text" class="form-control form-with-addon" id="search-input-form" v-model="filter" @input="filter = $event.target.value" placeholder="buscar..." aria-describedby="search-input">
-                  <br>
-                </div>
-              </div>
-              <div class="col-12" v-if="!filteredUsers.length">
-                <br>
-                <div class="hyper-card text-center">
-                  <h4 class="m-0"><i class="fa fa-square-o" aria-hidden="true"></i></h4>
-                </div>
-              </div>
-              <vue-good-table v-else :columns="columns" :rows="filteredUsers"
-                :paginate="true"
-                :sort-options="{enabled: true, initialSortBy: {field: 'name', type: 'asc'}}"
-                :pagination-options="paginationOptions"
-                :responsive="false" styleClass="table hyper-table col-12 px-0">
-                <template slot="table-row" slot-scope="props">
-                  <span v-if="props.column.field == 'action'">
-                    <button class="btn btn-success" @click="addToSelectedUsers(props.row._id), selectResponsability(props.row._id, 'Substituto do supervisor de radioproteção')"><i class="fa fa-plus" aria-hidden="true"></i></button>
-                  </span>
-                  <span v-else>
-                    {{props.formattedRow[props.column.field]}}
-                  </span>
-                </template>
-              </vue-good-table>
-            </b-modal>
-          </div>
-          <br>
-          <br>
-
-          <h5>Selecione as outras pessoas que terão acesso a essa instalação</h5>
-          <small class="text-muted">opcional. Usuários rad dimenstein possuem acesso a todas as instalações por padrão.</small>
-          <br>
-          <br>
-          <div class="col-12 px-0">
-            <div class="input-group input-with-addon">
-              <span class="input-addon"><span class="fa fa-search"></span></span>
-              <input type="text" class="form-control form-with-addon" id="search-input-form" @input="secondFilter = $event.target.value" placeholder="buscar..." aria-describedby="search-input">
-            </div>
-            <br>
-          </div>
-          <div class="col-12" v-if="!secondFilteredUsers.length">
-            <br>
-            <div class="hyper-card text-center">
-              <h4 class="m-0"><i class="fa fa-square-o" aria-hidden="true"></i></h4>
-            </div>
-          </div>
-          <vue-good-table v-else :columns="columns" :rows="secondFilteredUsers"
-            :paginate="true"
-            :sort-options="{enabled: true, initialSortBy: {field: 'name', type: 'asc'}}"
-            :pagination-options="paginationOptions"
-            :responsive="false" styleClass="table hyper-table col-12 px-0">
-            <template slot="table-row" slot-scope="props">
-              <span v-if="props.column.field == 'action'">
-                <button class="btn btn-success" @click="addToSelectedUsers(props.row._id)"><i class="fa fa-plus" aria-hidden="true"></i></button>
-              </span>
-              <span v-else>
-                {{props.formattedRow[props.column.field]}}
-              </span>
-            </template>
-          </vue-good-table>
-          <br>
-          <br>
-          <h5>Pessoas selecionadas</h5>
-          <div class="col-12" v-if="!facility.users.length">
-            <br>
-            <div class="hyper-card">
-              Nenhuma pessoa selecionada...
-            </div>
-          </div>
-          <vue-good-table v-else :columns="columnsWithResponsability" :rows="facility.users"
-            :paginate="true"
-            :sort-options="{enabled: true, initialSortBy: {field: 'name', type: 'asc'}}"
-            :pagination-options="paginationOptions"
-            :responsive="false" styleClass="table hyper-table col-12 px-0">
-            <template slot="table-row" slot-scope="props">
-              <span v-if="props.column.field == 'action'">
-                <button class="btn btn-danger" @click="removeFromSelectedUsers(props.row._id)"><i class="fa fa-times" aria-hidden="true"></i></button>
-              </span>
-              <span v-else-if="props.column.field == 'responsability'">
-                {{ props.row.responsabilities.join(", ") }}
-              </span>
-              <span v-else>
-                {{props.formattedRow[props.column.field]}}
-              </span>
-            </template>
-          </vue-good-table>
+        <div class="mb-4">
+          <label class="block mb-2" for="userCpf">
+            <FontAwesomeIcon icon="fa-solid fa-id-card" /> CPF
+            <small class="text-gray-500 ml-1">opcional</small>
+          </label>
+          <input
+            type="text"
+            id="userCpf"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            placeholder="000.000.000-00"
+            v-model="user.cpf"
+          />
         </div>
-        <br/><br/><br/>
-        <div class="hyper-card mb-3">
-          <div class="form-group">
-            <label class="col-form-label" for="formName"><i class="far fa-file" aria-hidden="true"></i> Matrícula CNEN</label>
-            <small class="text-muted">opcional</small>
-            <input type="text" class="form-control" placeholder="00000" v-model="facility.CNENregistry">
+
+        <div class="mb-4">
+          <label class="block mb-2" for="userTelephone">
+            <FontAwesomeIcon icon="fa-solid fa-phone" /> Telefone
+            <small class="text-gray-500 ml-1">opcional</small>
+          </label>
+          <input
+            type="text"
+            id="userTelephone"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            placeholder="Telefone"
+            v-model="user.telephone"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="userType">
+            <FontAwesomeIcon icon="fa-solid fa-id-badge" /> Tipo de Usuário
+            <small class="text-gray-500 ml-1">
+              <a href="#" class="text-teal-800 hover:underline"
+                >como funciona?</a
+              >
+            </small>
+          </label>
+          <select
+            id="userType"
+            v-model="user.type"
+            class="w-full p-2 border border-gray-300 rounded-md"
+          >
+            <option
+              v-if="currentUser.type === 'administrador'"
+              value="administrador"
+            >
+              administrador
+            </option>
+            <option
+              v-if="currentUser.type === 'administrador'"
+              value="rad laudos"
+            >
+              rad laudos
+            </option>
+            <option
+              v-if="currentUser.type === 'administrador'"
+              value="rad fisico"
+            >
+              rad fisico
+            </option>
+            <option
+              v-if="currentUser.type === 'administrador'"
+              value="rad admin"
+            >
+              rad admin
+            </option>
+            <option value="cliente">cliente</option>
+            <option value="cliente MN">cliente MN</option>
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="userEmail">
+            <FontAwesomeIcon icon="fa-solid fa-envelope" /> Email<span
+              class="text-red-500"
+              >*</span
+            >
+          </label>
+          <input
+            type="email"
+            id="userEmail"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            placeholder="Email"
+            v-model.trim="user.email"
+            @input="
+              user.email = $event.target.value
+                .toLowerCase()
+                .replace(' ', '')
+                .trim()
+            "
+            required
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="userPassword">
+            <FontAwesomeIcon icon="fa-solid fa-key" /> Senha<span
+              class="text-red-500"
+              >*</span
+            >
+          </label>
+          <div class="flex">
+            <input
+              :type="showPassword ? 'text' : 'password'"
+              id="userPassword"
+              class="flex-1 p-2 border border-gray-300 rounded-l-md"
+              placeholder="Senha"
+              v-model="user.password"
+            />
+            <button
+              type="button"
+              class="px-3 py-2 bg-gray-200 border border-gray-300 border-l-0"
+              @click="showPassword = !showPassword"
+            >
+              <FontAwesomeIcon
+                :icon="
+                  showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'
+                "
+              />
+            </button>
+            <button
+              type="button"
+              class="px-3 py-2 text-teal-800 border border-teal-800 border-l-0 rounded-r-md hover:bg-teal-800 hover:text-white transition-colors"
+              @click="generatePassword()"
+            >
+              Gerar Senha
+            </button>
           </div>
-          <div class="form-group">
-            <h4>Práticas Autorizadas: <small class="text-muted"> opcional</small></h4>
-            <div class="form-check form-check-inline">
-              <label class="form-check-label">
-                <input type="checkbox" class="form-check-input" v-model="facility.doInpatientTherapy">
-                Terapia com Internação
-              </label>
-            </div>
-            <div class="form-check form-check-inline">
-              <label class="form-check-label">
-                <input type="checkbox" class="form-check-input" v-model="facility.doOutpatientTherapy">
-                Terapia Ambulatorial
-              </label>
-            </div>
-            <div class="form-check form-check-inline">
-              <label class="form-check-label">
-                <input type="checkbox" class="form-check-input" v-model="facility.doDiagnosis">
-                Diagnóstico
-              </label>
-            </div>
-          </div>
-          <div class="row">
-            <h4 class="col-12">Quantidade de radionuclídeos autorizados por semana: <small class="text-muted"> opcional</small></h4>
-            <div class="form-group col-12 col-md-4" v-for="radioisotope in facility.radioisotopes">
-              <div class="form-check form-check-inline" >
-                <label class="form-check-label form-inline">
-                  <input type="checkbox" :checked="radioisotope.quantity > 0" class="form-check-input col-1" @click="((radioisotope.quantity == null) ? radioisotope.quantity = 0 : radioisotope.quantity = null)">
-                  <span class="col-4">{{ radioisotope.name }}</span>
-                  <input type="text" class="form-control col-4" placeholder="00.00" v-model="radioisotope.quantity">
-                  <span class="col-2">mCi</span>
-                </label>
-              </div>
-            </div>
+          <div class="mt-2">
+            <label class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                class="w-5 h-5"
+                v-model="willSendPassword"
+              />
+              Enviar email de boas vindas com senha
+            </label>
           </div>
         </div>
-        <button class="btn btn-success btn-block" @click="register()">Criar instalação</button>
-        <br>
-        <br>
-      </div>
+      </section>
+
+      <section class="bg-white p-6 rounded-lg shadow">
+        <h4 class="text-xl font-medium mb-4">Certificados CNEN</h4>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="anLicense">
+            <FontAwesomeIcon icon="fa-solid fa-file-pdf" /> Licença AN
+            <small class="text-gray-500 ml-1">opcional</small>
+          </label>
+          <input
+            type="file"
+            id="anLicense"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            @change="onANLicenseFileChange"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="anLicenseNumber">
+            <FontAwesomeIcon icon="fa-solid fa-id-card" /> Número da Licença AN
+            <small class="text-gray-500 ml-1">opcional</small>
+          </label>
+          <input
+            type="text"
+            id="anLicenseNumber"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            placeholder="AA-0000"
+            v-model="user.ANLicenseNumber"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="anLicenseValidity">
+            <FontAwesomeIcon icon="fa-solid fa-calendar-alt" /> Validade da
+            Licença AN
+            <small class="text-gray-500 ml-1">opcional</small>
+          </label>
+          <input
+            type="date"
+            id="anLicenseValidity"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            v-model="user.ANLicenseValidity"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="fmLicense">
+            <FontAwesomeIcon icon="fa-solid fa-file-pdf" /> Licença FM
+            <small class="text-gray-500 ml-1">opcional</small>
+          </label>
+          <input
+            type="file"
+            id="fmLicense"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            @change="onFMLicenseFileChange"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="fmLicenseNumber">
+            <FontAwesomeIcon icon="fa-solid fa-id-card" /> Número da Licença FM
+            <small class="text-gray-500 ml-1">opcional</small>
+          </label>
+          <input
+            type="text"
+            id="fmLicenseNumber"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            placeholder="AA-0000"
+            v-model="user.FMLicenseNumber"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block mb-2" for="fmLicenseValidity">
+            <FontAwesomeIcon icon="fa-solid fa-calendar-alt" /> Validade da
+            Licença FM
+            <small class="text-gray-500 ml-1">opcional</small>
+          </label>
+          <input
+            type="date"
+            id="fmLicenseValidity"
+            class="w-full p-2 border border-gray-300 rounded-md"
+            v-model="user.FMLicenseValidity"
+          />
+        </div>
+      </section>
+
+      <section
+        v-if="user.type === 'cliente' || user.type === 'cliente MN'"
+        class="bg-white p-6 rounded-lg shadow"
+      >
+        <h4 class="text-xl font-medium mb-4">
+          Selecione as instalações que esse usuário terá acesso
+          <small class="text-gray-500 block text-sm mt-1"
+            >opcional. Usuários rad dimenstein possuem acesso a todas as
+            instalações por padrão.</small
+          >
+        </h4>
+
+        <div class="mb-4">
+          <Input
+            v-model="filter"
+            placeholder="Buscar..."
+            class="w-full px-3 border mb-4 rounded-md border-gray-300"
+          >
+            <FontAwesomeIcon icon="fa-solid fa-search" />
+          </Input>
+        </div>
+
+        <div
+          v-if="!filteredFacilities.length"
+          class="bg-white p-6 rounded-lg text-center mb-6"
+        >
+          <h4 class="text-lg font-medium">Nenhum resultado</h4>
+        </div>
+
+        <div v-else class="mb-8">
+          <Table
+            :columns="facilitiesColumns"
+            :data="filteredFacilities"
+            :totalItems="filteredFacilities.length"
+            v-model:currentPage="currentPage"
+            v-model:perPage="perPage"
+            footer-class="relative border-0 justify-center z-auto"
+          />
+        </div>
+
+        <h4 class="text-xl font-medium mb-4">Instalações selecionadas</h4>
+
+        <div
+          v-if="selectedFacilities.length === 0"
+          class="bg-white p-6 rounded-lg text-center mb-6"
+        >
+          Nenhuma instalação selecionada...
+        </div>
+
+        <div v-else class="mb-8">
+          <Table
+            :columns="selectedFacilitiesColumns"
+            :data="selectedFacilities"
+            :totalItems="selectedFacilities.length"
+            v-model:currentPage="currentPage"
+            v-model:perPage="perPage"
+            footer-class="relative border-0 justify-center z-auto"
+          />
+        </div>
+      </section>
+
+      <button
+        class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors mb-8"
+        @click="register()"
+      >
+        Criar pessoa
+      </button>
     </div>
-  </div>
+  </Layout>
 </template>
 
-<script>
-import auth from '@/services/authentication'
-import axios from 'axios'
+<script setup>
+import { ref, computed, onMounted, watch } from "vue";
+import { useRouter } from "vue-router";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import axios from "axios";
+import Hashids from "hashids";
+import auth from "@/services/authentication";
+import Layout from "@/components/common/Layout.vue";
+import Input from "@/components/ui/Input.vue";
+import Table from "@/components/dashboard/Table.vue";
+import { createActionButtonsCell } from "@/utils/tableCells";
 
-export default {
-  data () {
-    return {
-      filter: '',
-      secondFilter: '',
-      users: [],
-      columns: [
-        {
-          label: '',
-          field: 'action'
-        },
-        {
-          label: 'Nome',
-          field: 'name'
-        },
-        {
-          label: 'Tipo de Usuário',
-          field: 'type'
-        }
-      ],
-      columnsWithResponsability: [
-        {
-          label: '',
-          field: 'action'
-        },
-        {
-          label: 'Nome',
-          field: 'name'
-        },
-        {
-          label: 'Tipo de Usuário',
-          field: 'type'
-        },
-        {
-          label: 'Responsabilidade',
-          field: 'responsability'
-        }
-      ],
-      groupOptions: [],
-      paginationOptions: {
-        enabled: true,
-        nextLabel: '>',
-        prevLabel: '<',
-        rowsPerPageLabel: 'Linhas por página:',
-        ofLabel: 'de',
-        pageLabel: 'página',
-        allLabel: 'Todos'
-      },
-      facility: {
-        name: '',
-        companyName: '',
-        cnpj: '',
-        address: {},
-        telephone: '',
-        CNENregistry: '',
-        professionCNEN: '',
-        professionNumberCNEN: '',
-        validityOfOperationAuthorization: '',
-        logoImg: '',
-        backgroundImg: '',
-        doInpatientTherapy: false,
-        doOutpatientTherapy: false,
-        doDiagnosis: false,
-        radioisotopes: [
-          {name: 'C(11)', quantity: null},
-          {name: 'Cr(51)', quantity: null},
-          {name: 'F(18)', quantity: null},
-          {name: 'Ga(67)', quantity: null},
-          {name: 'Ga(68)', quantity: null},
-          {name: 'I(123)', quantity: null},
-          {name: 'I(125)', quantity: null},
-          {name: 'I(131)', quantity: null},
-          {name: 'In(111)', quantity: null},
-          {name: 'Lu(177)', quantity: null},
-          {name: 'Ra(233)', quantity: null},
-          {name: 'Sm(153)', quantity: null},
-          {name: 'Tc(99m)', quantity: null},
-          {name: 'Tl(201)', quantity: null},
-          {name: 'Y(90)', quantity: null}
-        ],
-        usersId: [],
-        users: []
-      },
-      error: '',
-      errors: '',
-      facilityTitular: '',
-      tecnicalReponsible: '',
-      tecnicalReponsibleSubs: '',
-      radioprotectionSupervisor: '',
-      radioprotectionSupervisorSub: ''
-    }
-  },
+// Router
+const router = useRouter();
 
-  computed: {
-    filteredUsers () {
-      if (this.filter.length > 0) {
-        let exp = new RegExp(this.filter.trim(), 'i')
-        let users = this.users.filter(user => exp.test(user.name))
-        return users
-      } else {
-        return this.users
-      }
+// State variables
+const filter = ref("");
+const facilities = ref([]);
+const selectedFacilities = ref([]);
+const error = ref(false);
+const errors = ref("");
+const showPassword = ref(false);
+const willSendPassword = ref(false);
+const currentPage = ref(1);
+const perPage = ref(10);
+
+// User data
+const user = ref({
+  email: "",
+  name: "",
+  cpf: "",
+  type: "",
+  telephone: "",
+  password: "",
+  ANLicense: "",
+  ANLicenseNumber: "",
+  ANLicenseValidity: "",
+  FMLicense: "",
+  FMLicenseNumber: "",
+  FMLicenseValidity: "",
+});
+
+// Current user information
+const currentUser = auth.currentUser();
+
+// Table columns
+const facilitiesColumns = [
+  {
+    accessorKey: "action",
+    header: "",
+    cell: (info) => {
+      const buttons = [
+        {
+          type: "button",
+          icon: "fa-solid fa-plus",
+          props: {
+            class:
+              "bg-green-600 hover:bg-green-700 transition-all duration-300 text-white rounded-full w-10 h-10",
+            onClick: () => addToSelectedFacilities(info.row.original._id),
+            title: "Adicionar",
+          },
+        },
+      ];
+      return createActionButtonsCell(info, buttons);
     },
-    secondFilteredUsers () {
-      if (this.secondFilter.length > 0) {
-        let exp = new RegExp(this.secondFilter.trim(), 'i')
-        let users = this.users.filter(user => exp.test(user.name))
-        return users.filter(user => !this.facility.users.includes(user))
-      } else {
-        return this.users.filter(user => !this.facility.users.includes(user))
-      }
-    }
   },
+  {
+    accessorKey: "name",
+    header: "Nome",
+  },
+];
 
-  created () {
-    axios.get(auth.apiUrl() + 'users/', {headers: {Authorization: 'Bearer ' + auth.getToken()}})
-    .then(response => {
+const selectedFacilitiesColumns = [
+  {
+    accessorKey: "action",
+    header: "",
+    cell: (info) => {
+      const buttons = [
+        {
+          type: "button",
+          icon: "fa-solid fa-times",
+          props: {
+            class:
+              "bg-red-600 hover:bg-red-700 transition-all duration-300 text-white rounded-full w-10 h-10",
+            onClick: () => removeFromSelectedFacilities(info.row.original._id),
+            title: "Remover",
+          },
+        },
+      ];
+      return createActionButtonsCell(info, buttons);
+    },
+  },
+  {
+    accessorKey: "name",
+    header: "Nome",
+  },
+];
+
+// Computed properties
+const filteredFacilities = computed(() => {
+  if (filter.value.length > 0) {
+    const exp = new RegExp(filter.value.trim(), "i");
+    return facilities.value
+      .filter((facility) => exp.test(facility.name))
+      .filter(
+        (facility) =>
+          !selectedFacilities.value.some((f) => f._id === facility._id)
+      )
+      .slice(
+        (currentPage.value - 1) * perPage.value,
+        currentPage.value * perPage.value
+      );
+  }
+  return facilities.value
+    .filter(
+      (facility) =>
+        !selectedFacilities.value.some((f) => f._id === facility._id)
+    )
+    .slice(
+      (currentPage.value - 1) * perPage.value,
+      currentPage.value * perPage.value
+    );
+});
+
+// Methods
+function register() {
+  const credentials = {
+    email: user.value.email.toLowerCase().replace(" ", "").trim(),
+    cpf: user.value.cpf,
+    password: user.value.password,
+    name: user.value.name,
+    type: user.value.type,
+    telephone: user.value.telephone,
+    ANLicense: user.value.ANLicense,
+    ANLicenseNumber: user.value.ANLicenseNumber,
+    ANLicenseValidity: user.value.ANLicenseValidity,
+    FMLicense: user.value.FMLicense,
+    FMLicenseNumber: user.value.FMLicenseNumber,
+    FMLicenseValidity: user.value.FMLicenseValidity,
+    willSendPassword: willSendPassword.value,
+    facilities: selectedFacilities.value,
+  };
+
+  auth.register(this, credentials, () => {
+    setTimeout(() => {
+      router.push({ path: "/users" });
+    }, 1500);
+  });
+}
+
+function generatePassword() {
+  const hashids = new Hashids(
+    "AKJSBDalsdabskJASd",
+    8,
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+  );
+  user.value.password = hashids.encode(
+    Math.floor(Math.random() * 100 + 1),
+    Math.floor(Math.random() * 100 + 1),
+    Math.floor(Math.random() * 100 + 1)
+  );
+}
+
+function onANLicenseFileChange(e) {
+  const files = e.target.files || e.dataTransfer.files;
+  if (!files.length) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    user.value.ANLicense = e.target.result;
+  };
+  reader.readAsDataURL(files[0]);
+}
+
+function onFMLicenseFileChange(e) {
+  const files = e.target.files || e.dataTransfer.files;
+  if (!files.length) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    user.value.FMLicense = e.target.result;
+  };
+  reader.readAsDataURL(files[0]);
+}
+
+function loadFacilities() {
+  axios
+    .get(`${auth.apiUrl()}facilities/`, {
+      headers: { Authorization: `Bearer ${auth.getToken()}` },
+    })
+    .then((response) => {
       if (response.data.length === 0) {
-        this.errors = 'Nenhum resultado encontrado'
-        this.users = ''
+        errors.value = "Nenhum resultado encontrado";
+        facilities.value = [];
       } else {
-        for (var i = 0; i < response.data.length; i++) {
-          this.users.push({_id: response.data[i]._id, name: response.data[i].name, type: response.data[i].type, responsabilities: [], ANLicenseNumber: response.data[i].ANLicenseNumber, FMLicenseNumber: response.data[i].FMLicenseNumber})
-        }
-        this.users.sort()
+        facilities.value = response.data.list;
       }
     })
-    .catch(error => {
-      this.errors = error.data
-      this.users = ''
-    })
+    .catch((err) => {
+      errors.value = err.response?.data || "Erro ao carregar instalações";
+      facilities.value = [];
+    });
+}
 
-    axios.get(auth.apiUrl() + 'group', {headers: {Authorization: 'Bearer ' + auth.getToken()}})
-    .then(response => {
-      if (response.data.length === 0) {
-        this.errors = 'Nenhum resultado encontrado'
-        this.groupOptions = ''
-      } else {
-        for (let i = 0; i < response.data.length; i++) {
-          this.groupOptions.push({ name: { name: response.data[i].name, _id: response.data[i]._id }, label: response.data[i].name })
-        }
-        this.groupOptions.sort((a, b) => {
-          if (a.label > b.label) return 1
-          if (a.label < b.label) return -1
-          return 0
-        })
-      }
-    })
-    .catch(error => {
-      this.errors = error.data
-      this.groupOptions = ''
-    })
-    this.currentUser = auth.currentUser()
-  },
-  methods: {
-    register () {
-      var credentials = {
-        name: this.facility.name,
-        companyName: this.facility.companyName,
-        cnpj: this.facility.cnpj,
-        telephone: this.facility.telephone,
-        contactName: this.facility.contactName,
-        address: this.facility.address,
+function addToSelectedFacilities(facilityId) {
+  const facility = facilities.value.find(
+    (facility) => facility._id === facilityId
+  );
+  if (!facility) return;
 
-        CNENregistry: this.facility.CNENregistry,
-        professionCNEN: this.facility.professionCNEN,
-        professionNumberCNEN: this.facility.professionNumberCNEN,
-        validityOfOperationAuthorization: this.facility.validityOfOperationAuthorization,
-        doInpatientTherapy: this.facility.doInpatientTherapy,
-        doOutpatientTherapy: this.facility.doOutpatientTherapy,
-        doDiagnosis: this.facility.doDiagnosis,
-        radioisotopes: this.facility.radioisotopes,
-        department: this.facility.department.name,
-        group: this.facility.group.name,
-
-        backgroundImg: this.facility.backgroundImg,
-        logoImg: this.facility.logoImg,
-
-        users: this.facility.users
-      }
-
-      auth.registerFacility(this, credentials, '/facility')
-    },
-
-    addRadioisotope (radioisotope) {
-      this.facility.radioisotopes.push({radioisotope: 0})
-    },
-
-    resetFilters () {
-      this.filter = ''
-      this.secondFilter = ''
-    },
-
-    selectResponsability (userId, userResponsability) {
-      var user = this.users.find(user => user._id === userId)
-      user.responsabilities.push(userResponsability)
-      this.resetFilters()
-
-      if (userResponsability === 'Titular da instalação') {
-        this.facilityTitular = user.name
-        this.$refs.chooseTitular.hide()
-      } else if (userResponsability === 'Responsável técnico') {
-        this.tecnicalReponsible = user.name
-        this.$refs.chooseTecnicalReponsible.hide()
-      } else if (userResponsability === 'Substituto do responsável técnico') {
-        this.tecnicalReponsibleSubs = user.name
-        this.$refs.chooseTecnicalReponsibleSubs.hide()
-      } else if (userResponsability === 'Supervisor de radioproteção') {
-        this.radioprotectionSupervisor = user.name
-        this.$refs.chooseRadioprotectionSupervisor.hide()
-      } else if (userResponsability === 'Substituto do supervisor de radioproteção') {
-        this.radioprotectionSupervisorSub = user.name
-        this.$refs.chooseRadioprotectionSupervisorSubs.hide()
-      }
-    },
-
-    addToSelectedUsers (userId, userResponsability) {
-      this.resetFilters()
-      var user = this.users.find(user => user._id === userId)
-      if (!this.facility.users.includes(user)) {
-        this.facility.users.push(user)
-        this.facility.usersId.push(user._id)
-      }
-    },
-
-    removeFromSelectedUsers (userId) {
-      this.resetFilters()
-      var user = this.facility.users.find(user => user._id === userId)
-      if (this.facility.users.indexOf(user) !== -1) {
-        this.facility.users.splice(this.facility.users.indexOf(user), 1)
-        this.facility.usersId.splice(this.facility.usersId.indexOf(user._id), 1)
-        user.responsabilities = []
-
-        if (user.name === this.facilityTitular) {
-          this.facilityTitular = ''
-        }
-        if (user.name === this.tecnicalReponsible) {
-          this.tecnicalReponsible = ''
-        }
-        if (user.name === this.tecnicalReponsibleSubs) {
-          this.tecnicalReponsibleSubs = ''
-        }
-        if (user.name === this.radioprotectionSupervisor) {
-          this.radioprotectionSupervisor = ''
-        }
-        if (user.name === this.radioprotectionSupervisorSub) {
-          this.radioprotectionSupervisorSub = ''
-        }
-      }
-      if (!this.users.includes(user)) {
-        this.filteredUsers.push(user)
-      }
-    },
-
-    onProfessionCNENChange (e) {
-      var files = e.target.files || e.dataTransfer.files
-      if (!files.length) {
-        return
-      }
-      this.createProfessionCNENFile(files[0])
-    },
-    createProfessionCNENFile (file) {
-      var reader = new FileReader()
-      var vm = this
-
-      reader.onload = (e) => {
-        vm.facility.professionCNEN = e.target.result
-      }
-      reader.readAsDataURL(file)
-    },
-
-    onLogoFileChange (e) {
-      var files = e.target.files || e.dataTransfer.files
-      if (!files.length) {
-        return
-      }
-      this.createLogo(files[0])
-    },
-    createLogo (file) {
-      var reader = new FileReader()
-      var vm = this
-
-      reader.onload = (e) => {
-        var image = new Image()
-        image.onload = function (imageEvent) {
-          var canvas = document.createElement('canvas')
-          var maxSize = 200
-          var width = image.width
-          var height = image.height
-          if (width > height) {
-            if (width > maxSize) {
-              height *= maxSize / width
-              width = maxSize
-            }
-          } else {
-            if (height > maxSize) {
-              width *= maxSize / height
-              height = maxSize
-            }
-          }
-          canvas.width = width
-          canvas.height = height
-          canvas.getContext('2d').drawImage(image, 0, 0, width, height)
-
-          var dataUrl = canvas.toDataURL('image/png')
-
-          vm.facility.logoImg = dataUrl
-        }
-        image.src = e.target.result
-      }
-      reader.readAsDataURL(file)
-    },
-    onBackgroundFileChange (e) {
-      var files = e.target.files || e.dataTransfer.files
-      if (!files.length) {
-        return
-      }
-      this.createBackground(files[0])
-    },
-    createBackground (file) {
-      var reader = new FileReader()
-      var vm = this
-
-      reader.onload = (e) => {
-        var image = new Image()
-        image.onload = function (imageEvent) {
-          var canvas = document.createElement('canvas')
-          var maxSize = 300
-          var width = image.width
-          var height = image.height
-          if (width > height) {
-            if (width > maxSize) {
-              height *= maxSize / width
-              width = maxSize
-            }
-          } else {
-            if (height > maxSize) {
-              width *= maxSize / height
-              height = maxSize
-            }
-          }
-          canvas.width = width
-          canvas.height = height
-          canvas.getContext('2d').drawImage(image, 0, 0, width, height)
-
-          var dataUrl = canvas.toDataURL('image/png')
-
-          vm.facility.backgroundImg = dataUrl
-        }
-        image.src = e.target.result
-      }
-      reader.readAsDataURL(file)
-    }
+  if (!selectedFacilities.value.some((f) => f._id === facility._id)) {
+    selectedFacilities.value.push(facility);
   }
 }
+
+function removeFromSelectedFacilities(facilityId) {
+  const facilityIndex = selectedFacilities.value.findIndex(
+    (facility) => facility._id === facilityId
+  );
+  if (facilityIndex === -1) return;
+
+  selectedFacilities.value.splice(facilityIndex, 1);
+}
+
+// Load data on mount
+onMounted(() => {
+  loadFacilities();
+});
+
+// Watch for type changes to reset facilities selection if needed
+watch(
+  () => user.value.type,
+  (newType) => {
+    if (newType !== "cliente" && newType !== "cliente MN") {
+      selectedFacilities.value = [];
+    }
+  }
+);
 </script>
 
 <style scoped>
@@ -750,18 +585,18 @@ div.main {
 }
 
 [data-letters-list]:before {
-  content:attr(data-letters-list);
-  display:inline-block;
-  font-size:1em;
-  width:3em;
-  height:3em;
-  line-height:3em;
-  text-align:center;
-  border-radius:50%;
+  content: attr(data-letters-list);
+  display: inline-block;
+  font-size: 1em;
+  width: 3em;
+  height: 3em;
+  line-height: 3em;
+  text-align: center;
+  border-radius: 50%;
   background: #00a767;
-  vertical-align:middle;
-  margin-right:1em;
-  color:white;
+  vertical-align: middle;
+  margin-right: 1em;
+  color: white;
 }
 
 #search-input-form {
