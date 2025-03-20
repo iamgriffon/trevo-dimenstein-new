@@ -1,5 +1,14 @@
 <template>
   <Layout :title="pageTitle || 'Equipamento'">
+    <template #breadcrumb>
+      <span class="mx-2 text-teal-800 select-none">/</span>
+      <router-link
+        :to="`/facility/${facility?._id}/equipments/${route.params.typeId}`"
+        class="text-gray-500 hover:text-teal-800 hover:underline font-semibold"
+      >
+        Voltar para Lista
+      </router-link>
+    </template>
     <template #header>
       <div class="flex gap-2">
         <router-link
@@ -10,6 +19,7 @@
           Voltar para Lista
         </router-link>
         <button
+          v-if="!isEditing"
           @click="isEditing = !isEditing"
           class="px-4 py-2 border h-10 bg-green-500 text-white border-gray-300 rounded-md hover:bg-green-700 transition-colors"
         >
@@ -20,9 +30,9 @@
     </template>
 
     <div v-if="loading" class="flex justify-center py-8">
-      <div
-        class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"
-      ></div>
+      <div class="text-center">
+          <img src="/static/img/loading.gif" class="w-full h-full mx-auto" />
+        </div>
     </div>
 
     <div v-else class="bg-white rounded-lg shadow p-6">

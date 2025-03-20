@@ -13,8 +13,8 @@
 
     <div class="relative">
       <!-- Loading overlay -->
-      <div 
-        v-if="loading" 
+      <div
+        v-if="loading"
         class="inset-0 bg-white bg-opacity-70 z-10 mt-20 flex justify-center items-center h-80"
       >
         <div class="text-center">
@@ -32,8 +32,11 @@
         class="max-h-[500px] overflow-y-auto"
         footer-class="relative border-0 justify-center z-auto"
       />
-      
-      <div v-else-if="!loading" class="bg-white p-6 rounded-lg shadow text-center">
+
+      <div
+        v-else-if="!loading"
+        class="bg-white p-6 rounded-lg shadow text-center"
+      >
         <p class="text-gray-500">Nenhum tipo de equipamento encontrado.</p>
       </div>
     </div>

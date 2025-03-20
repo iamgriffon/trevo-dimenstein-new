@@ -1,8 +1,7 @@
 <template>
   <div class="flex items-center relative">
     <Input
-      :class="'border-b'"
-      :class-name="'bg-transparent text-white rounded-none'"
+      className="bg-gray-900 text-white rounded-none border-0 border-b"
       type="text"
       placeholder="Buscar..."
       v-model="searchQuery"
@@ -15,7 +14,7 @@
     >
       <span
         ><FontAwesomeIcon :icon="['fas', 'circle-notch']" spin />
-        buscando...</span
+        Buscando...</span
       >
     </div>
 
@@ -43,7 +42,7 @@
         class="block hover:text-green-600"
       >
         <span class="flex items-center gap-2"
-          ><FontAwesomeIcon icon='fa-solid fa-user' />
+          ><FontAwesomeIcon icon="fa-solid fa-user" />
           {{ formatName(user.name) }}</span
         >
       </router-link>

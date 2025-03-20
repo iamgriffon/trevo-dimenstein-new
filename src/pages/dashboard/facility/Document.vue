@@ -4,7 +4,7 @@
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
         :to="`/facility/${route.params.id}`"
-        class="text-gray-500 hover:text-teal-800 hover:underline italic font-semibold"
+        class="text-gray-500 hover:text-teal-800 hover:underline font-semibold"
       >
         {{ facility.name }}
       </router-link>
@@ -161,16 +161,9 @@ const filteredDocuments = computed(() => {
           exp.test(item.uploadedBy[0]?.name) ||
           exp.test(item.uploadedAt)
       )
-      .slice(
-        (currentPage.value - 1) * perPage.value,
-        currentPage.value * perPage.value
-      );
   }
   
-  return documents.value.slice(
-    (currentPage.value - 1) * perPage.value,
-    currentPage.value * perPage.value
-  );
+  return documents.value
 });
 
 function toggleAllSelected(newValue) {

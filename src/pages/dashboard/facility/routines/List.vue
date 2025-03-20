@@ -1,10 +1,10 @@
 <template>
   <Layout title="Rotinas">
-    <template #breadcrumb>
+    <template #breadcrumb v-if="facility.name">
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
         :to="`/facility/${facility._id}`"
-        class="text-gray-500 hover:text-teal-800 hover:underline italic font-semibold"
+        class="text-gray-500 hover:text-teal-800 hover:underline font-semibold"
       >
         {{ facility.name }}
       </router-link>
@@ -14,21 +14,21 @@
       <CardLink
         :href="`/facility/${facility._id}/routines/radioactivematerialmov`"
         title="Movimentação de Material Radioativo"
-        className="border-l-green-600 h-36 w-64 flex items-center justify-start"
+        className="border-l-green-600 h-36 w-fit min-w-64 flex items-center justify-start"
       >
       </CardLink>
 
       <CardLink
         :href="`/facility/${facility._id}/routines/solidwastemanagement/${year}`"
         title="Gerenciamento de Rejeitos Sólidos"
-        className="border-l-blue-600 h-36 w-64 flex items-center justify-start"
+        className="border-l-blue-600 h-36 w-fit min-w-64 flex items-center justify-start"
       >
       </CardLink>
 
       <CardLink
         :href="`/facility/${facility._id}/routines/liquidwastemanagement/${year}`"
         title="Gerenciamento de Rejeitos Líquidos"
-        className="border-l-purple-600 h-36 w-64 flex items-center justify-start"
+        className="border-l-purple-600 h-36 w-fit min-w-64 flex items-center justify-start"
       >
       </CardLink>
     </div>

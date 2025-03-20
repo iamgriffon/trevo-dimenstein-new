@@ -290,10 +290,7 @@ const filteredFacilities = computed(() => {
     );
   }
 
-  return facilities.value.slice(
-    (currentPage.value - 1) * perPage.value,
-    currentPage.value * perPage.value
-  );
+  return facilities.value;
 });
 
 const addToSelectedFacilities = (id) => {

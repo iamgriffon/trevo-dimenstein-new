@@ -4,14 +4,14 @@
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
         :to="`/facility/${facility._id}`"
-        class="text-gray-500 hover:text-teal-800 hover:underline italic font-semibold"
+        class="text-gray-500 hover:text-teal-800 hover:underline font-semibold"
       >
         {{ facility?.name }}
       </router-link>
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
         :to="`/facility/${facility._id}/routines`"
-        class="text-gray-500 hover:text-teal-800 hover:underline italic font-semibold"
+        class="text-gray-500 hover:text-teal-800 hover:underline font-semibold"
       >
         Rotinas
       </router-link>
@@ -26,14 +26,6 @@
         >
           <FontAwesomeIcon icon="fa-solid fa-download" />
         </button>
-
-        <button
-          class="bg-gray-200 hover:bg-gray-300 transition-colors duration-300 text-gray-700 px-4 py-2 rounded-md"
-          title="agregar"
-        >
-          <FontAwesomeIcon icon="fa-solid fa-project-diagram" />
-        </button>
-
         <router-link
           v-if="permission.canCreateFacility(currentUser)"
           :to="`/facility/${facility._id}/routines/liquidwastemanagement/register`"
@@ -182,7 +174,6 @@ const filterStatus = ref({ label: "Todos", value: "all" });
 const filterMonth = ref(null);
 const responsibleOptions = ref([]);
 const selectedResponsible = ref("");
-const year = ref(new Date().getFullYear());
 const currentUser = ref(auth.currentUser());
 const errors = ref("");
 const loading = ref(false);
