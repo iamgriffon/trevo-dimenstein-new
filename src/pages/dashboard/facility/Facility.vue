@@ -1,5 +1,13 @@
 <template>
   <Layout :title="facility.name">
+    <template #breadcrumb v-if="facility.name">
+      <p class="flex items-center gap-2 pl-2 text-teal-800">
+        <span>/</span>
+        <span class="text-gray-500 font-semibold">{{
+          facility.name
+        }}</span>
+      </p>
+    </template>
     <template #header>
       <div class="flex gap-2">
         <router-link
@@ -34,19 +42,19 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <CardLink
           :href="'/facility/' + facility._id + '/documents'"
-          className="border-l-green-600 h-36 w-64 flex items-center justify-start"
+          className="border-l-green-600 h-36 w-fit min-w-64 flex items-center justify-start"
           title="Lista de Documentos"
         />
 
         <CardLink
           :href="'/facility/' + facility._id + '/equipments'"
-          className="border-l-blue-600 h-36 w-64 flex items-center justify-start"
+          className="border-l-blue-600 h-36 w-fit min-w-64 flex items-center justify-start"
           title="Equipamentos"
         />
 
         <CardLink
           :href="'/facility/' + facility._id + '/routines'"
-          className="border-l-purple-600 h-36 w-64 flex items-center justify-start"
+          className="border-l-purple-600 h-36 w-fit min-w-64 flex items-center justify-start"
           title="Rotinas"
         />
       </div>

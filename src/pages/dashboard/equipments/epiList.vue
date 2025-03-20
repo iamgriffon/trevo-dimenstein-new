@@ -14,7 +14,8 @@
           "
           @click="toggleSearch(false)"
         >
-          Simples <FontAwesomeIcon icon="fa-solid fa-search" />
+          <FontAwesomeIcon icon="fa-solid fa-search" />
+          Simples
         </button>
         <button
           type="button"
@@ -27,7 +28,8 @@
           "
           @click="toggleSearch(true)"
         >
-          Avançada <FontAwesomeIcon icon="fa-solid fa-filter" />
+           <FontAwesomeIcon icon="fa-solid fa-filter" />
+           Avançada
         </button>
       </div>
       <router-link
@@ -46,7 +48,7 @@
         <Input
           v-model="filter"
           placeholder="Buscar..."
-          class="w-full px-3 border mb-4 rounded-md border-gray-300 max-md:w-96"
+          className="px-3 border mb-4 rounded-md border-gray-300 w-96"
         >
           <FontAwesomeIcon icon="fa-solid fa-search" />
         </Input>
@@ -56,14 +58,15 @@
           <Input
             v-model="advancedFilter"
             placeholder="Buscar..."
-            class="w-[80%] px-3 border mb-4 rounded-md border-gray-300 max-md:w-96"
+            className="w-96 px-3 border mb-4 rounded-md border-gray-300"
           >
             <FontAwesomeIcon icon="fa-solid fa-search" />
           </Input>
           <button
             :type="submit"
-            :class="'w-[20%] h-10 rounded-md bg-green-600 hover:bg-green-700 transition-all duration-300 text-white'"
+            :class="'w-fit flex items-center gap-2 px-4 py-1 h-10 rounded-md bg-green-600 hover:bg-green-700 transition-all duration-300 text-white'"
           >
+            <FontAwesomeIcon icon="fa-solid fa-search" />
             Buscar
           </button>
         </form>
@@ -314,7 +317,13 @@ const columns = [
 ];
 
 const filteredDocuments = computed(() => {
-  return filterDocuments(documents.value, filter.value, currentPage.value, perPage.value);
+  if (!filter.value.trim()) {
+    return documents.value;
+  }
+
+  return documents.value.filter((doc) =>
+    doc.name.trim().toLowerCase().includes(filter.value.toLowerCase())
+  );
 });
 
 const clearAllDocuments = () => {

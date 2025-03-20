@@ -4,7 +4,7 @@
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
         :to="`/facility/${route.params.id}`"
-        class="text-gray-500 hover:text-teal-800 hover:underline italic font-semibold"
+        class="text-gray-500 hover:text-teal-800 hover:underline font-semibold"
       >
         {{ facility.name }}
       </router-link>
@@ -45,9 +45,9 @@
       </div>
 
       <div v-if="loading" class="flex justify-center py-8">
-        <div
-          class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"
-        ></div>
+              <div class="text-center">
+          <img src="/static/img/loading.gif" class="w-full h-full mx-auto" />
+        </div>
       </div>
 
       <div

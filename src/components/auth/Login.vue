@@ -215,7 +215,7 @@ function verifyCode() {
         </section>
         <Input
           type="text"
-          class="px-4 w-full gap-2"
+          className="px-4 w-full gap-2"
           v-model="credentials.loginToken"
           placeholder="Código de verificação"
           :error="!!authStep2Error.length && !credentials.loginToken.length"

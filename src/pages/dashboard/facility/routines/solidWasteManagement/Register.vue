@@ -5,21 +5,21 @@
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
         :to="`/facility/${facility._id}`"
-        class="text-gray-500 hover:text-teal-800 hover:underline italic font-semibold"
+        class="text-gray-500 hover:text-teal-800 hover:underline font-semibold"
       >
         {{ facility.name }}
       </router-link>
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
         :to="`/facility/${facility._id}/routines`"
-        class="text-gray-500 hover:text-teal-800 hover:underline italic font-semibold"
+        class="text-gray-500 hover:text-teal-800 hover:underline font-semibold"
       >
         rotinas
       </router-link>
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
         :to="`/facility/${facility._id}/routines/solidwastemanagement/${year}`"
-        class="text-gray-500 hover:text-teal-800 hover:underline italic font-semibold"
+        class="text-gray-500 hover:text-teal-800 hover:underline font-semibold"
       >
         gerenciamento de rejeitos sólidos
       </router-link>

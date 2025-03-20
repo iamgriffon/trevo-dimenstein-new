@@ -78,7 +78,19 @@
             v-model:currentPage="currentPage"
             @liberateAll="liberateAll"
             @clearSelected="toggleAllSelected(false)"
-          />
+          >
+            <template #perPageSelect>
+              <select
+                :value="perPage"
+                @change="handlePerPageChange(Number(event.target?.value))"
+                class="p-2 rounded-md cursor-pointer"
+              >
+                <option :value="10">10</option>
+                <option :value="20">20</option>
+                <option v-if="totalItems >= 50" :value="50">50</option>
+              </select>
+            </template>
+          </Table>
         </section>
 
         <div v-if="error" class="p-4 text-red-600 bg-red-100 rounded-lg">
@@ -120,6 +132,7 @@ import {
   createActionButtonsCell,
   filterDocuments,
 } from "@/utils/tableCells";
+import { api } from "@/services/api";
 
 const filter = ref("");
 const documents = ref([]);
@@ -128,7 +141,7 @@ const perPage = ref(10);
 const loading = ref(false);
 const error = ref("");
 const selectedDocs = ref([]);
-const totalItems = ref(0);
+const totalItems = ref(1);
 const today = ref(format(new Date(), "dd/MM/yyyy"));
 const pdfUrl = ref("");
 const url = ref("");
@@ -138,6 +151,11 @@ const commentId = ref("");
 
 const selectIconType = ref("fa-check");
 const selectIconClass = ref("bg-green-500 hover:bg-green-700");
+
+// Add these variables to track loading state
+const isLoadingMore = ref(false);
+const loadedPageNumbers = ref(new Set());
+const maxLoadedPage = ref(0);
 
 function toggleAllSelected(newValue) {
   const isSomeSelected = filteredDocuments.value?.some(
@@ -172,11 +190,12 @@ const tableButtonStyle =
   "rounded-full w-10 h-10 bg-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-300 transition-colors";
 
 const filteredDocuments = computed(() => {
-  return filterDocuments(
-    documents.value,
-    filter.value,
-    currentPage.value,
-    perPage.value
+  if (!filter.value.trim()) {
+    return documents.value;
+  }
+
+  return documents.value.filter((doc) =>
+    doc.name.trim().toLowerCase().includes(filter.value.toLowerCase())
   );
 });
 
@@ -372,11 +391,7 @@ const columns = [
     accessorKey: "liberatedBy",
     header: "Liberado por",
     cell: (info) =>
-      createRelationCell(
-        info?.row?.original?.liberatedBy,
-        "name",
-        "text-left"
-      ),
+      createRelationCell(info?.row?.original?.liberatedBy, "name", "text-left"),
     meta: {
       headerClass: "px-8 text-left",
       cellClass: "px-8",
@@ -386,7 +401,7 @@ const columns = [
     accessorKey: "uploadedAt",
     header: "Upload",
     sortable: true,
-    cell: (info) => createDateCell(info, "text-left"),
+    cell: (info) => createTextCell(info, "text-left"),
     meta: {
       headerClass: "px-8 text-left",
       cellClass: "px-4",
@@ -396,7 +411,7 @@ const columns = [
     accessorKey: "validity",
     header: "Validade",
     sortable: true,
-    cell: (info) => createDateCell(info, "text-left"),
+    cell: (info) => createTextCell(info, "text-left"),
     meta: {
       headerClass: "px-8 text-left",
       cellClass: "px-8",
@@ -413,45 +428,115 @@ const columns = [
   },
 ];
 
-const loadDocuments = async () => {
-  loading.value = true;
+const paramMap = {
+    corrigir: "Corrigir",
+    assinar: "Falta assinar",
+    liberar: "Assinado",
+  };
+
+const loadDocuments = async (isInitialLoad = true) => {
+  if (isInitialLoad) {
+    loading.value = true;
+    documents.value = [];
+    loadedPageNumbers.value = new Set();
+    maxLoadedPage.value = 0;
+  } else if (isLoadingMore.value) {
+    return; // Don't load more if already loading
+  } else {
+    isLoadingMore.value = true;
+  }
 
   try {
-    const paramMap = {
-      corrigir: "Corrigir",
-      assinar: "Falta assinar",
-      liberar: "Assinado",
-    };
+    // Get the page to load - either initial page or next batch
+    const nextPage = isInitialLoad
+      ? currentPage.value
+      : maxLoadedPage.value + 1;
+
+    // Don't fetch the same page multiple times
+    if (loadedPageNumbers.value.has(nextPage) && !isInitialLoad) {
+      isLoadingMore.value = false;
+      return;
+    }
 
     const initialFilter = {
       pageSize: perPage.value,
+      pageNum: nextPage,
       limit: perPage.value,
-      pageNum: currentPage.value,
-      status: route.params.status || "",
+      status: paramMap[route.params.status] || "",
     };
 
-    const response = await axios.get(
-      `${auth.apiUrl()}documents${
-        route.params.status ? `/${paramMap[route.params.status]}` : ""
-      }`,
-      {
-        headers: { Authorization: `Bearer ${auth.getToken()}` },
-        params: !route.params.status?.length
-          ? {
-              filters: JSON.stringify(initialFilter),
-            }
-          : {},
-      }
-    );
-
-    totalItems.value = response.data.paging?.total || response.data.length;
-    documents.value = response?.data?.list || response.data;
-    error.value = "";
+    await fetchDocuments(initialFilter, isInitialLoad);
   } catch (err) {
-    error.value = err.response?.data?.message || "Erro ao carregar documentos";
-    documents.value = [];
+    console.error("Error loading documents:", err);
+    error.value = err?.response?.data?.message || "Erro ao carregar documentos";
   } finally {
     loading.value = false;
+    isLoadingMore.value = false;
+  }
+};
+
+const fetchDocuments = async (filter, isInitialLoad = true) => {
+  const reqParams = route.params.status
+    ? `/${paramMap[route.params.status]}`
+    : "";
+
+  const response = await api.get(`documents${reqParams}`, {
+    params: !route.params.status
+      ? {
+          filters: JSON.stringify(filter),
+        }
+      : {},
+  });
+
+  // Handle different response formats based on route param
+  const resultData = route.params.status ? response.data : response.data.list;
+  const resultTotal = route.params.status ? response.data.length : response.data.paging.total;
+
+  if (!resultData?.length) {
+    if (isInitialLoad) {
+      console.warn("No documents found");
+      error.value = "Nenhum documento encontrado";
+      documents.value = [];
+    }
+    return;
+  }
+
+  totalItems.value = resultTotal;
+
+  // Add the current page to our set of loaded pages
+  loadedPageNumbers.value.add(filter.pageNum);
+  maxLoadedPage.value = Math.max(maxLoadedPage.value, filter.pageNum);
+
+  // Either replace documents or add to them depending on if this is initial load
+  if (isInitialLoad) {
+    documents.value = resultData;
+  } else {
+    documents.value = [...documents.value, ...resultData];
+  }
+
+  // Determine if we should prefetch the next batch
+  checkAndPrefetchNextBatch();
+};
+
+const checkAndPrefetchNextBatch = () => {
+  // Calculate total pages based on items and page size
+  const totalPages = Math.ceil(totalItems.value / perPage.value);
+  
+  // Original pagination-based prefetch condition
+  const shouldPrefetch = currentPage.value >= maxLoadedPage.value - 2 && 
+                        maxLoadedPage.value < totalPages;
+
+  // New condition: Check if current page is incomplete and more items exist
+  const currentPageStart = (currentPage.value - 1) * perPage.value;
+  const currentPageItems = documents.value.slice(
+    currentPageStart,
+    currentPageStart + perPage.value
+  ).length;
+  const hasIncompletePage = currentPageItems < perPage.value;
+  const hasMoreItems = totalItems.value > documents.value.length;
+
+  if (shouldPrefetch || (hasIncompletePage && hasMoreItems)) {
+    loadDocuments(false);
   }
 };
 
@@ -539,15 +624,29 @@ const signSelected = (test) => {
 };
 
 onMounted(() => {
-  loadDocuments();
+  loadDocuments(true);
 });
 
-watch(
-  [() => route.params.status, () => currentPage.value, () => perPage.value],
-  () => {
-    loadDocuments();
+watch([() => route.params.status], () => {
+  // When route status changes, reset everything and load fresh
+  currentPage.value = 1;
+  loadDocuments(true);
+});
+
+watch([() => currentPage.value, () => perPage.value], () => {
+  // When page or perPage changes, check if we need to load more
+  if (currentPage.value * perPage.value >= documents.value.length) {
+    currentPage.value = Math.ceil(documents.value.length / perPage.value);
   }
-);
+  checkAndPrefetchNextBatch();
+});
+
+watch(filter, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    currentPage.value = 1;
+    loadDocuments(true); // Reset and reload when filter changes
+  }
+});
 
 watch(
   documents,
@@ -559,9 +658,28 @@ watch(
   { deep: true }
 );
 
-watch(perPage, (newVal) => {
-  currentPage.value = 1;
+watch(perPage, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    // Handle per-page change with our special function
+    handlePerPageChange(newValue);
+  }
 });
+
+// Add a specific handler for perPage changes
+const handlePerPageChange = (newPerPage) => {
+  // Calculate current position in terms of items
+  const currentTopItem = (currentPage.value - 1) * perPage.value + 1;
+
+  // Update perPage
+  perPage.value = newPerPage;
+
+  // Calculate what page we should be on with the new per-page setting to keep
+  // approximately the same position in the list
+  currentPage.value = Math.ceil(currentTopItem / newPerPage);
+
+  // Make sure we have enough data loaded for the current page
+  checkAndPrefetchNextBatch();
+};
 </script>
 
 <style scoped>
