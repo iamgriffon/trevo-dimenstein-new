@@ -193,7 +193,7 @@
       "
     >
       <section>
-        <label class="text-nowrap"> Linhas por página: </label>
+        <label class="text-nowrap max-lg:hidden"> Linhas por página: </label>
         <select
           :value="perPage"
           @change="
@@ -389,8 +389,14 @@ const table = computed(() => {
     return column;
   });
 
+  const paginatedData = computed(() => {  
+    const start = (props.currentPage - 1) * props.perPage;
+    const end = start + props.perPage;
+    return props.data.slice(start, end);
+  });
+
   return useVueTable({
-    data: props.data,
+    data: paginatedData.value,
     columns: processedColumns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),

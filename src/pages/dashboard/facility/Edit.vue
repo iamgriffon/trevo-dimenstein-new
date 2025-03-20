@@ -301,8 +301,8 @@
           <Table
             v-else
             :columns="columns"
-            :data="filteredUsers"
-            :total-items="filteredUsers.length"
+            :data="users"
+            :total-items="users.length"
             v-model:perPage="perPage"
             v-model:currentPage="currentPage"
             footerClass="hidden"
@@ -357,8 +357,8 @@
           <Table
             v-else
             :columns="columns"
-            :data="filteredUsers"
-            :total-items="filteredUsers.length"
+            :data="users"
+            :total-items="users.length"
             v-model:perPage="perPage"
             v-model:currentPage="currentPage"
             footerClass="hidden"
@@ -472,8 +472,8 @@
           <Table
             v-else
             :columns="columns"
-            :data="filteredUsers"
-            :total-items="filteredUsers.length"
+            :data="users"
+            :total-items="users.length"
             footerClass="hidden"
             v-model:perPage="perPage"
             v-model:currentPage="currentPage"
@@ -812,19 +812,12 @@ const columnsWithResponsability = [
 // Computed properties
 const filteredUsers = computed(() => {
   if (!filter.value.length) {
-    return users.value.slice(
-      (currentPage.value - 1) * perPage.value,
-      currentPage.value * perPage.value
-    );
+    return users.value
   }
 
   const exp = new RegExp(filter.value.trim(), "i");
   return users.value
     .filter((user) => exp.test(user.name))
-    .slice(
-      (currentPage.value - 1) * perPage.value,
-      currentPage.value * perPage.value
-    );
 });
 
 const secondFilteredUsers = computed(() => {
@@ -836,10 +829,6 @@ const secondFilteredUsers = computed(() => {
 
   return filtered
     .filter((user) => !facility.value.users.includes(user))
-    .slice(
-      (secondFilteredCurrentPage.value - 1) * perPage.value,
-      secondFilteredCurrentPage.value * perPage.value
-    );
 });
 
 // Functions

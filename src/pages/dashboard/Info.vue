@@ -17,7 +17,7 @@ function onSubmit() {
     whatIsHappening: whatIsHappening.value,
     whatShouldHappen: whatShouldHappen.value,
   };
-  auth.reportProblem(null, report, '/panel' )
+  auth.reportProblem(null, report, "/panel");
 }
 </script>
 
@@ -26,7 +26,7 @@ function onSubmit() {
     <CardLink
       href="/terms"
       title="Termos de Uso"
-      className="border-l-green-500 w-56"
+      className="border-l-green-500 w-fit py-10"
     />
     <h1 class="text-4xl font-medium mt-2">Reportar problema</h1>
     <form
@@ -57,25 +57,33 @@ function onSubmit() {
             fez? E qual foi o resultado?
           </span>
         </label>
-        <textarea
-          class="block w-full px-2 py-1 bg-white border border-gray-300 text-base h-32 rounded-md"
-          v-model="whatIsHappening"
-          name="issue"
-          required
-          minlength="10"
-        />
+        <div
+          class="flex items-center px-4 py-1 shadow-none border bg-white border-gray-300 rounded-lg"
+        >
+          <textarea
+            class="block w-full px-2 py-1 bg-inherit text-lg h-32 rounded-md focus:outline-none"
+            v-model="whatIsHappening"
+            name="issue"
+            required
+            minlength="10"
+          />
+        </div>
       </section>
       <section class="flex flex-col gap-2 mb-2 mt-8">
         <label for="description" class="font-normal text-2xl">
           <span class="pr-2">Descreva o que deveria acontecer.</span>
         </label>
-        <textarea
-          class="block w-full px-2 py-1 bg-white border border-gray-300 text-base h-32 rounded-md"
-          v-model="whatShouldHappen"
-          name="description"
-          required
-          minlength="10"
-        />
+        <div
+          class="flex items-center px-4 py-1 shadow-none border bg-white border-gray-300 rounded-lg"
+        >
+          <textarea
+            class="block w-full px-2 py-1 bg-inherit text-lg h-32 rounded-md focus:outline-none"
+            v-model="whatShouldHappen"
+            name="description"
+            required
+            minlength="10"
+          />
+        </div>
       </section>
       <section>
         <Button

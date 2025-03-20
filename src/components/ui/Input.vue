@@ -1,10 +1,19 @@
 <template>
   <div
-    :class="cn('flex items-center px-4', 'shadow-md', className)"
+    :class="
+      cn(
+        'flex items-center px-4',
+        'shadow-md',
+        'border border-gray-300/40',
+        error && 'border-red-500',
+        className
+      )
+    "
     v-if="type !== 'date' && type !== 'datetime' && type !== 'time'"
   >
     <slot></slot>
     <input
+      :disabled="readonly"
       :type="type"
       :value="modelValue"
       @input="
@@ -15,19 +24,14 @@
       "
       :placeholder="placeholder"
       :readonly="readonly"
-      :class="[
-        cn(
-          'h-10 w-full rounded-xl px-3 focus:outline-none',
-          error && 'border-red-500',
-          className
-        ),
-      ]"
+      :class="[cn('h-10 w-full rounded-xl px-3 focus:outline-none bg-inherit')]"
     />
   </div>
   <DatePicker
     v-if="type === 'date' || type === 'datetime' || type === 'time'"
     :modelValue="parsedDate"
     @update:modelValue="handleDateUpdate"
+    :disabled="readonly"
     showIcon
     locale="pt"
     :view="viewMode"
@@ -38,14 +42,14 @@
     :monthNavigator="viewMode !== 'month' && viewMode !== 'year'"
     :hideOnDateTimeSelect="true"
     :showOtherMonths="false"
-    inputClass="cursor-pointer"
+    :inputClass="cn('cursor-pointer bg-inherit rounded-lg', readonly && 'cursor-default')"
     :dateFormat="computedDateFormat"
     :today-button-props="{
       class: 'text-green-500',
     }"
     :class="[
       cn(
-        'h-10 w-full rounded-xl px-3 shadow-theme',
+        'h-10 w-full border border-gray-300/40 px-3 shadow-md',
         error && 'border-red-500',
         className
       ),

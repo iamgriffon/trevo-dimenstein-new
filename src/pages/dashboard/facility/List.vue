@@ -38,7 +38,7 @@
       <Input
         v-model="filter"
         placeholder="Buscar..."
-        class="w-full px-3 border mb-4 rounded-md border-gray-300 max-md:w-96"
+        className="w-96 px-3 border mb-4 rounded-md border-gray-300"
       >
         <FontAwesomeIcon icon="fa-solid fa-search" />
       </Input>
@@ -139,10 +139,7 @@ import Layout from "@/components/common/Layout.vue";
 import Input from "@/components/ui/Input.vue";
 import Card from "@/components/dashboard/Card.vue";
 import Table from "@/components/dashboard/Table.vue";
-import { 
-  createTextCell, 
-  createActionButtonsCell, 
-} from "@/utils/tableCells";
+import { createTextCell, createActionButtonsCell } from "@/utils/tableCells";
 
 const filter = ref("");
 const facilities = ref([]);
@@ -164,8 +161,8 @@ const columns = [
     header: "Nome",
     cell: (info) => createTextCell(info, "text-left"),
     meta: {
-      headerClass: "text-left",
-      cellClass: "text-left",
+      headerClass: "text-left pl-4",
+      cellClass: "text-left pl-4",
     },
   },
   {
@@ -193,13 +190,18 @@ const columns = [
             to: {
               path: `/facility/${info.row.original._id}`,
             },
-            class: "flex items-center w-full justify-center p-2 rounded-md gap-2 bg-gray-100 cursor-pointer hover:shadow-inner hover:bg-gray-200 transition-all duration-300",
+            class:
+              "flex items-center w-full justify-center p-2 rounded-md gap-2 bg-gray-100 cursor-pointer hover:shadow-inner hover:bg-gray-200 transition-all duration-300",
             title: "Informações",
           },
           text: "Informações",
-        }
+        },
       ];
-      return createActionButtonsCell(info, actionButtons, "flex items-center justify-end");
+      return createActionButtonsCell(
+        info,
+        actionButtons,
+        "flex items-center justify-end"
+      );
     },
   },
 ];
@@ -208,18 +210,10 @@ const filteredFacilities = computed(() => {
   if (filter.value.length > 2) {
     currentPage.value = 1;
     const exp = new RegExp(filter.value.trim(), "i");
-    return facilities.value
-      .filter((item) => exp.test(item.name))
-      .slice(
-        (currentPage.value - 1) * perPage.value,
-        currentPage.value * perPage.value
-      );
+    return facilities.value.filter((item) => exp.test(item.name));
   }
-  
-  return facilities.value.slice(
-    (currentPage.value - 1) * perPage.value,
-    currentPage.value * perPage.value
-  );
+
+  return facilities.value;
 });
 
 const loadFacilities = async () => {

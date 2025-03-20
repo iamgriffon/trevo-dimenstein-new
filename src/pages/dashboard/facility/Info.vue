@@ -1,5 +1,11 @@
 <template>
   <Layout :title="facility.name">
+    <template #breadcrumb v-if="facility.name">
+      <p class="flex items-center gap-2 pl-2 text-teal-800">
+        <span>/</span>
+        <span class="text-gray-500 font-semibold">{{ facility.name }}</span>
+      </p>
+    </template>
     <template #header>
       <div class="flex items-center justify-end gap-2">
         <Button

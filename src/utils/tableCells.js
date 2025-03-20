@@ -133,27 +133,12 @@ export const createActionButtonsCell = (info, actionButtons, containerClass = "f
   );
 };
 
-export const filterDocuments = (documents, filter, currentPage, perPage) => {
-  if (filter.length > 2) {
-    const exp = new RegExp(filter.trim(), "i");
-    return documents
-      .filter(
-        (item) =>
-          exp.test(item.name) ||
-          exp.test(item.validity) ||
-          exp.test(item.facility?.[0]?.name) ||
-          exp.test(item.hash) ||
-          exp.test(item.uploadedBy?.[0]?.name) ||
-          exp.test(item.uploadedAt)
-      )
-      .slice(
-        (currentPage - 1) * perPage,
-        currentPage * perPage
-      );
+export function filterDocuments(documents, filter, currentPage, perPage) {
+  if (!filter?.trim()) {
+    return documents;
   }
   
-  return documents.slice(
-    (currentPage - 1) * perPage,
-    currentPage * perPage
+  return documents.filter(doc => 
+    doc.name.toLowerCase().includes(filter.toLowerCase())
   );
-}; 
+} 

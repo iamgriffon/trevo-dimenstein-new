@@ -27,7 +27,7 @@
         <Table
           v-if="listOfTests.length > 0"
           :columns="columnsTestsTableFormatted"
-          :data="filteredListOfTests"
+          :data="listOfTests"
           :totalItems="listOfTests.length"
           v-model:currentPage="currentPage"
           v-model:perPage="perPage"
@@ -169,7 +169,7 @@
         <Table
           v-if="listOfTypesOfTest.length > 0"
           :columns="columnsTypeOfTestsTableFormatted"
-          :data="filteredListOfTypesOfTest"
+          :data="listOfTypesOfTest"
           :totalItems="listOfTypesOfTest.length"
           v-model:currentPage="currentPageTypes"
           v-model:perPage="perPageTypes"
@@ -313,21 +313,6 @@ const modals = ref({
   editTestModal: false,
   registerTypeOfTestModal: false,
   editTypeOfTestModal: false,
-});
-
-// Computed properties
-const filteredListOfTests = computed(() => {
-  return listOfTests.value.slice(
-    (currentPage.value - 1) * perPage.value,
-    currentPage.value * perPage.value
-  );
-});
-
-const filteredListOfTypesOfTest = computed(() => {
-  return listOfTypesOfTest.value.slice(
-    (currentPageTypes.value - 1) * perPageTypes.value,
-    currentPageTypes.value * perPageTypes.value
-  );
 });
 
 // Table columns definitions

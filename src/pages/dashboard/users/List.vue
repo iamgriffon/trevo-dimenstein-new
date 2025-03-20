@@ -38,7 +38,7 @@
       <Input
         v-model="filter"
         placeholder="Buscar..."
-        class="w-full px-3 border mb-4 rounded-md border-gray-300 max-md:w-96"
+        className="w-96 px-3 border mb-4 rounded-md border-gray-300"
       >
         <FontAwesomeIcon icon="fa-solid fa-search" />
       </Input>
@@ -154,7 +154,7 @@ const defaultStyle =
   "p-2 rounded-xl w-12 h-12 hover:bg-gray-100 hover:text-green-500 transition-colors duration-300";
 
 const columns = [
-{
+  {
     accessorKey: " - ",
     header: "",
     meta: {
@@ -190,17 +190,9 @@ const filteredUsers = computed(() => {
   if (filter.value.length > 2) {
     currentPage.value = 1;
     const exp = new RegExp(filter.value.trim(), "i");
-    return users.value
-      .filter((item) => exp.test(item.name))
-      .slice(
-        (currentPage.value - 1) * perPage.value,
-        currentPage.value * perPage.value
-      );
+    return users.value.filter((item) => exp.test(item.name));
   }
-  return users.value.slice(
-    (currentPage.value - 1) * perPage.value,
-    currentPage.value * perPage.value
-  );
+  return users.value;
 });
 
 const loadUsers = async () => {
