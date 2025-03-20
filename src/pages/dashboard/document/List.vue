@@ -49,6 +49,7 @@
         v-model="filter"
         placeholder="Buscar..."
         @update:modelValue="currentPage = 1"
+        className="w-96 px-3 border mb-4 rounded-md border-gray-300"
       >
         <FontAwesomeIcon icon="fa-solid fa-search" class="mr-2" />
       </Input>
@@ -523,7 +524,7 @@ const checkAndPrefetchNextBatch = () => {
   const totalPages = Math.ceil(totalItems.value / perPage.value);
   
   // Original pagination-based prefetch condition
-  const shouldPrefetch = currentPage.value >= maxLoadedPage.value - 2 && 
+  const shouldPrefetch = currentPage.value >= maxLoadedPage.value - 4 && 
                         maxLoadedPage.value < totalPages;
 
   // New condition: Check if current page is incomplete and more items exist
@@ -534,6 +535,10 @@ const checkAndPrefetchNextBatch = () => {
   ).length;
   const hasIncompletePage = currentPageItems < perPage.value;
   const hasMoreItems = totalItems.value > documents.value.length;
+  
+  // New condition: Check if page is full but not last page
+  const hasFullPageButNotLast = currentPageItems === perPage.value && 
+                              currentPage.value < totalPages;
 
   if (shouldPrefetch || (hasIncompletePage && hasMoreItems)) {
     loadDocuments(false);
