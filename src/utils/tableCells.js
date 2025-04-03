@@ -86,7 +86,7 @@ export const createStatusCell = (info, styleMap = {}) => {
         "transition-colors duration-300 rounded-2xl p-2 select-none cursor-default"
       ),
     },
-    status
+    status.charAt(0).toUpperCase() + status.slice(1)
   );
 };
 

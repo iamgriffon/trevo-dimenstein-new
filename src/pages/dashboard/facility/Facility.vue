@@ -1,6 +1,6 @@
 <template>
-  <Layout :title="facility.name">
-    <template #breadcrumb v-if="facility.name">
+  <Layout :title="facility?.name" :loading="loading">
+    <template #breadcrumb v-if="!!facility?.name">
       <p class="flex items-center gap-2 pl-2 text-teal-800">
         <span>/</span>
         <span class="text-gray-500 font-semibold">{{
@@ -41,19 +41,19 @@
     <div class="flex flex-col gap-4">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <CardLink
-          :href="'/facility/' + facility._id + '/documents'"
+          :href="facility._id + '/documents'"
           className="border-l-green-600 h-36 w-fit min-w-64 flex items-center justify-start"
           title="Lista de Documentos"
         />
 
         <CardLink
-          :href="'/facility/' + facility._id + '/equipments'"
+          :href="facility._id + '/equipments'"
           className="border-l-blue-600 h-36 w-fit min-w-64 flex items-center justify-start"
           title="Equipamentos"
         />
 
         <CardLink
-          :href="'/facility/' + facility._id + '/routines'"
+          :href="facility._id + '/routines'"
           className="border-l-purple-600 h-36 w-fit min-w-64 flex items-center justify-start"
           title="Rotinas"
         />
@@ -156,7 +156,6 @@ const loadFacility = async () => {
     console.error("Error loading facility:", error.response);
   } finally {
     loading.value = false;
-    console.log(toRaw(facility.value));
   }
 };
 

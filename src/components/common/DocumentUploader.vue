@@ -457,7 +457,6 @@ import Hashids from "hashids";
 import { useRouter } from "vue-router";
 import Input from "@/components/ui/Input.vue";
 import Modal from "@/components/common/Modal.vue";
-import { cn } from "@/utils/cn";
 
 const props = defineProps({
   show: Boolean,
@@ -835,7 +834,6 @@ const parseName = (fileName) => {
       )[0];
 
       if (foundTypeOfTest) {
-        console.log(foundTypeOfTest);
         result.test = {
           _id: foundTypeOfTest._id,
           testName: foundTypeOfTest.testName,

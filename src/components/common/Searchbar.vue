@@ -92,7 +92,6 @@ const hasResults = computed(() => {
 });
 
 watch(searchQuery, (value) => {
-  console.log(value);
   if (value.length > 3) {
     performSearch(value);
   } else {

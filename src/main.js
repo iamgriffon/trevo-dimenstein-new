@@ -75,7 +75,10 @@ import {
   faCalendarAlt,
   faEyeSlash,
   faFilePdf,
-  faTimes
+  faTimes,
+  faWaveSquare,
+  faMapMarkerAlt,
+  faAtom,
 } from "@fortawesome/free-solid-svg-icons";
 
 import VueGoodTablePlugin from "vue-good-table-next";
@@ -98,7 +101,6 @@ library.add(
   faRotate,
   faSearch,
   faCircleNotch,
-  faBuilding,
   faCubes,
   faFile,
   faChevronDown,
@@ -163,7 +165,11 @@ library.add(
   faEyeSlash,
   faEye,
   faFilePdf,
-  faTimes
+  faTimes,
+  faWaveSquare,
+  faMapMarkerAlt,
+  faBuilding,
+  faAtom,
 );
 
 createApp(App)

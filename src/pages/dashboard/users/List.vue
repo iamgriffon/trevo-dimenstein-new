@@ -35,32 +35,78 @@
     </template>
 
     <div class="flex flex-col gap-4 w-full">
-      <Input
-        v-model="filter"
-        placeholder="Buscar..."
-        className="w-96 px-3 border mb-4 rounded-md border-gray-300"
-      >
-        <FontAwesomeIcon icon="fa-solid fa-search" />
-      </Input>
-      <template v-if="loading">
-        <figure
-          class="w-full h-full translate-y-[25%] flex items-center justify-center"
+      <header class="flex items-center justify-between gap-2 mb-4">
+        <Input
+          v-model="filter"
+          placeholder="Buscar..."
+          className="w-96 px-3 border rounded-md border-gray-300"
         >
-          <img
-            src="/static/img/loading.gif"
-            class="scale-75"
-            alt="Carregando lista..."
-          />
-        </figure>
+          <FontAwesomeIcon icon="fa-solid fa-search" />
+        </Input>
+        <div class="flex items-center gap-2">
+          <label>Linhas por página:</label>
+          <select
+            :value="perPage"
+            @change="perPage = Number($event.target?.value)"
+            class="p-2 rounded-md cursor-pointer"
+          >
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </div>
+      </header>
+
+      <template v-if="loading">
+        <Loader />
       </template>
       <template v-else>
-        <section
-          v-if="viewMode === 'card'"
-          class="sm:grid sm:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        >
-          <div v-for="user in filteredUsers" :key="user._id">
-            <Card :user="user" />
+        <section v-if="viewMode === 'card'" class="flex flex-col gap-4">
+          <div
+            class="sm:grid sm:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
+            <Card v-for="user in paginatedUsers" :key="user._id" :user="user" />
           </div>
+          <footer
+            v-if="filteredUsers.length > perPage"
+            class="flex w-full items-center justify-center text-2xl mt-16"
+          >
+            <nav class="flex gap-1">
+              <button
+                v-if="currentPage > 1"
+                class="p-2 rounded-sm hover:bg-gray-100"
+                @click="currentPage--"
+                :class="defaultStyle"
+              >
+                &laquo;
+              </button>
+              <button
+                v-if="currentPage > 1"
+                @click="currentPage--"
+                :class="defaultStyle"
+              >
+                {{ currentPage - 1 }}
+              </button>
+              <span
+                class="p-2 font-medium text-white rounded-xl w-12 h-12 text-center bg-green-600"
+                >{{ currentPage }}</span
+              >
+              <button
+                v-if="currentPage * perPage < filteredUsers.length"
+                @click="currentPage++"
+                :class="defaultStyle"
+              >
+                {{ currentPage + 1 }}
+              </button>
+              <button
+                v-if="currentPage * perPage < filteredUsers.length"
+                @click="currentPage++"
+                :class="defaultStyle"
+              >
+                &raquo;
+              </button>
+            </nav>
+          </footer>
         </section>
         <section
           v-else-if="viewMode === 'list' && table"
@@ -73,48 +119,9 @@
             v-model:currentPage="currentPage"
             v-model:perPage="perPage"
             :class="perPage >= 20 && 'mb-20'"
+            footer-class="relative border-none w-full justify-center z-auto"
           />
         </section>
-        <footer
-          v-if="viewMode === 'card'"
-          class="flex justify-center text-2xl mt-16"
-        >
-          <nav class="flex gap-1">
-            <button
-              v-if="currentPage > 1"
-              class="p-2 rounded-sm hover:bg-gray-100"
-              @click="currentPage--"
-              :class="defaultStyle"
-            >
-              &laquo;
-            </button>
-            <button
-              v-if="currentPage > 1"
-              @click="currentPage--"
-              :class="defaultStyle"
-            >
-              {{ currentPage - 1 }}
-            </button>
-            <span
-              class="p-2 font-medium text-white rounded-xl w-12 h-12 text-center bg-green-600"
-              >{{ currentPage }}</span
-            >
-            <button
-              v-if="currentPage * perPage < users.length"
-              @click="currentPage++"
-              :class="defaultStyle"
-            >
-              {{ currentPage + 1 }}
-            </button>
-            <button
-              v-if="currentPage * perPage < users.length"
-              @click="currentPage++"
-              :class="defaultStyle"
-            >
-              &raquo;
-            </button>
-          </nav>
-        </footer>
       </template>
     </div>
   </Layout>
@@ -139,7 +146,7 @@ import {
   useVueTable,
 } from "@tanstack/vue-table";
 import DataLetters from "@/components/common/DataLetters.vue";
-
+import Loader from "@/components/common/Loader.vue";
 const filter = ref("");
 const users = ref([]);
 const currentPage = ref(1);
@@ -193,6 +200,12 @@ const filteredUsers = computed(() => {
     return users.value.filter((item) => exp.test(item.name));
   }
   return users.value;
+});
+
+const paginatedUsers = computed(() => {
+  const start = (currentPage.value - 1) * perPage.value;
+  const end = start + perPage.value;
+  return filteredUsers.value.slice(start, end);
 });
 
 const loadUsers = async () => {

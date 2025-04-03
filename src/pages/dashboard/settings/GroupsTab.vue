@@ -13,13 +13,11 @@
 
     <div class="relative">
       <!-- Loading overlay -->
-      <div 
-        v-if="loading" 
+      <div
+        v-if="loading"
         class="inset-0 bg-white bg-opacity-70 z-10 mt-20 flex justify-center items-center h-80"
       >
-        <div class="text-center">
-          <img src="/static/img/loading.gif" class="w-full h-full mx-auto" />
-        </div>
+        <Loader className="w-full h-full mx-auto" />
       </div>
 
       <Table
@@ -32,8 +30,11 @@
         class="max-h-[500px] overflow-y-auto"
         footer-class="relative border-0 justify-center z-auto"
       />
-      
-      <div v-else-if="!loading" class="bg-white p-6 rounded-lg shadow text-center">
+
+      <div
+        v-else-if="!loading"
+        class="bg-white p-6 rounded-lg shadow text-center"
+      >
         <p class="text-gray-500">Nenhum grupo encontrado.</p>
       </div>
     </div>
@@ -51,10 +52,7 @@
             <FontAwesomeIcon icon="fa-solid fa-city" class="mr-2" />
             Grupo
           </label>
-          <Input
-            v-model="group"
-            placeholder="Nome do grupo"
-          />
+          <Input v-model="group" placeholder="Nome do grupo" />
         </div>
       </div>
     </Modal>
@@ -72,10 +70,7 @@
             <FontAwesomeIcon icon="fa-solid fa-hashtag" class="mr-2" />
             Grupo
           </label>
-          <Input
-            v-model="editedGroup.name"
-            placeholder="Nome do grupo"
-          />
+          <Input v-model="editedGroup.name" placeholder="Nome do grupo" />
         </div>
       </div>
     </Modal>
@@ -94,7 +89,7 @@ import { api } from "@/services/api";
 import { createActionButtonsCell } from "@/utils/tableCells";
 import permission from "@/services/permissions";
 
-const emit = defineEmits(['update:loading']);
+const emit = defineEmits(["update:loading"]);
 
 const currentUser = ref(auth.currentUser());
 const loading = ref(false);
@@ -110,13 +105,13 @@ const group = ref("");
 // Edited entity
 const editedGroup = ref({
   _id: "",
-  name: ""
+  name: "",
 });
 
 // Modals state
 const modals = ref({
   registerGroupModal: false,
-  editGroupModal: false
+  editGroupModal: false,
 });
 
 // Computed properties
@@ -135,7 +130,7 @@ const columnsFormatted = computed(() => [
     meta: {
       headerClass: "text-left pl-4",
       cellClass: "text-left pl-4",
-    }
+    },
   },
   {
     accessorKey: "actions",
@@ -151,11 +146,12 @@ const columnsFormatted = computed(() => [
           icon: "fa-solid fa-edit",
           title: "editar",
           props: {
-            class: "p-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md mr-2",
+            class:
+              "p-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md mr-2",
             onClick: () => {
               editSelectedGroup({
                 _id: info.row.original._id,
-                name: info.row.original.name
+                name: info.row.original.name,
               });
               openModal("editGroupModal");
             },
@@ -173,12 +169,16 @@ const columnsFormatted = computed(() => [
               }
             },
           },
-        }
+        },
       ];
-      
-      return createActionButtonsCell(info, actionButtons, "flex items-center justify-center");
+
+      return createActionButtonsCell(
+        info,
+        actionButtons,
+        "flex items-center justify-center"
+      );
     },
-  }
+  },
 ]);
 
 // Methods
@@ -190,7 +190,7 @@ const openModal = (modalName) => {
 const loadGroups = async () => {
   loading.value = true;
   groups.value = [];
-  
+
   try {
     const response = await api.get("group");
     groups.value = response.data || [];
@@ -209,12 +209,12 @@ const registerGroup = async () => {
   }
 
   const credentials = {
-    name: group.value
+    name: group.value,
   };
-  
+
   loading.value = true;
-  emit('update:loading', true);
-  
+  emit("update:loading", true);
+
   try {
     await auth.registerGroup({ credentials });
     await loadGroups();
@@ -224,7 +224,7 @@ const registerGroup = async () => {
     console.error("Error registering group:", error);
   } finally {
     loading.value = false;
-    emit('update:loading', false);
+    emit("update:loading", false);
   }
 };
 
@@ -234,8 +234,8 @@ const editSelectedGroup = (editedItem) => {
 
 const editGroup = async () => {
   loading.value = true;
-  emit('update:loading', true);
-  
+  emit("update:loading", true);
+
   try {
     await auth.editGroup({ editedGroup: editedGroup.value });
     await loadGroups();
@@ -244,18 +244,18 @@ const editGroup = async () => {
     console.error("Error editing group:", error);
   } finally {
     loading.value = false;
-    emit('update:loading', false);
+    emit("update:loading", false);
   }
 };
 
 const excludeGroup = async (id) => {
   if (!confirm("Tem certeza que deseja excluir este grupo?")) return;
-  
+
   loading.value = true;
-  emit('update:loading', true);
-  
+  emit("update:loading", true);
+
   const credentials = { _id: id };
-  
+
   try {
     await auth.excludeGroup({ credentials });
     await loadGroups();
@@ -263,7 +263,7 @@ const excludeGroup = async (id) => {
     console.error("Error excluding group:", error);
   } finally {
     loading.value = false;
-    emit('update:loading', false);
+    emit("update:loading", false);
   }
 };
 
@@ -276,4 +276,4 @@ onMounted(async () => {
     loading.value = false;
   }
 });
-</script> 
+</script>

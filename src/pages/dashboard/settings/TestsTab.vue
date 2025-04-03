@@ -20,7 +20,7 @@
           class="inset-0 bg-white bg-opacity-70 z-10 mt-20 flex justify-center items-center h-80"
         >
           <div class="text-center">
-            <img src="/static/img/loading.gif" class="w-full h-full mx-auto" />
+            <Loader className="w-full h-full mx-auto" />
           </div>
         </div>
 

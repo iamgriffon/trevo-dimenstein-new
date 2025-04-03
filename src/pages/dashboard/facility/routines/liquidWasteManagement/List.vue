@@ -343,7 +343,6 @@ const loadResponsibles = async () => {
     const responseUsers = response.data.filter(
       (user) => user.type === "rad fisico"
     );
-    console.log({ responseUsers });
     responsibleOptions.value = responseUsers.map((user) => ({
       label: user.name,
       name: user.name,

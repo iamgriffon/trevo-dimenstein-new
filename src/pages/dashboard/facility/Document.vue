@@ -1,5 +1,5 @@
 <template>
-  <Layout title="Documentos da Instalação">
+  <Layout title="Documentos da Instalação" :loading="loading">
     <template #breadcrumb>
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
@@ -47,19 +47,7 @@
       >
         <FontAwesomeIcon icon="fa-solid fa-search" />
       </Input>
-
-      <template v-if="loading">
-        <figure
-          class="w-full h-full translate-y-[25%] flex items-center justify-center"
-        >
-          <img
-            src="/static/img/loading.gif"
-            class="scale-75"
-            alt="Carregando lista..."
-          />
-        </figure>
-      </template>
-      <template v-else-if="!!filteredDocuments.length">
+      <template v-if="!!filteredDocuments.length">
         <section class="overflow-x-auto bg-white rounded-lg shadow">
           <Table
             :key="tableKey"
@@ -127,7 +115,14 @@ import Button from "@/components/ui/Button.vue";
 import Modal from "@/components/common/Modal.vue";
 import { twMerge } from "tailwind-merge";
 import { cn } from "@/utils/cn";
-import { createDateCell, createRelationCell, createTextCell, createActionButtonsCell, createStatusCell, createCheckboxCell } from "@/utils/tableCells";
+import {
+  createDateCell,
+  createRelationCell,
+  createTextCell,
+  createActionButtonsCell,
+  createStatusCell,
+  createCheckboxCell,
+} from "@/utils/tableCells";
 
 const route = useRoute();
 const documents = ref([]);
@@ -151,19 +146,18 @@ const selectIconClass = ref("bg-green-500 hover:bg-green-700");
 const filteredDocuments = computed(() => {
   if (filter.value.length > 2) {
     const exp = new RegExp(filter.value.trim(), "i");
-    return documents.value
-      .filter(
-        (item) =>
-          exp.test(item.name) ||
-          exp.test(item.validity) ||
-          exp.test(item.facility[0]?.name) ||
-          exp.test(item.hash) ||
-          exp.test(item.uploadedBy[0]?.name) ||
-          exp.test(item.uploadedAt)
-      )
+    return documents.value.filter(
+      (item) =>
+        exp.test(item.name) ||
+        exp.test(item.validity) ||
+        exp.test(item.facility[0]?.name) ||
+        exp.test(item.hash) ||
+        exp.test(item.uploadedBy[0]?.name) ||
+        exp.test(item.uploadedAt)
+    );
   }
-  
-  return documents.value
+
+  return documents.value;
 });
 
 function toggleAllSelected(newValue) {
@@ -278,7 +272,6 @@ const submitComment = async () => {
     loading.value = false;
   }
 };
-
 
 const columns = [
   {
@@ -510,7 +503,6 @@ const initialFilter = {
   pageNum: currentPage.value,
 };
 
-
 const loadDocuments = async () => {
   loading.value = true;
   try {
@@ -518,7 +510,7 @@ const loadDocuments = async () => {
       `${auth.apiUrl()}document/facility/${route.params.id}`,
       {
         headers: { Authorization: `Bearer ${auth.getToken()}` },
-        params: initialFilter
+        params: initialFilter,
       }
     );
 

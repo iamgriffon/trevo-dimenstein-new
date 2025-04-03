@@ -1,5 +1,5 @@
 <template>
-  <Layout title="Documentos">
+  <Layout title="Documentos" :loading="loading">
     <template #header>
       <router-link
         v-if="permission.canCreateDocuments(currentUser)"
@@ -54,54 +54,37 @@
         <FontAwesomeIcon icon="fa-solid fa-search" class="mr-2" />
       </Input>
 
-      <template v-if="loading">
-        <figure
-          class="w-full h-full translate-y-[25%] flex items-center justify-center"
+      <section
+        v-if="documents.length > 0"
+        class="overflow-x-auto bg-white rounded-lg shadow"
+      >
+        <Table
+          :columns="columns"
+          :data="filteredDocuments"
+          :total-items="documents.length"
+          v-model:perPage="perPage"
+          v-model:currentPage="currentPage"
+          @liberateAll="liberateAll"
+          @clearSelected="toggleAllSelected(false)"
         >
-          <img
-            src="/static/img/loading.gif"
-            class="scale-75"
-            alt="Carregando documentos..."
-          />
-        </figure>
-      </template>
+          <template #perPageSelect>
+            <select
+              :value="perPage"
+              @change="handlePerPageChange(Number(event.target?.value))"
+              class="p-2 rounded-md cursor-pointer"
+            >
+              <option :value="10">10</option>
+              <option :value="20">20</option>
+              <option v-if="totalItems >= 50" :value="50">50</option>
+            </select>
+          </template>
+        </Table>
+      </section>
 
-      <template v-else>
-        <section
-          v-if="documents.length > 0"
-          class="overflow-x-auto bg-white rounded-lg shadow"
-        >
-          <Table
-            :columns="columns"
-            :data="filteredDocuments"
-            :total-items="documents.length"
-            v-model:perPage="perPage"
-            v-model:currentPage="currentPage"
-            @liberateAll="liberateAll"
-            @clearSelected="toggleAllSelected(false)"
-          >
-            <template #perPageSelect>
-              <select
-                :value="perPage"
-                @change="handlePerPageChange(Number(event.target?.value))"
-                class="p-2 rounded-md cursor-pointer"
-              >
-                <option :value="10">10</option>
-                <option :value="20">20</option>
-                <option v-if="totalItems >= 50" :value="50">50</option>
-              </select>
-            </template>
-          </Table>
-        </section>
-
-        <div v-if="error" class="p-4 text-red-600 bg-red-100 rounded-lg">
-          <FontAwesomeIcon
-            icon="fa-solid fa-exclamation-triangle"
-            class="mr-2"
-          />
-          {{ error }}
-        </div>
-      </template>
+      <div v-if="error" class="p-4 text-red-600 bg-red-100 rounded-lg">
+        <FontAwesomeIcon icon="fa-solid fa-exclamation-triangle" class="mr-2" />
+        {{ error }}
+      </div>
     </div>
   </Layout>
 </template>
@@ -311,7 +294,7 @@ const columns = [
           props: {
             class: twMerge(
               tableButtonStyle,
-              !permission.canExcludeDocuments(currentUser.value) && "hidden"
+              permission.canExcludeDocuments(currentUser.value) && "hidden"
             ),
             to: `equipments${
               route.params.id || info.row.original.equipment?.[0]?.typeId || ""
@@ -327,7 +310,7 @@ const columns = [
           props: {
             class: twMerge(
               tableButtonStyle,
-              !permission.canExcludeDocuments(currentUser.value) && "hidden"
+              permission.canExcludeDocuments(auth.currentUser()) && "hidden"
             ),
             onClick: () => deleteDocument(info.row.original._id),
             title: "Excluir",
@@ -430,10 +413,10 @@ const columns = [
 ];
 
 const paramMap = {
-    corrigir: "Corrigir",
-    assinar: "Falta assinar",
-    liberar: "Assinado",
-  };
+  corrigir: "Corrigir",
+  assinar: "Falta assinar",
+  liberar: "Assinado",
+};
 
 const loadDocuments = async (isInitialLoad = true) => {
   if (isInitialLoad) {
@@ -491,7 +474,9 @@ const fetchDocuments = async (filter, isInitialLoad = true) => {
 
   // Handle different response formats based on route param
   const resultData = route.params.status ? response.data : response.data.list;
-  const resultTotal = route.params.status ? response.data.length : response.data.paging.total;
+  const resultTotal = route.params.status
+    ? response.data.length
+    : response.data.paging.total;
 
   if (!resultData?.length) {
     if (isInitialLoad) {
@@ -522,10 +507,11 @@ const fetchDocuments = async (filter, isInitialLoad = true) => {
 const checkAndPrefetchNextBatch = () => {
   // Calculate total pages based on items and page size
   const totalPages = Math.ceil(totalItems.value / perPage.value);
-  
+
   // Original pagination-based prefetch condition
-  const shouldPrefetch = currentPage.value >= maxLoadedPage.value - 4 && 
-                        maxLoadedPage.value < totalPages;
+  const shouldPrefetch =
+    currentPage.value >= maxLoadedPage.value - 4 &&
+    maxLoadedPage.value < totalPages;
 
   // New condition: Check if current page is incomplete and more items exist
   const currentPageStart = (currentPage.value - 1) * perPage.value;
@@ -535,10 +521,10 @@ const checkAndPrefetchNextBatch = () => {
   ).length;
   const hasIncompletePage = currentPageItems < perPage.value;
   const hasMoreItems = totalItems.value > documents.value.length;
-  
+
   // New condition: Check if page is full but not last page
-  const hasFullPageButNotLast = currentPageItems === perPage.value && 
-                              currentPage.value < totalPages;
+  const hasFullPageButNotLast =
+    currentPageItems === perPage.value && currentPage.value < totalPages;
 
   if (shouldPrefetch || (hasIncompletePage && hasMoreItems)) {
     loadDocuments(false);

@@ -195,7 +195,6 @@ const loadFacility = async () => {
   try {
     const response = await api.get(`facility/${route.params.id}`);
     facility.value = response.data;
-    console.log(toRaw(facility.value));
   } catch (error) {
     console.error("Error loading facility:", error);
   }
@@ -555,10 +554,8 @@ const downloadFacilityDocument = () => {
 
     // Force download approach
     doc.output("datauri", { filename: fileName });
-    // Alternatively, try this direct download approach:
-    // doc.save(fileName);
 
-    console.log("PDF saved successfully:", doc);
+
   } catch (error) {
     console.error("Error generating PDF:", error);
     alert("Ocorreu um erro ao gerar o PDF: " + error.message);

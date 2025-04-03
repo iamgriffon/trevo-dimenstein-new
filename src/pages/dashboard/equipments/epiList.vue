@@ -1,5 +1,5 @@
 <template>
-  <Layout title="Avaliação de EPIs">
+  <Layout title="Avaliação de EPIs" :loading="loading">
     <template #header>
       <div class="flex gap-2 items-center">
         <span class="text-lg font-medium">Tipo de busca: </span>

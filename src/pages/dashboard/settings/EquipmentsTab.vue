@@ -18,7 +18,7 @@
         class="inset-0 bg-white bg-opacity-70 z-10 mt-20 flex justify-center items-center h-80"
       >
         <div class="text-center">
-          <img src="/static/img/loading.gif" class="w-full h-full mx-auto" />
+          <Loader className="w-full h-full mx-auto" />
         </div>
       </div>
 
@@ -132,7 +132,7 @@ import auth from "@/services/authentication";
 import { api } from "@/services/api";
 import { createActionButtonsCell } from "@/utils/tableCells";
 import permission from "@/services/permissions";
-
+import Loader from "@/components/common/Loader.vue";
 const props = defineProps({
   active: {
     type: String,

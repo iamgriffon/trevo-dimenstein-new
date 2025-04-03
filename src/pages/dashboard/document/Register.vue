@@ -139,7 +139,7 @@
                 @click="removeFacility"
                 className="bg-gray-100 hover:bg-gray-200 text-gray-800"
               >
-                <FontAwesomeIcon icon="fa-solid fa-times" class="mr-2" /> remover
+                <FontAwesomeIcon icon="fa-solid fa-times" class="mr-2" /> Remover
               </Button>
             </div>
           </div>

@@ -1,5 +1,5 @@
 <template>
-  <Layout title="Instalações">
+  <Layout title="Instalações" :loading="loading">
     <template #header>
       <div class="flex gap-2">
         <button
@@ -35,34 +35,79 @@
     </template>
 
     <div class="flex flex-col gap-4">
-      <Input
-        v-model="filter"
-        placeholder="Buscar..."
-        className="w-96 px-3 border mb-4 rounded-md border-gray-300"
-      >
-        <FontAwesomeIcon icon="fa-solid fa-search" />
-      </Input>
-      <template v-if="loading">
-        <figure
-          class="w-full h-full translate-y-[25%] flex items-center justify-center"
+      <header class="flex items-center justify-between gap-2 mb-4">
+        <Input
+          v-model="filter"
+          placeholder="Buscar..."
+          className="w-96 px-3 border rounded-md border-gray-300"
         >
-          <img
-            src="/static/img/loading.gif"
-            class="scale-75"
-            alt="Carregando lista..."
-          />
-        </figure>
-      </template>
-      <template v-else>
-        <section
-          v-if="viewMode === 'card'"
-          class="sm:grid sm:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-        >
-          <Card
-            v-for="facility in filteredFacilities"
-            :key="facility._id"
-            :facility="facility"
-          />
+          <FontAwesomeIcon icon="fa-solid fa-search" />
+        </Input>
+        <div class="flex items-center gap-2">
+          <label>Linhas por página:</label>
+          <select
+            :value="perPage"
+            @change="perPage = Number($event.target?.value)"
+            class="p-2 rounded-md cursor-pointer"
+          >
+            <option :value="10">10</option>
+            <option :value="20">20</option>
+            <option :value="50">50</option>
+          </select>
+        </div>
+      </header>
+
+      <template v-if="!loading && !!facilities.length">
+        <section v-if="viewMode === 'card'" class="flex w-full flex-wrap gap-4">
+          <div
+            class="sm:grid sm:gap-8 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5"
+          >
+            <Card
+              v-for="facility in paginatedFacilities"
+              :key="facility._id"
+              :facility="facility"
+            />
+          </div>
+          <footer
+            v-if="filteredFacilities.length > perPage"
+            class="flex w-full items-center justify-center text-2xl mt-16"
+          >
+            <nav class="flex gap-1">
+              <button
+                v-if="currentPage > 1"
+                class="p-2 rounded-sm hover:bg-gray-100"
+                @click="currentPage--"
+                :class="defaultStyle"
+              >
+                &laquo;
+              </button>
+              <button
+                v-if="currentPage > 1"
+                @click="currentPage--"
+                :class="defaultStyle"
+              >
+                {{ currentPage - 1 }}
+              </button>
+              <span
+                class="p-2 font-medium text-white rounded-xl w-12 h-12 text-center bg-green-600"
+                >{{ currentPage }}</span
+              >
+              <button
+                v-if="currentPage * perPage < filteredFacilities.length"
+                @click="currentPage++"
+                :class="defaultStyle"
+              >
+                {{ currentPage + 1 }}
+              </button>
+              <button
+                v-if="currentPage * perPage < filteredFacilities.length"
+                @click="currentPage++"
+                :class="defaultStyle"
+              >
+                &raquo;
+              </button>
+            </nav>
+          </footer>
         </section>
         <section
           v-else-if="viewMode === 'list' && table"
@@ -74,48 +119,9 @@
             :totalItems="facilities.length"
             v-model:currentPage="currentPage"
             v-model:perPage="perPage"
+            footer-class="relative border-none w-full justify-center z-auto"
           />
         </section>
-        <footer
-          v-if="viewMode === 'card'"
-          class="flex justify-center text-2xl mt-16"
-        >
-          <nav class="flex gap-1">
-            <button
-              v-if="currentPage > 1"
-              class="p-2 rounded-sm hover:bg-gray-100"
-              @click="currentPage--"
-              :class="defaultStyle"
-            >
-              &laquo;
-            </button>
-            <button
-              v-if="currentPage > 1"
-              @click="currentPage--"
-              :class="defaultStyle"
-            >
-              {{ currentPage - 1 }}
-            </button>
-            <span
-              class="p-2 font-medium text-white rounded-xl w-12 h-12 text-center bg-green-600"
-              >{{ currentPage }}</span
-            >
-            <button
-              v-if="currentPage * perPage < facilities.length"
-              @click="currentPage++"
-              :class="defaultStyle"
-            >
-              {{ currentPage + 1 }}
-            </button>
-            <button
-              v-if="currentPage * perPage < facilities.length"
-              @click="currentPage++"
-              :class="defaultStyle"
-            >
-              &raquo;
-            </button>
-          </nav>
-        </footer>
       </template>
     </div>
   </Layout>
@@ -214,6 +220,12 @@ const filteredFacilities = computed(() => {
   }
 
   return facilities.value;
+});
+
+const paginatedFacilities = computed(() => {
+  const start = (currentPage.value - 1) * perPage.value;
+  const end = start + perPage.value;
+  return filteredFacilities.value.slice(start, end);
 });
 
 const loadFacilities = async () => {

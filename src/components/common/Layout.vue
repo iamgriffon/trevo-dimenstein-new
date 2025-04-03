@@ -5,20 +5,26 @@
       <slot name="header"></slot>
     </section>
   </header>
-  <section class='flex flex-col gap-6'>
+  <section class="flex flex-col gap-6">
     <Breadcrumb>
       <slot name="breadcrumb"></slot>
     </Breadcrumb>
-    <slot></slot>
+    <template v-if="loading">
+      <Loader />
+    </template>
+    <template v-else>
+      <slot></slot>
+    </template>
   </section>
 </template>
 <script setup>
-import Breadcrumb from './Breadcrumb.vue';
-
+import Breadcrumb from "./Breadcrumb.vue";
+import Loader from "./Loader.vue";
 defineOptions({
-  name: 'Layout'
-})
+  name: "Layout",
+});
 defineProps({
   title: String,
-})
+  loading: Boolean,
+});
 </script>

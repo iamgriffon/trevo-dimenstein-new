@@ -67,7 +67,7 @@ async function handleSubmit(event) {
           placeholder="Email"
           :error="!!error"
         >
-          <FontAwesomeIcon :icon="['far', 'envelope']" />
+          <FontAwesomeIcon :icon="['fas', 'envelope']" />
         </Input>
 
         <Button

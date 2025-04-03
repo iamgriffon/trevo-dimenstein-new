@@ -8,6 +8,8 @@
       >
         {{ facility }}
       </router-link>
+      <span class="mx-2 text-teal-800 select-none">/</span>
+      <span class="text-teal-800 select-none">Equipamentos</span>
     </template>
     <template #header>
       <router-link
@@ -38,7 +40,7 @@
 
       <div v-if="loading" class="flex justify-center py-8">
               <div class="text-center">
-          <img src="/static/img/loading.gif" class="w-full h-full mx-auto" />
+          <Loader className="w-full h-full mx-auto" />
         </div>
       </div>
 
@@ -70,6 +72,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { api } from "@/services/api";
 import { toRaw } from "vue";
 import EquipmentCard from "@/components/dashboard/facility/equipmentCard.vue";
+import Loader from "@/components/common/Loader.vue";
+
 const route = useRoute();
 const equipments = ref([]);
 const typeOfEquipment = ref([]);

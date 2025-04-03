@@ -35,7 +35,8 @@ const dataLetters = ref("");
 
 dataLetters.value =
   props?.user?.name.split(" ")[0].charAt(0) +
-  props?.user?.name.split(" ")[1].charAt(0);
+  props?.user?.name.split(" ")[1]?.charAt(0) ||
+  props?.user?.name.charAt(0);
 </script>
 <style scoped>
 </style>

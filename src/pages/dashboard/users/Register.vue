@@ -444,21 +444,11 @@ const filteredFacilities = computed(() => {
       .filter(
         (facility) =>
           !selectedFacilities.value.some((f) => f._id === facility._id)
-      )
-      .slice(
-        (currentPage.value - 1) * perPage.value,
-        currentPage.value * perPage.value
       );
   }
-  return facilities.value
-    .filter(
-      (facility) =>
-        !selectedFacilities.value.some((f) => f._id === facility._id)
-    )
-    .slice(
-      (currentPage.value - 1) * perPage.value,
-      currentPage.value * perPage.value
-    );
+  return facilities.value.filter(
+    (facility) => !selectedFacilities.value.some((f) => f._id === facility._id)
+  );
 });
 
 // Methods

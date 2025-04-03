@@ -1,5 +1,5 @@
 <template>
-  <Layout title="Editar instalação">
+  <Layout title="Editar instalação" :loading="loading">
     <template #header>
       <button
         class="bg-green-600 hover:bg-green-700 transition-colors duration-300 text-white px-4 py-2 rounded-md"
@@ -644,12 +644,12 @@ import Layout from "@/components/common/Layout.vue";
 import Input from "@/components/ui/Input.vue";
 import Table from "@/components/dashboard/Table.vue";
 import Modal from "@/components/common/Modal.vue";
-import { cn } from "@/utils/cn";
 
 const route = useRoute();
 const router = useRouter();
 
 // Modal visibility states
+const loading = ref(false); 
 const showTitularModal = ref(false);
 const showTechnicalResponsibleModal = ref(false);
 const showTechnicalResponsibleSubsModal = ref(false);
@@ -1023,6 +1023,7 @@ const createBackground = (file) => {
 };
 
 const edit = () => {
+  loading.value = true;
   const credentials = {
     _id: facility.value._id,
     name: facility.value.name,
@@ -1051,12 +1052,15 @@ const edit = () => {
     users: facility.value.users,
   };
 
-  auth.editFacility(null, credentials, "/facility");
+  auth.editFacility(null, credentials, "/facility", () => {
+    loading.value = false;
+  });
 };
 
 // Load facility data
 onMounted(async () => {
   try {
+    loading.value = true;
     const response = await axios.get(
       `${auth.apiUrl()}facility/${route.params.id}`,
       { headers: { Authorization: `Bearer ${auth.getToken()}` } }
@@ -1190,6 +1194,8 @@ onMounted(async () => {
     });
   } catch (error) {
     errors.value = error.response?.data || "Erro ao carregar dados";
+  } finally {
+    loading.value = false;
   }
 });
 </script>

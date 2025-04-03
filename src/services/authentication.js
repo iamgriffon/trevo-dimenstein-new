@@ -1092,7 +1092,6 @@ export default {
       })
       .then(
         (res) => {
-          console.log(res);
           if (redirect) {
             router.push({ path: redirect });
           }
@@ -1212,7 +1211,6 @@ export default {
   },
 
   async registerEPIEquipmentAssessmentTest(test) {
-    console.log("registerEpiEquipmentAssessmentTest:", { test });
     const response = axios.post(
       REGISTER_EPI_EQUIPMENT_ASSESSMENT_TEST_URL,
       test,

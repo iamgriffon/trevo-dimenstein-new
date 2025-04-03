@@ -1,5 +1,5 @@
 <template>
-  <Layout :title="`Equipamentos`">
+  <Layout :title="`Equipamentos`" :loading="loading">
     <template #breadcrumb>
       <span class="mx-2 text-teal-800 select-none">/</span>
       <router-link
@@ -37,21 +37,13 @@
             type="text"
             placeholder="Buscar equipamento..."
           >
-            <FontAwesomeIcon
-              icon="fa-solid fa-search"
-            />
+            <FontAwesomeIcon icon="fa-solid fa-search" />
           </Input>
         </div>
       </div>
 
-      <div v-if="loading" class="flex justify-center py-8">
-              <div class="text-center">
-          <img src="/static/img/loading.gif" class="w-full h-full mx-auto" />
-        </div>
-      </div>
-
       <div
-        v-else-if="filteredEquipments.length === 0"
+        v-if="filteredEquipments.length === 0"
         class="py-8 text-center text-gray-500"
       >
         Nenhum equipamento encontrado para este tipo.
@@ -148,7 +140,7 @@ const tableColumns = [
           icon: "fa-solid fa-info",
           props: {
             to: {
-              path: `/equipments/${route.params.typeId}/${info.row.original._id}`,
+              path: link(info),
             },
             class:
               "flex items-center w-10 h-10 justify-center p-2 rounded-md gap-2 bg-gray-100 cursor-pointer hover:shadow-inner hover:bg-gray-200 transition-all duration-300",
@@ -159,7 +151,8 @@ const tableColumns = [
           type: "button",
           icon: "fa-solid fa-trash",
           props: {
-            class: "flex items-center w-10 h-10 justify-center p-2 rounded-md bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700",
+            class:
+              "flex items-center w-10 h-10 justify-center p-2 rounded-md bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700",
             onClick: () => confirmDelete(info.row.original),
           },
           title: "Excluir",
@@ -256,16 +249,26 @@ const deleteEquipment = async () => {
   }
 };
 
-// Watch for changes to equipment type
+const link = (info) => {
+  const equipmentType = listOfTypesOfEquipments?.value[0]?.type;
+  const routes = {
+    "Contador Geiger": "geigerCounter",
+    "Calibrador de Doses": "doseCalibrator",
+    "Gama Camara": "gamaCamara",
+  };
+
+  if (equipmentType && routes[equipmentType]) {
+    return `/equipments/${routes[equipmentType]}/${info.row.original._id}`;
+  }
+  return `/equipments/${route.params.typeId}/${info.row.original._id}`;
+};
+
 watch(equipmentType, () => {
   fetchEquipments();
   currentPage.value = 1;
 });
 
-// Lifecycle hooks
 onMounted(() => {
   Promise.all([fetchEquipments(), fetchFacility(), fetchTypesOfEquipments()]);
 });
-
-onUnmounted(() => {});
 </script>

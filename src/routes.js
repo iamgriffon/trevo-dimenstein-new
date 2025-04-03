@@ -18,14 +18,14 @@ import FacilityDocuments from "@/pages/dashboard/facility/Document.vue";
 import RegisterFacility from "@/pages/dashboard/facility/Register.vue";
 import EditFacility from "@/pages/dashboard/facility/Edit.vue";
 
-import FacilityRoutines from '@/pages/dashboard/facility/routines/List.vue'
-import FacilityRoutinesRadioactiveMaterialMovement from '@/pages/dashboard/facility/routines/radioactiveMaterialMovement/List.vue'
-import FacilityRoutinesRadioactiveMaterialMovementRegister from '@/pages/dashboard/facility/routines/radioactiveMaterialMovement/Register.vue'
-import FacilityRoutinesRadioactiveMaterialMovementEdit from '@/pages/dashboard/facility/routines/radioactiveMaterialMovement/Edit.vue'
-import FacilityRoutinesSolidWasteManagement from '@/pages/dashboard/facility/routines/solidWasteManagement/List.vue'
-import FacilityRoutinesSolidWasteManagementRegister from '@/pages/dashboard/facility/routines/solidWasteManagement/Register.vue'
-import FacilityRoutinesLiquidWasteManagement from '@/pages/dashboard/facility/routines/liquidWasteManagement/List.vue'
-import FacilityRoutinesLiquidWasteManagementRegister from '@/pages/dashboard/facility/routines/liquidWasteManagement/Register.vue'
+import FacilityRoutines from "@/pages/dashboard/facility/routines/List.vue";
+import FacilityRoutinesRadioactiveMaterialMovement from "@/pages/dashboard/facility/routines/radioactiveMaterialMovement/List.vue";
+import FacilityRoutinesRadioactiveMaterialMovementRegister from "@/pages/dashboard/facility/routines/radioactiveMaterialMovement/Register.vue";
+import FacilityRoutinesRadioactiveMaterialMovementEdit from "@/pages/dashboard/facility/routines/radioactiveMaterialMovement/Edit.vue";
+import FacilityRoutinesSolidWasteManagement from "@/pages/dashboard/facility/routines/solidWasteManagement/List.vue";
+import FacilityRoutinesSolidWasteManagementRegister from "@/pages/dashboard/facility/routines/solidWasteManagement/Register.vue";
+import FacilityRoutinesLiquidWasteManagement from "@/pages/dashboard/facility/routines/liquidWasteManagement/List.vue";
+import FacilityRoutinesLiquidWasteManagementRegister from "@/pages/dashboard/facility/routines/liquidWasteManagement/Register.vue";
 
 import FacilityEquipments from "@/pages/dashboard/facility/equipments/List.vue";
 import FacilityEquipmentsByType from "@/pages/dashboard/facility/equipments/ListByType.vue";
@@ -33,34 +33,34 @@ import FacilityEquipmentsRegister from "@/pages/dashboard/facility/equipments/Re
 import FacilityEquipmentsEdit from "@/pages/dashboard/facility/equipments/Edit.vue";
 
 import EPIEquipmentAssessmentTestList from "@/pages/dashboard/equipments/epiList.vue";
-// import EPIEquipmentAssessmentTestRegister from '@/components/dashboard/facility/equipments/epiEquipment/tests/assessment/Register.vue'
-// import EPIEquipmentAssessmentTestEdit from '@/components/dashboard/facility/equipments/epiEquipment/tests/assessment/Edit.vue'
+import EPIEquipmentAssessmentTestRegister from '@/pages/dashboard/facility/equipments/epiEquipment/tests/assessment/Register.vue'
+import EPIEquipmentAssessmentTestEdit from '@/pages/dashboard/facility/equipments/epiEquipment/tests/assessment/Edit.vue'
 
-// import DoseCalibrator from '@/components/dashboard/facility/equipments/doseCalibrator/Equipment.vue'
-// import DoseCalibratorSourceRegister from '@/components/dashboard/facility/equipments/doseCalibrator/source/Register.vue'
-// import DoseCalibratorSourceEdit from '@/components/dashboard/facility/equipments/doseCalibrator/source/Edit.vue'
+import DoseCalibrator from "@/pages/dashboard/facility/equipments/doseCalibrator/Equipment.vue";
+import DoseCalibratorSourceRegister from "@/pages/dashboard/facility/equipments/doseCalibrator/source/Register.vue";
+import DoseCalibratorSourceEdit from "@/pages/dashboard/facility/equipments/doseCalibrator/source/Edit.vue";
 
-// import DoseCalibratorLinearityTestList from '@/components/dashboard/facility/equipments/doseCalibrator/tests/linearity/List.vue'
-// import DoseCalibratorLinearityTest from '@/components/dashboard/facility/equipments/doseCalibrator/tests/linearity/Linearity.vue'
-// import DoseCalibratorLinearityTestRegister from '@/components/dashboard/facility/equipments/doseCalibrator/tests/linearity/Register.vue'
-// import DoseCalibratorLinearityTestEdit from '@/components/dashboard/facility/equipments/doseCalibrator/tests/linearity/Edit.vue'
+import DoseCalibratorLinearityTestList from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/linearity/List.vue";
+import DoseCalibratorLinearityTest from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/linearity/Linearity.vue";
+import DoseCalibratorLinearityTestRegister from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/linearity/Register.vue";
+import DoseCalibratorLinearityTestEdit from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/linearity/Edit.vue";
 
-// import DoseCalibratorAccuracyAndPrecisionTestList from '@/components/dashboard/facility/equipments/doseCalibrator/tests/accuracyAndPrecision/List.vue'
-// import DoseCalibratorAccuracyAndPrecisionTest from '@/components/dashboard/facility/equipments/doseCalibrator/tests/accuracyAndPrecision/AccuracyAndPrecision.vue'
-// import DoseCalibratorAccuracyAndPrecisionTestRegister from '@/components/dashboard/facility/equipments/doseCalibrator/tests/accuracyAndPrecision/Register.vue'
+import DoseCalibratorAccuracyAndPrecisionTestList from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/accuracyAndPrecision/List.vue";
+import DoseCalibratorAccuracyAndPrecisionTest from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/accuracyAndPrecision/AccuracyAndPrecision.vue";
+import DoseCalibratorAccuracyAndPrecisionTestRegister from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/accuracyAndPrecision/Register.vue";
 
-// import DoseCalibratorGeometryTestList from '@/components/dashboard/facility/equipments/doseCalibrator/tests/geometry/List.vue'
-// import DoseCalibratorGeometryTest from '@/components/dashboard/facility/equipments/doseCalibrator/tests/geometry/Geometry.vue'
-// import DoseCalibratorGeometryTestRegister from '@/components/dashboard/facility/equipments/doseCalibrator/tests/geometry/Register.vue'
+import DoseCalibratorGeometryTestList from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/geometry/List.vue";
+import DoseCalibratorGeometryTest from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/geometry/Geometry.vue";
+import DoseCalibratorGeometryTestRegister from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/geometry/Register.vue";
 
-// import DoseCalibratorDailyTestList from '@/components/dashboard/facility/equipments/doseCalibrator/tests/daily/List.vue'
-// import DoseCalibratorDailyTestRegister from '@/components/dashboard/facility/equipments/doseCalibrator/tests/daily/Register.vue'
+import DoseCalibratorDailyTestList from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/daily/List.vue";
+import DoseCalibratorDailyTestRegister from "@/pages/dashboard/facility/equipments/doseCalibrator/tests/daily/Register.vue";
 
-// import GeigerCounter from '@/components/dashboard/facility/equipments/geigerCounter/Equipment.vue'
-// import GeigerCounterReproductibilityTestList from '@/components/dashboard/facility/equipments/geigerCounter/tests/reproductibility/List.vue'
-// import GeigerCounterReproductibilityTestRegister from '@/components/dashboard/facility/equipments/geigerCounter/tests/reproductibility/Register.vue'
-// import GeigerCounterReproductibilityTest from '@/components/dashboard/facility/equipments/geigerCounter/tests/reproductibility/Reproductibility.vue'
-
+import GeigerCounter from '@/pages/dashboard/facility/equipments/geigerCounter/Equipment.vue'
+import GeigerCounterReproductibilityTestList from "@/pages/dashboard/facility/equipments/geigerCounter/tests/reproductibility/List.vue";
+import GeigerCounterReproductibilityTestRegister from "@/pages/dashboard/facility/equipments/geigerCounter/tests/reproductibility/Register.vue";
+import GeigerCounterReproductibilityTest from "@/pages/dashboard/facility/equipments/geigerCounter/tests/reproductibility/Reproductibility.vue";
+import GeigerCounterReproductibilityTestEdit from "@/pages/dashboard/facility/equipments/geigerCounter/tests/reproductibility/Edit.vue";
 // import GamaCamara from '@/components/dashboard/facility/equipments/gamaCamara/Equipment.vue'
 // import GamaCamaraAsymmetricWindowList from '@/components/dashboard/facility/equipments/gamaCamara/tests/asymmetricWindow/List.vue'
 // import GamaCamaraAsymmetricWindowRegister from '@/components/dashboard/facility/equipments/gamaCamara/tests/asymmetricWindow/Register.vue'
@@ -69,11 +69,11 @@ import EPIEquipmentAssessmentTestList from "@/pages/dashboard/equipments/epiList
 // import GamaCamaraAngulationRegister from '@/components/dashboard/facility/equipments/gamaCamara/tests/angulation/Register.vue'
 // import GamaCamaraAngulation from '@/components/dashboard/facility/equipments/gamaCamara/tests/angulation/Angulation.vue'
 
-import Equipment from '@/pages/dashboard/facility/equipments/Equipment.vue'
-// import Test from '@/components/dashboard/facility/equipments/tests/Test.vue'
-// import TestRegister from '@/components/dashboard/facility/equipments/tests/Register.vue'
-// import TestRegisterOld from '@/components/dashboard/facility/equipments/tests/Register_old.vue'
-// import TestEdit from '@/components/dashboard/facility/equipments/tests/Edit.vue'
+import Equipment from "@/pages/dashboard/facility/equipments/Equipment.vue";
+import Test from '@/pages/dashboard/facility/equipments/tests/Test.vue'
+import TestRegister from '@/pages/dashboard/facility/equipments/tests/Register.vue'
+// import TestRegisterOld from '@/pages/dashboard/facility/equipments/tests/Register_old.vue'
+import TestEdit from '@/pages/dashboard/facility/equipments/tests/Edit.vue'
 
 import Doc from "@/pages/dashboard/document/List.vue";
 import RegisterDoc from "@/pages/dashboard/document/Register.vue";
@@ -81,7 +81,7 @@ import RegisterDoc from "@/pages/dashboard/document/Register.vue";
 import Information from "@/pages/dashboard/Info.vue";
 import TermsOfUse from "@/pages/dashboard/Terms.vue";
 
-import Settings from '@/pages/dashboard/Settings.vue'
+import Settings from "@/pages/dashboard/Settings.vue";
 
 import auth from "@/services/authentication";
 import Home from "./pages/Home.vue";
@@ -125,7 +125,7 @@ const router = createRouter({
         }
       },
       children: [
-        { path: '/settings', component: Settings },
+        { path: "/settings", component: Settings },
         { path: "/panel", component: Panel },
         { path: "/users", component: Users },
         { path: "/user/:id", component: User },
@@ -243,42 +243,100 @@ const router = createRouter({
         { path: "/facility/:id/info", component: FacilityInfo },
         { path: "/facility/:id/documents", component: FacilityDocuments },
         { path: "/facility/:id/equipments", component: FacilityEquipments },
-        { path: '/facility/:id/equipments/:typeId', component: FacilityEquipmentsByType },
+        {
+          path: "/facility/:id/equipments/:typeId",
+          component: FacilityEquipmentsByType,
+        },
         {
           path: "/facility/:id/equipment/register",
           component: FacilityEquipmentsRegister,
         },
         // Equipamentos
-        { path: '/equipments/:typeId/:id', component: Equipment },
+        { path: "/equipments/:typeId/:id", component: Equipment },
         { path: "/equipments/epi", component: EPIEquipmentAssessmentTestList },
-        //       { path: '/equipments/epi/register', component: EPIEquipmentAssessmentTestRegister },
-        //       { path: '/equipments/epi/:equipmentId/:testId/:id/edit', component: EPIEquipmentAssessmentTestEdit },
+        {
+          path: "/equipments/epi/register",
+          component: EPIEquipmentAssessmentTestRegister,
+        },
+        {
+          path: "/equipments/epi/:equipmentId/:testId/:id/edit",
+          component: EPIEquipmentAssessmentTestEdit,
+        },
 
-        //       { path: '/equipments/doseCalibrator/:id', component: DoseCalibrator },
+        { path: "/equipments/doseCalibrator/:id", component: DoseCalibrator },
 
-        //       { path: '/equipments/doseCalibrator/:equipmentId/source/:sourceId/edit', component: DoseCalibratorSourceEdit },
-        //       { path: '/equipments/doseCalibrator/:id/source/register', component: DoseCalibratorSourceRegister },
+        {
+          path: "/equipments/doseCalibrator/:equipmentId/source/:sourceId/edit",
+          component: DoseCalibratorSourceEdit,
+        },
+        {
+          path: "/equipments/doseCalibrator/:id/source/register",
+          component: DoseCalibratorSourceRegister,
+        },
 
-        //       { path: '/equipments/doseCalibrator/:id/linearity', component: DoseCalibratorLinearityTestList },
-        //       { path: '/equipments/doseCalibrator/:id/linearity/register/', component: DoseCalibratorLinearityTestRegister },
-        //       { path: '/equipments/doseCalibrator/:equipmentId/linearity/:testId', component: DoseCalibratorLinearityTest },
-        //       { path: '/equipments/doseCalibrator/:equipmentId/linearity/:testId/edit', component: DoseCalibratorLinearityTestEdit },
+        {
+          path: "/equipments/doseCalibrator/:id/linearity",
+          component: DoseCalibratorLinearityTestList,
+        },
+        {
+          path: "/equipments/doseCalibrator/:id/linearity/register/",
+          component: DoseCalibratorLinearityTestRegister,
+        },
+        {
+          path: "/equipments/doseCalibrator/:equipmentId/linearity/:testId",
+          component: DoseCalibratorLinearityTest,
+        },
+        {
+          path: "/equipments/doseCalibrator/:equipmentId/linearity/:testId/edit",
+          component: DoseCalibratorLinearityTestEdit,
+        },
 
-        //       { path: '/equipments/doseCalibrator/:id/accuracyandprecision', component: DoseCalibratorAccuracyAndPrecisionTestList },
-        //       { path: '/equipments/doseCalibrator/:id/accuracyandprecision/register/', component: DoseCalibratorAccuracyAndPrecisionTestRegister },
-        //       { path: '/equipments/doseCalibrator/:equipmentId/accuracyandprecision/:testId', component: DoseCalibratorAccuracyAndPrecisionTest },
+        {
+          path: "/equipments/doseCalibrator/:id/accuracyandprecision",
+          component: DoseCalibratorAccuracyAndPrecisionTestList,
+        },
+        {
+          path: "/equipments/doseCalibrator/:id/accuracyandprecision/register/",
+          component: DoseCalibratorAccuracyAndPrecisionTestRegister,
+        },
+        {
+          path: "/equipments/doseCalibrator/:equipmentId/accuracyandprecision/:testId",
+          component: DoseCalibratorAccuracyAndPrecisionTest,
+        },
 
-        //       { path: '/equipments/doseCalibrator/:id/geometry', component: DoseCalibratorGeometryTestList },
-        //       { path: '/equipments/doseCalibrator/:id/geometry/register/', component: DoseCalibratorGeometryTestRegister },
-        //       { path: '/equipments/doseCalibrator/:equipmentId/geometry/:testId', component: DoseCalibratorGeometryTest },
+        {
+          path: "/equipments/doseCalibrator/:id/geometry",
+          component: DoseCalibratorGeometryTestList,
+        },
+        {
+          path: "/equipments/doseCalibrator/:id/geometry/register/",
+          component: DoseCalibratorGeometryTestRegister,
+        },
+        {
+          path: "/equipments/doseCalibrator/:equipmentId/geometry/:testId",
+          component: DoseCalibratorGeometryTest,
+        },
 
-        //       { path: '/equipments/doseCalibrator/:id/daily/register/', component: DoseCalibratorDailyTestRegister },
-        //       { path: '/equipments/doseCalibrator/:id/daily/:year', component: DoseCalibratorDailyTestList },
+        { path: '/equipments/doseCalibrator/:id/daily/register/', component: DoseCalibratorDailyTestRegister },
+        { path: '/equipments/doseCalibrator/:id/daily/:year', component: DoseCalibratorDailyTestList },
 
-        //       { path: '/equipments/geigerCounter/:id', component: GeigerCounter },
-        //       { path: '/equipments/geigerCounter/:id/reproductibility', component: GeigerCounterReproductibilityTestList },
-        //       { path: '/equipments/geigerCounter/:id/reproductibility/register/', component: GeigerCounterReproductibilityTestRegister },
-        //       { path: '/equipments/geigerCounter/:equipmentId/reproductibility/:testId', component: GeigerCounterReproductibilityTest },
+        { path: "/equipments/geigerCounter/:id", component: GeigerCounter },
+        {
+          path: "/equipments/geigerCounter/:id/reproductibility",
+          component: GeigerCounterReproductibilityTestList,
+        },
+        {
+          path: "/equipments/geigerCounter/:id/reproductibility/register/",
+          component: GeigerCounterReproductibilityTestRegister,
+        },
+        {
+          path: "/equipments/geigerCounter/:equipmentId/reproductibility/:testId",
+          component: GeigerCounterReproductibilityTest,
+        },
+        {
+          path: "/equipments/geigerCounter/:equipmentId/reproductibility/:testId/edit",
+          component: GeigerCounterReproductibilityTestEdit,
+        },
 
         //       { path: '/equipments/gamaCamara/:id', component: GamaCamara },
         //       { path: '/equipments/gamaCamara/:id/asymmetricWindow', component: GamaCamaraAsymmetricWindowList },
@@ -288,20 +346,40 @@ const router = createRouter({
         //       { path: '/equipments/gamaCamara/:id/angulation/register', component: GamaCamaraAngulationRegister },
         //       { path: '/equipments/gamaCamara/:equipmentId/angulation/:testId', component: GamaCamaraAngulation },
 
-       
-        //       { path: '/equipments/:typeId/:equipmentId/:id', component: Test },
-        //       { path: '/equipments/:typeId/:equipmentId/:id/register', component: TestRegister },
+              { path: '/equipments/:typeId/:equipmentId/:id', component: Test },
+              { path: '/equipments/:typeId/:equipmentId/:id/register', component: TestRegister },
         //       { path: '/equipments/:typeId/:equipmentId/:id/register-old', component: TestRegisterOld },
-        //       { path: '/equipments/:typeId/:equipmentId/:testId/:id/edit', component: TestEdit },
+              { path: '/equipments/:typeId/:equipmentId/:testId/:id/edit', component: TestEdit },
 
-              { path: '/facility/:id/routines', component: FacilityRoutines },
-              { path: '/facility/:id/routines/radioactivematerialmov', component: FacilityRoutinesRadioactiveMaterialMovement },
-              { path: '/facility/:id/routines/radioactivematerialmov/register', component: FacilityRoutinesRadioactiveMaterialMovementRegister },
-              { path: '/facility/:facilityId/routines/radioactivematerialmov/:radioactiveMaterialMovementId/edit', component: FacilityRoutinesRadioactiveMaterialMovementEdit },
-              { path: '/facility/:id/routines/solidwastemanagement/:year', component: FacilityRoutinesSolidWasteManagement },
-              { path: '/facility/:id/routines/solidwastemanagement/register/:tagnumber', component: FacilityRoutinesSolidWasteManagementRegister },
-              { path: '/facility/:id/routines/liquidwastemanagement/register/', component: FacilityRoutinesLiquidWasteManagementRegister },
-              { path: '/facility/:id/routines/liquidwastemanagement/:year', component: FacilityRoutinesLiquidWasteManagement },
+        { path: "/facility/:id/routines", component: FacilityRoutines },
+        {
+          path: "/facility/:id/routines/radioactivematerialmov",
+          component: FacilityRoutinesRadioactiveMaterialMovement,
+        },
+        {
+          path: "/facility/:id/routines/radioactivematerialmov/register",
+          component: FacilityRoutinesRadioactiveMaterialMovementRegister,
+        },
+        {
+          path: "/facility/:facilityId/routines/radioactivematerialmov/:radioactiveMaterialMovementId/edit",
+          component: FacilityRoutinesRadioactiveMaterialMovementEdit,
+        },
+        {
+          path: "/facility/:id/routines/solidwastemanagement/:year",
+          component: FacilityRoutinesSolidWasteManagement,
+        },
+        {
+          path: "/facility/:id/routines/solidwastemanagement/register/:tagnumber",
+          component: FacilityRoutinesSolidWasteManagementRegister,
+        },
+        {
+          path: "/facility/:id/routines/liquidwastemanagement/register/",
+          component: FacilityRoutinesLiquidWasteManagementRegister,
+        },
+        {
+          path: "/facility/:id/routines/liquidwastemanagement/:year",
+          component: FacilityRoutinesLiquidWasteManagement,
+        },
         { path: "/document", component: Doc },
         {
           path: "/document/register",
